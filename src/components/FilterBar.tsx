@@ -1,4 +1,4 @@
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import type { Shipment } from '../types';
 
 export interface FilterState {
@@ -52,6 +52,28 @@ export function FilterBar({ shipments, filters, onFiltersChange }: FilterBarProp
   };
 
   const hasActiveFilters = Object.values(filters).some(value => value !== '');
+
+  // Get active filters for display as bubbles
+  const getActiveFilters = () => {
+    const activeFilters: Array<{ key: string; label: string; value: string }> = [];
+    
+    if (filters.search) activeFilters.push({ key: 'search', label: 'Search', value: filters.search });
+    if (filters.origin) activeFilters.push({ key: 'origin', label: 'Origin', value: filters.origin });
+    if (filters.destination) activeFilters.push({ key: 'destination', label: 'Destination', value: filters.destination });
+    if (filters.status) activeFilters.push({ key: 'status', label: 'Status', value: filters.status });
+    if (filters.freightForwarder) activeFilters.push({ key: 'freightForwarder', label: 'Freight Forwarder', value: filters.freightForwarder });
+    if (filters.modeOfTransport) activeFilters.push({ key: 'modeOfTransport', label: 'Mode of Transport', value: filters.modeOfTransport });
+    if (filters.packagingType) activeFilters.push({ key: 'packagingType', label: 'Packaging Type', value: filters.packagingType });
+    if (filters.alarms) activeFilters.push({ key: 'alarms', label: 'Alarms', value: filters.alarms });
+    if (filters.rootCauseAnalysis) activeFilters.push({ key: 'rootCauseAnalysis', label: 'Root Cause Analysis', value: filters.rootCauseAnalysis });
+    
+    return activeFilters;
+  };
+
+  // Remove individual filter
+  const removeFilter = (filterKey: string) => {
+    handleFilterChange(filterKey as keyof FilterState, '');
+  };
 
   return (
     <div className="filter-bar">
@@ -206,6 +228,30 @@ export function FilterBar({ shipments, filters, onFiltersChange }: FilterBarProp
           </select>
         </div>
       </div>
+
+      {/* Active Filter Bubbles */}
+      {hasActiveFilters && (
+        <div className="active-filters">
+          <div className="active-filters-row">
+            {getActiveFilters().map((filter) => (
+              <div key={filter.key} className="filter-bubble">
+                <span className="filter-bubble-label">{filter.label}:</span>
+                <span className="filter-bubble-value">{filter.value}</span>
+                <button 
+                  onClick={() => removeFilter(filter.key)}
+                  className="filter-bubble-remove"
+                  aria-label={`Remove ${filter.label} filter`}
+                >
+                  <X size={12} />
+                </button>
+              </div>
+            ))}
+            <button onClick={clearAllFilters} className="remove-all-filters-btn">
+              Remove All
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

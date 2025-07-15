@@ -276,6 +276,78 @@ body {
   border-color: #9ca3af;
 }
 
+/* Active Filter Bubbles */
+.active-filters {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.active-filters-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-bubble {
+  display: inline-flex;
+  align-items: center;
+  background: #3b82f6;
+  color: white;
+  border-radius: 16px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  gap: 4px;
+  max-width: 200px;
+}
+
+.filter-bubble-label {
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.filter-bubble-value {
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+
+.filter-bubble-remove {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.filter-bubble-remove:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.remove-all-filters-btn {
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 16px;
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.remove-all-filters-btn:hover {
+  background: #dc2626;
+}
+
 /* Company row styling */
 .company-info {
   display: flex;
