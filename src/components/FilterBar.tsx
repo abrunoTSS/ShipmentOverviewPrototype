@@ -89,13 +89,6 @@ export function FilterBar({ shipments, filters, onFiltersChange }: FilterBarProp
             className="search-input"
           />
         </div>
-
-        {/* Clear Filters Button */}
-        {hasActiveFilters && (
-          <button onClick={clearAllFilters} className="clear-filters-btn">
-            Clear All Filters
-          </button>
-        )}
       </div>
 
       <div className="filters-grid">
