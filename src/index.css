@@ -156,19 +156,125 @@ body {
 .main-table th:nth-child(7), .main-table td:nth-child(7) { width: 120px; } /* Current Location */
 .main-table th:nth-child(8), .main-table td:nth-child(8) { width: 80px; } /* Mode of Transport */
 .main-table th:nth-child(9), .main-table td:nth-child(9) { width: 90px; } /* Packaging Type */
-.main-table th:nth-child(10), .main-table td:nth-child(10) { width: 60px; } /* Loggers */
+.main-table th:nth-child(10), .main-table td:nth-child(10) { width: 80px; } /* Loggers */
 .main-table th:nth-child(11), .main-table td:nth-child(11) { width: 70px; } /* Total Alarms */
 .main-table th:nth-child(12), .main-table td:nth-child(12) { width: 60px; } /* RCAS */
 .main-table th:nth-child(13), .main-table td:nth-child(13) { width: 120px; } /* Last Seen */
 .main-table th:nth-child(14), .main-table td:nth-child(14) { width: 30px; } /* Expand icon */
 
-/* Center align specific columns */
-.main-table th:nth-child(4), .main-table td:nth-child(4) { text-align: center; } /* ETA */
-.main-table th:nth-child(5), .main-table td:nth-child(5) { text-align: center; } /* Status */
-.main-table th:nth-child(10), .main-table td:nth-child(10) { text-align: center; } /* Loggers count */
-.main-table th:nth-child(11), .main-table td:nth-child(11) { text-align: center; } /* Total Alarms */
-.main-table th:nth-child(12), .main-table td:nth-child(12) { text-align: center; } /* RCAS */
-.main-table th:nth-child(14), .main-table td:nth-child(14) { text-align: center; } /* Expand icon */
+/* Ensure all table headers and cells are left-aligned */
+.table th,
+.table td {
+  text-align: left;
+}
+
+/* Exception for expand column */
+.table th:last-child,
+.table td:last-child {
+  text-align: center;
+}
+
+/* Filter Bar Styles */
+.filter-bar {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  transition: border-color 0.2s ease;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.clear-filters-btn {
+  padding: 8px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clear-filters-btn:hover {
+  background: #dc2626;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-group label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.filter-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.filter-select:hover {
+  border-color: #9ca3af;
+}
 
 /* Company row styling */
 .company-info {
@@ -203,6 +309,65 @@ body {
 
 .last-seen {
   font-size: 0.75rem;
+  text-align: center;
+}
+
+/* TanStack Table specific styles */
+.expand-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expand-button:hover {
+  background-color: #f1f5f9;
+  border-radius: 4px;
+}
+
+
+
+.expanded-content {
+  padding: 0;
+  background-color: #f8fafc;
+}
+
+.logger-details {
+  padding: 16px;
+  border-left: 3px solid #3b82f6;
+  margin: 8px 16px;
+  background-color: white;
+  border-radius: 4px;
+}
+
+.logger-details p {
+  margin: 4px 0;
+  font-size: 0.875rem;
+}
+
+.logger-details strong {
+  color: #1e40af;
+}
+
+.logger-expand-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+}
+
+/* Logger table text alignment */
+.nested-table th,
+.nested-table td {
+  text-align: left;
+}
+
+/* Exception for the expand column */
+.nested-table th:last-child,
+.nested-table td:last-child {
   text-align: center;
 }
 

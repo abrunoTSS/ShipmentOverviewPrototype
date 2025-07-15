@@ -38,6 +38,7 @@ function App() {
           expandedRow={expandedRow}
           onRowClick={handleRowClick}
           onLoggerClick={handleLoggerClick}
+          showSidePanel={showSidePanel}
         />
       </div>
 
