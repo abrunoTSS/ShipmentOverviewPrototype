@@ -1,5 +1,5 @@
-import type { Shipment } from '../types';
 import { RCASStatus, RootCauseAnalysis } from '../types';
+import type { Shipment } from '../types';
 
 export const shipments: Shipment[] = [
   {
@@ -19,8 +19,52 @@ export const shipments: Shipment[] = [
         loggerType: 'Temperature',
         loggerStarted: '2025-07-10T08:00:00Z',
         loggerEnded: null,
-        alarms: 2,
-        rootCauseAnalysis: RootCauseAnalysis.UNDER_INVESTIGATION
+        alarms: 0,
+        rootCauseAnalysis: null,
+        enrichedEvent: {
+          alarmType: null,
+          events: [
+            {
+              eventId: 1,
+              alarmType: null,
+              timeline: [
+                {
+                  title: 'Berlin',
+                  subtitle: 'Departed: 2025-07-15 08:00',
+                  dot: 'green',
+                  extraInfo: { time: '08:00', location: 'Berlin, Germany' },
+                  status: 'Completed',
+                  timestamp: '2025-07-15 08:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'DE BER 789',
+                  weatherConditions: 'Sunny, 22°C'
+                },
+                {
+                  title: 'Hamburg Hub - Transfer',
+                  subtitle: 'Arrived: 2025-07-15 14:30',
+                  dot: 'blue',
+                  extraInfo: { time: '14:30', location: 'Hamburg, Germany' },
+                  status: 'In Transit',
+                  timestamp: '2025-07-15 14:30',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'DE HAM 456',
+                  weatherConditions: 'Overcast, 18°C'
+                },
+                {
+                  title: 'Amsterdam',
+                  subtitle: 'Expected: 2025-07-16 10:00',
+                  dot: 'gray',
+                  extraInfo: { time: '10:00', location: 'Amsterdam, Netherlands' },
+                  status: 'Pending',
+                  timestamp: '2025-07-16 10:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NL AMS 123',
+                  weatherConditions: 'Expected: Partly cloudy, 20°C'
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         loggerId: 'LG-1002',
@@ -28,11 +72,44 @@ export const shipments: Shipment[] = [
         loggerStarted: '2025-07-10T08:00:00Z',
         loggerEnded: null,
         alarms: 0,
-        rootCauseAnalysis: null
+        rootCauseAnalysis: null,
+        enrichedEvent: {
+          alarmType: 'Humidity Monitoring',
+          events: [
+            {
+              eventId: 1,
+              alarmType: null,
+              timeline: [
+                {
+                  title: 'Stockholm',
+                  subtitle: 'Departed: 2025-07-10 08:00',
+                  dot: 'green',
+                  extraInfo: { time: '08:00', location: 'Stockholm, Sweden' },
+                  status: 'Completed',
+                  timestamp: '2025-07-10 08:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'SE STO 123',
+                  weatherConditions: 'Clear, 20°C'
+                },
+                {
+                  title: 'Berlin',
+                  subtitle: 'Arrived: 2025-07-10 20:00',
+                  dot: 'green',
+                  extraInfo: { time: '20:00', location: 'Berlin, Germany' },
+                  status: 'Completed',
+                  timestamp: '2025-07-10 20:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'DE BER 456',
+                  weatherConditions: 'Overcast, 18°C'
+                }
+              ]
+            }
+          ]
+        }
       }
     ],
-    totalAlarms: 2,
-    RCAS: RCASStatus.IN_PROGRESS,
+    totalAlarms: 0,
+    RCAS: RCASStatus.NOT_STARTED,
     lastSeen: '2025-07-15T14:30:00Z'
   },
   {
@@ -52,8 +129,142 @@ export const shipments: Shipment[] = [
         loggerType: 'Temperature',
         loggerStarted: '2025-07-09T05:00:00Z',
         loggerEnded: '2025-07-17T16:00:00Z',
-        alarms: 0,
-        rootCauseAnalysis: null
+        alarms: 3,
+        rootCauseAnalysis: RootCauseAnalysis.UNDER_INVESTIGATION,
+        enrichedEvent: {
+          alarmType: 'Temperature Excursion',
+          events: [
+            {
+              eventId: 1,
+              alarmType: 'Temperature',
+              timeline: [
+                {
+                  title: 'Zurich',
+                  subtitle: 'Departed: 2025-06-06 07:00',
+                  dot: 'green',
+                  extraInfo: { time: '07:00', location: 'Zurich, Switzerland' },
+                  status: 'Completed',
+                  timestamp: '2025-06-06 07:00'
+                },
+                {
+                  title: 'Milan Airport - Transfer',
+                  subtitle: 'Arrived: 2025-06-06 12:00',
+                  dot: 'red',
+                  extraInfo: { time: '12:00', location: 'Milan Airport' },
+                  status: 'Alert',
+                  timestamp: '2025-06-06 12:00',
+                  transportMode: 'Road',
+                  vehicleNumber: 'IT MN1 23E',
+                  weatherConditions: 'Sunny, 28°C',
+                  excursionDetails: {
+                    highest: '25°C',
+                    lowest: '5°C',
+                    average: '21°C',
+                    startTime: '05-07-2025 09:30',
+                    duration: '4h 15m',
+                    maxDeviation: '+10.2°C',
+                    averageDeviation: '+8.7°C',
+                    affectedProducts: 'All cargo'
+                  }
+                },
+                {
+                  title: 'Rome',
+                  subtitle: 'Arrived: 2025-06-14 20:00',
+                  dot: 'green',
+                  extraInfo: { time: '20:00', location: 'Rome, Italy' },
+                  status: 'Completed',
+                  timestamp: '2025-06-14 20:00'
+                }
+              ]
+            },
+            {
+              eventId: 2,
+              alarmType: 'Temperature',
+              timeline: [
+                {
+                  title: 'Zurich',
+                  subtitle: 'Departed: 2025-06-06 07:00',
+                  dot: 'green',
+                  extraInfo: { time: '07:00', location: 'Zurich, Switzerland' },
+                  status: 'Completed',
+                  timestamp: '2025-06-06 07:00'
+                },
+                {
+                  title: 'Frankfurt Hub - Transfer',
+                  subtitle: 'Arrived: 2025-06-06 15:30',
+                  dot: 'red',
+                  extraInfo: { time: '15:30', location: 'Frankfurt Hub' },
+                  status: 'Alert',
+                  timestamp: '2025-06-06 15:30',
+                  transportMode: 'Air',
+                  vehicleNumber: 'LH 441',
+                  weatherConditions: 'Cloudy, 22°C',
+                  excursionDetails: {
+                    highest: '28°C',
+                    lowest: '3°C',
+                    average: '19°C',
+                    startTime: '06-06-2025 14:15',
+                    duration: '2h 45m',
+                    maxDeviation: '+12.5°C',
+                    averageDeviation: '+9.8°C',
+                    affectedProducts: 'Temperature sensitive items'
+                  }
+                },
+                {
+                  title: 'Rome',
+                  subtitle: 'Arrived: 2025-06-14 20:00',
+                  dot: 'green',
+                  extraInfo: { time: '20:00', location: 'Rome, Italy' },
+                  status: 'Completed',
+                  timestamp: '2025-06-14 20:00'
+                }
+              ]
+            },
+            {
+              eventId: 3,
+              alarmType: 'Temperature',
+              timeline: [
+                {
+                  title: 'Zurich',
+                  subtitle: 'Departed: 2025-06-06 07:00',
+                  dot: 'green',
+                  extraInfo: { time: '07:00', location: 'Zurich, Switzerland' },
+                  status: 'Completed',
+                  timestamp: '2025-06-06 07:00'
+                },
+                {
+                  title: 'Bologna Distribution - Transfer',
+                  subtitle: 'Arrived: 2025-06-07 09:15',
+                  dot: 'red',
+                  extraInfo: { time: '09:15', location: 'Bologna Distribution Center' },
+                  status: 'Alert',
+                  timestamp: '2025-06-07 09:15',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'IT BO 789Z',
+                  weatherConditions: 'Rainy, 18°C',
+                  excursionDetails: {
+                    highest: '24°C',
+                    lowest: '7°C',
+                    average: '16°C',
+                    startTime: '06-07-2025 08:00',
+                    duration: '1h 30m',
+                    maxDeviation: '+8.9°C',
+                    averageDeviation: '+6.2°C',
+                    affectedProducts: 'Partial cargo'
+                  }
+                },
+                {
+                  title: 'Rome',
+                  subtitle: 'Arrived: 2025-06-14 20:00',
+                  dot: 'green',
+                  extraInfo: { time: '20:00', location: 'Rome, Italy' },
+                  status: 'Completed',
+                  timestamp: '2025-06-14 20:00'
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         loggerId: 'LG-1011',
@@ -61,7 +272,72 @@ export const shipments: Shipment[] = [
         loggerStarted: '2025-07-09T05:00:00Z',
         loggerEnded: '2025-07-17T16:00:00Z',
         alarms: 1,
-        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE
+        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE,
+        enrichedEvent: {
+          alarmType: 'Shock Detection',
+          events: [
+            {
+              eventId: 1,
+              alarmType: 'Shock',
+              timeline: [
+                {
+                  title: 'Zurich',
+                  subtitle: 'Departed: 2025-06-13 05:00',
+                  dot: 'green',
+                  extraInfo: { time: '05:00', location: 'Zurich, Switzerland' },
+                  status: 'Completed',
+                  timestamp: '2025-06-13 05:00',
+                  transportMode: 'Air',
+                  vehicleNumber: 'LX 8456',
+                  weatherConditions: 'Clear, 18°C'
+                },
+                {
+                  title: 'Heathrow Airport - Transfer',
+                  subtitle: 'Arrived: 2025-06-13 06:30',
+                  dot: 'red',
+                  extraInfo: { time: '06:30', location: 'London Heathrow, UK' },
+                  status: 'Alert',
+                  timestamp: '2025-06-13 06:30',
+                  transportMode: 'Air',
+                  vehicleNumber: 'BA 2847',
+                  weatherConditions: 'Overcast, 15°C',
+                  excursionDetails: {
+                    highest: '9.2G',
+                    lowest: '0.1G',
+                    average: '6.8G',
+                    startTime: '13-06-2025 06:28',
+                    duration: '2 seconds',
+                    maxDeviation: '9.2G',
+                    averageDeviation: '6.8G',
+                    affectedProducts: 'Top-layer pallets'
+                  }
+                },
+                {
+                  title: 'Frankfurt Hub - Transfer',
+                  subtitle: 'Arrived: 2025-06-13 09:15',
+                  dot: 'blue',
+                  extraInfo: { time: '09:15', location: 'Frankfurt, Germany' },
+                  status: 'In Transit',
+                  timestamp: '2025-06-13 09:15',
+                  transportMode: 'Air',
+                  vehicleNumber: 'LH 4567',
+                  weatherConditions: 'Partly cloudy, 22°C'
+                },
+                {
+                  title: 'Rome',
+                  subtitle: 'Arrived: 2025-06-13 12:00',
+                  dot: 'green',
+                  extraInfo: { time: '12:00', location: 'Rome, Italy' },
+                  status: 'Completed',
+                  timestamp: '2025-06-13 12:00',
+                  transportMode: 'Air',
+                  vehicleNumber: 'AZ 1234',
+                  weatherConditions: 'Sunny, 28°C'
+                }
+              ]
+            }
+          ]
+        }
       }
     ],
     totalAlarms: 1,
@@ -86,7 +362,170 @@ export const shipments: Shipment[] = [
         loggerStarted: '2025-07-13T10:00:00Z',
         loggerEnded: null,
         alarms: 3,
-        rootCauseAnalysis: RootCauseAnalysis.REFRIGERATOR_BROKEN
+        rootCauseAnalysis: RootCauseAnalysis.REFRIGERATOR_BROKEN,
+        enrichedEvent: {
+          alarmType: 'Temperature Excursion',
+          events: [
+            {
+              eventId: 1,
+              alarmType: 'Temperature',
+              timeline: [
+                {
+                  title: 'Copenhagen',
+                  subtitle: 'Departed: 2025-07-13 10:00',
+                  dot: 'green',
+                  extraInfo: { time: '10:00', location: 'Copenhagen, Denmark' },
+                  status: 'Completed',
+                  timestamp: '2025-07-13 10:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'DK CPH 456',
+                  weatherConditions: 'Cloudy, 15°C'
+                },
+                {
+                  title: 'Gothenburg - Transfer',
+                  subtitle: 'Arrived: 2025-07-13 15:00',
+                  dot: 'red',
+                  extraInfo: { time: '15:00', location: 'Gothenburg, Sweden' },
+                  status: 'Alert',
+                  timestamp: '2025-07-13 15:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'SE GOT 789',
+                  weatherConditions: 'Rainy, 12°C',
+                  excursionDetails: {
+                    highest: '22°C',
+                    lowest: '2°C',
+                    average: '18°C',
+                    startTime: '13-07-2025 13:20',
+                    duration: '1h 40m',
+                    maxDeviation: '+17.4°C',
+                    averageDeviation: '+13.8°C',
+                    affectedProducts: 'Full shipment'
+                  }
+                },
+                {
+                  title: 'Karlstad Hub - Transfer',
+                  subtitle: 'Arrived: 2025-07-13 17:45',
+                  dot: 'blue',
+                  extraInfo: { time: '17:45', location: 'Karlstad, Sweden' },
+                  status: 'In Transit',
+                  timestamp: '2025-07-13 17:45',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'SE KAR 445',
+                  weatherConditions: 'Cloudy, 14°C'
+                },
+                {
+                  title: 'Oslo',
+                  subtitle: 'Arrived: 2025-07-13 20:30',
+                  dot: 'green',
+                  extraInfo: { time: '20:30', location: 'Oslo, Norway' },
+                  status: 'Completed',
+                  timestamp: '2025-07-13 20:30',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NO OSL 123',
+                  weatherConditions: 'Clear, 18°C'
+                }
+              ]
+            },
+            {
+              eventId: 2,
+              alarmType: 'Temperature',
+              timeline: [
+                {
+                  title: 'Copenhagen',
+                  subtitle: 'Departed: 2025-07-13 10:00',
+                  dot: 'green',
+                  extraInfo: { time: '10:00', location: 'Copenhagen, Denmark' },
+                  status: 'Completed',
+                  timestamp: '2025-07-13 10:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'DK CPH 456',
+                  weatherConditions: 'Cloudy, 15°C'
+                },
+                {
+                  title: 'Malmö Hub - Transfer',
+                  subtitle: 'Arrived: 2025-07-13 12:45',
+                  dot: 'red',
+                  extraInfo: { time: '12:45', location: 'Malmö, Sweden' },
+                  status: 'Alert',
+                  timestamp: '2025-07-13 12:45',
+                  transportMode: 'Ferry',
+                  vehicleNumber: 'SE MAL 445',
+                  weatherConditions: 'Windy, 14°C',
+                  excursionDetails: {
+                    highest: '26°C',
+                    lowest: '4°C',
+                    average: '16°C',
+                    startTime: '13-07-2025 11:30',
+                    duration: '2h 15m',
+                    maxDeviation: '+19.2°C',
+                    averageDeviation: '+14.5°C',
+                    affectedProducts: 'Cold chain items'
+                  }
+                },
+                {
+                  title: 'Oslo',
+                  subtitle: 'Arrived: 2025-07-13 20:30',
+                  dot: 'green',
+                  extraInfo: { time: '20:30', location: 'Oslo, Norway' },
+                  status: 'Completed',
+                  timestamp: '2025-07-13 20:30',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NO OSL 123',
+                  weatherConditions: 'Clear, 18°C'
+                }
+              ]
+            },
+            {
+              eventId: 3,
+              alarmType: 'Temperature',
+              timeline: [
+                {
+                  title: 'Copenhagen',
+                  subtitle: 'Departed: 2025-07-13 10:00',
+                  dot: 'green',
+                  extraInfo: { time: '10:00', location: 'Copenhagen, Denmark' },
+                  status: 'Completed',
+                  timestamp: '2025-07-13 10:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'DK CPH 456',
+                  weatherConditions: 'Cloudy, 15°C'
+                },
+                {
+                  title: 'Border Checkpoint - Delay',
+                  subtitle: 'Arrived: 2025-07-13 17:20',
+                  dot: 'red',
+                  extraInfo: { time: '17:20', location: 'Sweden-Norway Border' },
+                  status: 'Alert',
+                  timestamp: '2025-07-13 17:20',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NO OSL 123',
+                  weatherConditions: 'Foggy, 10°C',
+                  excursionDetails: {
+                    highest: '20°C',
+                    lowest: '6°C',
+                    average: '14°C',
+                    startTime: '13-07-2025 16:45',
+                    duration: '45m',
+                    maxDeviation: '+15.1°C',
+                    averageDeviation: '+11.2°C',
+                    affectedProducts: 'Partial cargo'
+                  }
+                },
+                {
+                  title: 'Oslo',
+                  subtitle: 'Arrived: 2025-07-13 20:30',
+                  dot: 'green',
+                  extraInfo: { time: '20:30', location: 'Oslo, Norway' },
+                  status: 'Completed',
+                  timestamp: '2025-07-13 20:30',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NO OSL 123',
+                  weatherConditions: 'Clear, 18°C'
+                }
+              ]
+            }
+          ]
+        }
       }
     ],
     totalAlarms: 3,
@@ -111,7 +550,61 @@ export const shipments: Shipment[] = [
         loggerStarted: '2025-07-14T06:00:00Z',
         loggerEnded: null,
         alarms: 1,
-        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE
+        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE,
+        enrichedEvent: {
+          alarmType: 'Temperature Alert',
+          events: [
+            {
+              eventId: 1,
+              alarmType: 'Temperature',
+              timeline: [
+                {
+                  title: 'Amsterdam',
+                  subtitle: 'Departed: 2025-07-14 06:00',
+                  dot: 'green',
+                  extraInfo: { time: '06:00', location: 'Amsterdam, Netherlands' },
+                  status: 'Completed',
+                  timestamp: '2025-07-14 06:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NL AMS 789',
+                  weatherConditions: 'Rainy, 16°C'
+                },
+                {
+                  title: 'Brussels Hub - Transfer',
+                  subtitle: 'Arrived: 2025-07-14 08:00',
+                  dot: 'red',
+                  extraInfo: { time: '08:00', location: 'Brussels, Belgium' },
+                  status: 'Alert',
+                  timestamp: '2025-07-14 08:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'BE BRU 456',
+                  weatherConditions: 'Overcast, 14°C',
+                  excursionDetails: {
+                    highest: '18°C',
+                    lowest: '2°C',
+                    average: '12°C',
+                    startTime: '14-07-2025 07:45',
+                    duration: '12 minutes',
+                    maxDeviation: '+10.2°C',
+                    averageDeviation: '+7.8°C',
+                    affectedProducts: 'Upper racks'
+                  }
+                },
+                {
+                  title: 'Paris',
+                  subtitle: 'Arrived: 2025-07-14 12:00',
+                  dot: 'green',
+                  extraInfo: { time: '12:00', location: 'Paris, France' },
+                  status: 'Completed',
+                  timestamp: '2025-07-14 12:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'FR PAR 123',
+                  weatherConditions: 'Sunny, 22°C'
+                }
+              ]
+            }
+          ]
+        }
       },
       {
         loggerId: 'LG-1031',
@@ -119,7 +612,51 @@ export const shipments: Shipment[] = [
         loggerStarted: '2025-07-14T06:00:00Z',
         loggerEnded: null,
         alarms: 0,
-        rootCauseAnalysis: null
+        rootCauseAnalysis: null,
+        enrichedEvent: {
+          alarmType: 'Shock Monitoring',
+          events: [
+            {
+              eventId: 1,
+              alarmType: null,
+              timeline: [
+                {
+                  title: 'Amsterdam',
+                  subtitle: 'Departed: 2025-07-14 06:00',
+                  dot: 'green',
+                  extraInfo: { time: '06:00', location: 'Amsterdam, Netherlands' },
+                  status: 'Completed',
+                  timestamp: '2025-07-14 06:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NL AMS 789',
+                  weatherConditions: 'Rainy, 16°C'
+                },
+                {
+                  title: 'Brussels Hub - Transfer',
+                  subtitle: 'Arrived: 2025-07-14 08:00',
+                  dot: 'blue',
+                  extraInfo: { time: '08:00', location: 'Brussels, Belgium' },
+                  status: 'In Transit',
+                  timestamp: '2025-07-14 08:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'BE BRU 456',
+                  weatherConditions: 'Overcast, 14°C'
+                },
+                {
+                  title: 'Paris',
+                  subtitle: 'Expected: 2025-07-14 12:00',
+                  dot: 'gray',
+                  extraInfo: { time: '12:00', location: 'Paris, France' },
+                  status: 'Pending',
+                  timestamp: '2025-07-14 12:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'FR PAR 123',
+                  weatherConditions: 'Expected: Sunny, 22°C'
+                }
+              ]
+            }
+          ]
+        }
       }
     ],
     totalAlarms: 1,
@@ -144,7 +681,40 @@ export const shipments: Shipment[] = [
         loggerStarted: '2025-07-12T12:00:00Z',
         loggerEnded: '2025-07-17T09:30:00Z',
         alarms: 0,
-        rootCauseAnalysis: null
+        rootCauseAnalysis: null,
+        enrichedEvent: {
+          alarmType: 'Temperature Monitoring',
+          events: [
+            {
+              eventId: 1,
+              alarmType: null,
+              timeline: [
+                {
+                  title: 'Madrid',
+                  subtitle: 'Departed: 2025-07-12 12:00',
+                  dot: 'green',
+                  extraInfo: { time: '12:00', location: 'Madrid, Spain' },
+                  status: 'Completed',
+                  timestamp: '2025-07-12 12:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'ES MAD 456',
+                  weatherConditions: 'Hot, 32°C'
+                },
+                {
+                  title: 'Lisbon',
+                  subtitle: 'Arrived: 2025-07-17 09:30',
+                  dot: 'green',
+                  extraInfo: { time: '09:30', location: 'Lisbon, Portugal' },
+                  status: 'Completed',
+                  timestamp: '2025-07-17 09:30',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'PT LIS 789',
+                  weatherConditions: 'Mild, 24°C'
+                }
+              ]
+            }
+          ]
+        }
       }
     ],
     totalAlarms: 0,
@@ -167,202 +737,4 @@ export const shipments: Shipment[] = [
     RCAS: RCASStatus.NOT_STARTED,
     lastSeen: null
   },
-  {
-    id: 'SH007',
-    shipmentId: 'SH007',
-    origin: 'Helsinki, Finland',
-    destination: 'Tallinn, Estonia',
-    eta: '2025-07-18',
-    status: 'In Transit',
-    FF: 'Geodis',
-    currentLocation: 'Ferry - Baltic Sea',
-    modeOfTransport: 'Ferry',
-    packagingType: 'Insulated Container',
-    logger_data: [
-      {
-        loggerId: 'LG-1050',
-        loggerType: 'Temperature',
-        loggerStarted: '2025-07-15T04:00:00Z',
-        loggerEnded: null,
-        alarms: 4,
-        rootCauseAnalysis: RootCauseAnalysis.REFRIGERATOR_BROKEN
-      },
-      {
-        loggerId: 'LG-1051',
-        loggerType: 'Humidity',
-        loggerStarted: '2025-07-15T04:00:00Z',
-        loggerEnded: null,
-        alarms: 2,
-        rootCauseAnalysis: RootCauseAnalysis.UNDER_INVESTIGATION
-      }
-    ],
-    totalAlarms: 6,
-    RCAS: RCASStatus.IN_PROGRESS,
-    lastSeen: '2025-07-15T18:00:00Z'
-  },
-  {
-    id: 'SH008',
-    shipmentId: 'SH008',
-    origin: 'London, UK',
-    destination: 'Dublin, Ireland',
-    eta: '2025-07-20',
-    status: 'Delayed',
-    FF: 'DHL',
-    currentLocation: 'Liverpool, UK',
-    modeOfTransport: 'Ferry',
-    packagingType: 'Cold Chain Pallet',
-    logger_data: [
-      {
-        loggerId: 'LG-1060',
-        loggerType: 'Temperature',
-        loggerStarted: '2025-07-13T14:00:00Z',
-        loggerEnded: null,
-        alarms: 1,
-        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE
-      }
-    ],
-    totalAlarms: 1,
-    RCAS: RCASStatus.CLOSED,
-    lastSeen: '2025-07-15T12:15:00Z'
-  },
-  {
-    id: 'SH009',
-    shipmentId: 'SH009',
-    origin: 'Warsaw, Poland',
-    destination: 'Budapest, Hungary',
-    eta: '2025-07-22',
-    status: 'In Transit',
-    FF: 'Yusen',
-    currentLocation: 'Krakow, Poland',
-    modeOfTransport: 'Truck',
-    packagingType: 'Thermal Blanket',
-    logger_data: [
-      {
-        loggerId: 'LG-1070',
-        loggerType: 'Temperature',
-        loggerStarted: '2025-07-14T16:00:00Z',
-        loggerEnded: null,
-        alarms: 0,
-        rootCauseAnalysis: null
-      },
-      {
-        loggerId: 'LG-1071',
-        loggerType: 'Shock',
-        loggerStarted: '2025-07-14T16:00:00Z',
-        loggerEnded: null,
-        alarms: 3,
-        rootCauseAnalysis: RootCauseAnalysis.UNDER_INVESTIGATION
-      }
-    ],
-    totalAlarms: 3,
-    RCAS: RCASStatus.IN_PROGRESS,
-    lastSeen: '2025-07-15T20:30:00Z'
-  },
-  {
-    id: 'SH010',
-    shipmentId: 'SH010',
-    origin: 'Brussels, Belgium',
-    destination: 'Luxembourg City, Luxembourg',
-    eta: '2025-07-16',
-    status: 'Delivered',
-    FF: 'Geodis',
-    currentLocation: 'Luxembourg City, Luxembourg',
-    modeOfTransport: 'Van',
-    packagingType: 'Insulated Box',
-    logger_data: [
-      {
-        loggerId: 'LG-1080',
-        loggerType: 'Temperature',
-        loggerStarted: '2025-07-15T08:00:00Z',
-        loggerEnded: '2025-07-16T11:00:00Z',
-        alarms: 0,
-        rootCauseAnalysis: null
-      }
-    ],
-    totalAlarms: 0,
-    RCAS: RCASStatus.NOT_STARTED,
-    lastSeen: '2025-07-16T11:00:00Z'
-  },
-  {
-    id: 'SH011',
-    shipmentId: 'SH011',
-    origin: 'Milan, Italy',
-    destination: 'Nice, France',
-    eta: '2025-07-19',
-    status: 'In Transit',
-    FF: 'DHL',
-    currentLocation: 'Turin, Italy',
-    modeOfTransport: 'Truck',
-    packagingType: 'Cold Chain Pallet',
-    logger_data: [
-      {
-        loggerId: 'LG-1090',
-        loggerType: 'Temperature',
-        loggerStarted: '2025-07-14T10:00:00Z',
-        loggerEnded: null,
-        alarms: 2,
-        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE
-      },
-      {
-        loggerId: 'LG-1091',
-        loggerType: 'Humidity',
-        loggerStarted: '2025-07-14T10:00:00Z',
-        loggerEnded: null,
-        alarms: 1,
-        rootCauseAnalysis: RootCauseAnalysis.UNDER_INVESTIGATION
-      },
-      {
-        loggerId: 'LG-1092',
-        loggerType: 'Shock',
-        loggerStarted: '2025-07-14T10:00:00Z',
-        loggerEnded: null,
-        alarms: 0,
-        rootCauseAnalysis: null
-      }
-    ],
-    totalAlarms: 3,
-    RCAS: RCASStatus.IN_PROGRESS,
-    lastSeen: '2025-07-15T15:45:00Z'
-  },
-  {
-    id: 'SH012',
-    shipmentId: 'SH012',
-    origin: 'Athens, Greece',
-    destination: 'Sofia, Bulgaria',
-    eta: '2025-07-23',
-    status: 'Pending',
-    FF: 'Yusen',
-    currentLocation: 'Athens, Greece',
-    modeOfTransport: 'Truck',
-    packagingType: 'Thermal Blanket',
-    logger_data: [],
-    totalAlarms: 0,
-    RCAS: RCASStatus.NOT_STARTED,
-    lastSeen: null
-  },
-  {
-    id: 'SH013',
-    shipmentId: 'SH013',
-    origin: 'Barcelona, Spain',
-    destination: 'Marseille, France',
-    eta: '2025-07-18',
-    status: 'Delivered',
-    FF: 'Geodis',
-    currentLocation: 'Marseille, France',
-    modeOfTransport: 'Truck',
-    packagingType: 'Insulated Container',
-    logger_data: [
-      {
-        loggerId: 'LG-1100',
-        loggerType: 'Temperature',
-        loggerStarted: '2025-07-16T07:00:00Z',
-        loggerEnded: '2025-07-18T14:30:00Z',
-        alarms: 1,
-        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE
-      }
-    ],
-    totalAlarms: 1,
-    RCAS: RCASStatus.CLOSED,
-    lastSeen: '2025-07-18T14:30:00Z'
-  }
 ];

@@ -19,9 +19,65 @@ export interface Logger {
   loggerType: string;
   loggerStarted: string | null;
   loggerEnded: string | null;
-  alarms: number | null,
+  alarms: number | null;
   rootCauseAnalysis: RootCauseAnalysis | null;
+  enrichedEvent?: {
+    alarmType: string | null;
+    timeline?: {
+      title: string;
+      subtitle: string;
+      dot: 'green' | 'red' | 'orange' | 'blue' | 'gray';
+      extraInfo: {
+        time: string;
+        location: string;
+      };
+      status?: string;
+      timestamp?: string;
+      transportMode?: string;
+      vehicleNumber?: string;
+      weatherConditions?: string;
+      excursionDetails?: {
+        highest?: string;
+        lowest?: string;
+        average?: string;
+        startTime?: string;
+        duration: string;
+        maxDeviation: string;
+        averageDeviation: string;
+        affectedProducts: string;
+      };
+    }[];
+    events?: {
+      eventId: number;
+      alarmType: string | null;
+      timeline: {
+        title: string;
+        subtitle: string;
+        dot: 'green' | 'red' | 'orange' | 'blue' | 'gray';
+        extraInfo: {
+          time: string;
+          location: string;
+        };
+        status?: string;
+        timestamp?: string;
+        transportMode?: string;
+        vehicleNumber?: string;
+        weatherConditions?: string;
+        excursionDetails?: {
+          highest?: string;
+          lowest?: string;
+          average?: string;
+          startTime?: string;
+          duration: string;
+          maxDeviation: string;
+          averageDeviation: string;
+          affectedProducts: string;
+        };
+      }[];
+    }[];
+  };
 }
+
 
 export interface Shipment {
   id: string;
