@@ -1,6 +1,7 @@
 import { RCASStatus, RootCauseAnalysis } from '../types';
 import type { Shipment } from '../types';
 
+// Export the shipments
 export const shipments: Shipment[] = [
   {
     id: 'SH001',
@@ -16,11 +17,12 @@ export const shipments: Shipment[] = [
     logger_data: [
       {
         loggerId: 'LG-1001',
-        loggerType: 'Temperature',
+        loggerType: 'sentry',
         loggerStarted: '2025-07-10T08:00:00Z',
         loggerEnded: null,
         alarms: 0,
         rootCauseAnalysis: null,
+        rootCauseAnalysisStatusDetails: null,
         enrichedEvent: {
           alarmType: null,
           events: [
@@ -68,11 +70,12 @@ export const shipments: Shipment[] = [
       },
       {
         loggerId: 'LG-1002',
-        loggerType: 'Humidity',
+        loggerType: 'sentinel',
         loggerStarted: '2025-07-10T08:00:00Z',
         loggerEnded: null,
         alarms: 0,
         rootCauseAnalysis: null,
+        rootCauseAnalysisStatusDetails: null,
         enrichedEvent: {
           alarmType: 'Humidity Monitoring',
           events: [
@@ -81,26 +84,37 @@ export const shipments: Shipment[] = [
               alarmType: null,
               timeline: [
                 {
-                  title: 'Stockholm',
-                  subtitle: 'Departed: 2025-07-10 08:00',
+                  title: 'Berlin',
+                  subtitle: 'Departed: 2025-07-15 08:00',
                   dot: 'green',
-                  extraInfo: { time: '08:00', location: 'Stockholm, Sweden' },
+                  extraInfo: { time: '08:00', location: 'Berlin, Germany' },
                   status: 'Completed',
-                  timestamp: '2025-07-10 08:00',
+                  timestamp: '2025-07-15 08:00',
                   transportMode: 'Truck',
-                  vehicleNumber: 'SE STO 123',
-                  weatherConditions: 'Clear, 20°C'
+                  vehicleNumber: 'DE BER 789',
+                  weatherConditions: 'Sunny, 22°C'
                 },
                 {
-                  title: 'Berlin',
-                  subtitle: 'Arrived: 2025-07-10 20:00',
-                  dot: 'green',
-                  extraInfo: { time: '20:00', location: 'Berlin, Germany' },
-                  status: 'Completed',
-                  timestamp: '2025-07-10 20:00',
+                  title: 'Hamburg Hub - Transfer',
+                  subtitle: 'Arrived: 2025-07-15 14:30',
+                  dot: 'blue',
+                  extraInfo: { time: '14:30', location: 'Hamburg, Germany' },
+                  status: 'In Transit',
+                  timestamp: '2025-07-15 14:30',
                   transportMode: 'Truck',
-                  vehicleNumber: 'DE BER 456',
+                  vehicleNumber: 'DE HAM 456',
                   weatherConditions: 'Overcast, 18°C'
+                },
+                {
+                  title: 'Amsterdam',
+                  subtitle: 'Expected: 2025-07-16 10:00',
+                  dot: 'gray',
+                  extraInfo: { time: '10:00', location: 'Amsterdam, Netherlands' },
+                  status: 'Pending',
+                  timestamp: '2025-07-16 10:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'NL AMS 123',
+                  weatherConditions: 'Expected: Partly cloudy, 20°C'
                 }
               ]
             }
@@ -126,11 +140,22 @@ export const shipments: Shipment[] = [
     logger_data: [
       {
         loggerId: 'LG-1010',
-        loggerType: 'Temperature',
+        loggerType: 'sentry',
         loggerStarted: '2025-07-09T05:00:00Z',
         loggerEnded: '2025-07-17T16:00:00Z',
         alarms: 3,
         rootCauseAnalysis: RootCauseAnalysis.UNDER_INVESTIGATION,
+        rootCauseAnalysisStatusDetails: {
+          status: RootCauseAnalysis.UNDER_INVESTIGATION,
+          details: 'Investigation in progress for temperature excursion',
+          UTCDateStarted: '2025-07-17T14:30:00Z',
+          evaluatedBy: 'John Doe',
+          type: 'Temperature Excursion',
+          evaluationType: 'Initial Assessment',
+          primaryRootCause: 'Cooling system failure',
+          secondaryRootCause: 'Improper packaging',
+          reason: 'Temperature exceeded threshold for more than 2 hours'
+        },
         enrichedEvent: {
           alarmType: 'Temperature Excursion',
           events: [
@@ -164,7 +189,6 @@ export const shipments: Shipment[] = [
                     duration: '4h 15m',
                     maxDeviation: '+10.2°C',
                     averageDeviation: '+8.7°C',
-                    affectedProducts: 'All cargo'
                   }
                 },
                 {
@@ -207,7 +231,6 @@ export const shipments: Shipment[] = [
                     duration: '2h 45m',
                     maxDeviation: '+12.5°C',
                     averageDeviation: '+9.8°C',
-                    affectedProducts: 'Temperature sensitive items'
                   }
                 },
                 {
@@ -250,7 +273,6 @@ export const shipments: Shipment[] = [
                     duration: '1h 30m',
                     maxDeviation: '+8.9°C',
                     averageDeviation: '+6.2°C',
-                    affectedProducts: 'Partial cargo'
                   }
                 },
                 {
@@ -268,17 +290,28 @@ export const shipments: Shipment[] = [
       },
       {
         loggerId: 'LG-1011',
-        loggerType: 'Shock',
+        loggerType: 'web logger 2',
         loggerStarted: '2025-07-09T05:00:00Z',
         loggerEnded: '2025-07-17T16:00:00Z',
         alarms: 1,
-        rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE,
+        rootCauseAnalysis: RootCauseAnalysis.REFRIGERATOR_BROKEN,
+        rootCauseAnalysisStatusDetails: {
+          status: RootCauseAnalysis.REFRIGERATOR_BROKEN,
+          details: 'Refrigerator compressor failure detected',
+          UTCDateStarted: '2025-07-17T10:15:00Z',
+          evaluatedBy: 'Jane Smith',
+          type: 'Equipment Failure',
+          evaluationType: 'Confirmed',
+          primaryRootCause: 'Compressor failure',
+          secondaryRootCause: 'Maintenance overdue',
+          reason: 'Compressor stopped functioning during transit'
+        },
         enrichedEvent: {
           alarmType: 'Shock Detection',
           events: [
             {
               eventId: 1,
-              alarmType: 'Shock',
+              alarmType: 'Temperature',
               timeline: [
                 {
                   title: 'Zurich',
@@ -309,7 +342,6 @@ export const shipments: Shipment[] = [
                     duration: '2 seconds',
                     maxDeviation: '9.2G',
                     averageDeviation: '6.8G',
-                    affectedProducts: 'Top-layer pallets'
                   }
                 },
                 {
@@ -358,11 +390,22 @@ export const shipments: Shipment[] = [
     logger_data: [
       {
         loggerId: 'LG-1020',
-        loggerType: 'Temperature',
+        loggerType: 'sentry',
         loggerStarted: '2025-07-13T10:00:00Z',
         loggerEnded: null,
         alarms: 3,
         rootCauseAnalysis: RootCauseAnalysis.REFRIGERATOR_BROKEN,
+        rootCauseAnalysisStatusDetails: {
+          status: RootCauseAnalysis.REFRIGERATOR_BROKEN,
+          details: 'Refrigerator compressor failure detected',
+          UTCDateStarted: '2025-07-15T10:15:00Z',
+          evaluatedBy: 'Jane Smith',
+          type: 'Equipment Failure',
+          evaluationType: 'Confirmed',
+          primaryRootCause: 'Compressor failure',
+          secondaryRootCause: 'Maintenance overdue',
+          reason: 'Compressor stopped functioning during transit'
+        },
         enrichedEvent: {
           alarmType: 'Temperature Excursion',
           events: [
@@ -399,19 +442,7 @@ export const shipments: Shipment[] = [
                     duration: '1h 40m',
                     maxDeviation: '+17.4°C',
                     averageDeviation: '+13.8°C',
-                    affectedProducts: 'Full shipment'
                   }
-                },
-                {
-                  title: 'Karlstad Hub - Transfer',
-                  subtitle: 'Arrived: 2025-07-13 17:45',
-                  dot: 'blue',
-                  extraInfo: { time: '17:45', location: 'Karlstad, Sweden' },
-                  status: 'In Transit',
-                  timestamp: '2025-07-13 17:45',
-                  transportMode: 'Truck',
-                  vehicleNumber: 'SE KAR 445',
-                  weatherConditions: 'Cloudy, 14°C'
                 },
                 {
                   title: 'Oslo',
@@ -459,7 +490,6 @@ export const shipments: Shipment[] = [
                     duration: '2h 15m',
                     maxDeviation: '+19.2°C',
                     averageDeviation: '+14.5°C',
-                    affectedProducts: 'Cold chain items'
                   }
                 },
                 {
@@ -508,7 +538,6 @@ export const shipments: Shipment[] = [
                     duration: '45m',
                     maxDeviation: '+15.1°C',
                     averageDeviation: '+11.2°C',
-                    affectedProducts: 'Partial cargo'
                   }
                 },
                 {
@@ -546,11 +575,22 @@ export const shipments: Shipment[] = [
     logger_data: [
       {
         loggerId: 'LG-1030',
-        loggerType: 'Temperature',
+        loggerType: 'sentry',
         loggerStarted: '2025-07-14T06:00:00Z',
         loggerEnded: null,
-        alarms: 1,
+        alarms: 3,
         rootCauseAnalysis: RootCauseAnalysis.LOADING_SPIKE,
+        rootCauseAnalysisStatusDetails: {
+          status: RootCauseAnalysis.LOADING_SPIKE,
+          details: 'Temperature spike during loading detected',
+          UTCDateStarted: '2025-07-15T08:30:00Z',
+          evaluatedBy: 'Mike Johnson',
+          type: 'Loading Issue',
+          evaluationType: 'Under Investigation',
+          primaryRootCause: 'Extended loading time',
+          secondaryRootCause: 'High ambient temperature',
+          reason: 'Shipment left outside during loading for 45 minutes'
+        },
         enrichedEvent: {
           alarmType: 'Temperature Alert',
           events: [
@@ -587,7 +627,6 @@ export const shipments: Shipment[] = [
                     duration: '12 minutes',
                     maxDeviation: '+10.2°C',
                     averageDeviation: '+7.8°C',
-                    affectedProducts: 'Upper racks'
                   }
                 },
                 {
@@ -608,11 +647,12 @@ export const shipments: Shipment[] = [
       },
       {
         loggerId: 'LG-1031',
-        loggerType: 'Shock',
+        loggerType: 'web logger 2',
         loggerStarted: '2025-07-14T06:00:00Z',
         loggerEnded: null,
         alarms: 0,
         rootCauseAnalysis: null,
+        rootCauseAnalysisStatusDetails: null,
         enrichedEvent: {
           alarmType: 'Shock Monitoring',
           events: [
@@ -677,11 +717,12 @@ export const shipments: Shipment[] = [
     logger_data: [
       {
         loggerId: 'LG-1040',
-        loggerType: 'Temperature',
+        loggerType: 'sentry',
         loggerStarted: '2025-07-12T12:00:00Z',
         loggerEnded: '2025-07-17T09:30:00Z',
         alarms: 0,
         rootCauseAnalysis: null,
+        rootCauseAnalysisStatusDetails: null,
         enrichedEvent: {
           alarmType: 'Temperature Monitoring',
           events: [
@@ -732,7 +773,50 @@ export const shipments: Shipment[] = [
     currentLocation: 'Vienna, Austria',
     modeOfTransport: 'Truck',
     packagingType: 'Thermal Blanket',
-    logger_data: [],
+    logger_data: [
+      {
+        loggerId: 'LG-1050',
+        loggerType: 'sentinel',
+        loggerStarted: '2025-07-18T09:00:00Z',
+        loggerEnded: null,
+        alarms: 0,
+        rootCauseAnalysis: null,
+        rootCauseAnalysisStatusDetails: null,
+        enrichedEvent: {
+          alarmType: null,
+          events: [
+            {
+              eventId: 1,
+              alarmType: null,
+              timeline: [
+                {
+                  title: 'Vienna',
+                  subtitle: 'Departed: 2025-07-18 09:00',
+                  dot: 'green',
+                  extraInfo: { time: '09:00', location: 'Vienna, Austria' },
+                  status: 'In Transit',
+                  timestamp: '2025-07-18 09:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'AT VIE 123',
+                  weatherConditions: 'Sunny, 25°C'
+                },
+                {
+                  title: 'Brno',
+                  subtitle: 'Expected: 2025-07-20 11:00',
+                  dot: 'gray',
+                  extraInfo: { time: '11:00', location: 'Brno, Czech Republic' },
+                  status: 'Pending',
+                  timestamp: '2025-07-20 11:00',
+                  transportMode: 'Truck',
+                  vehicleNumber: 'AT VIE 123',
+                  weatherConditions: 'Expected: Partly cloudy, 23°C'
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ],
     totalAlarms: 0,
     RCAS: RCASStatus.NOT_STARTED,
     lastSeen: null

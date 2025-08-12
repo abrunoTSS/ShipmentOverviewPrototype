@@ -1,7 +1,9 @@
 export const RCASStatus = {
   NOT_STARTED: 'Not Started',
   IN_PROGRESS: 'In Progress',
-  CLOSED: 'Closed'
+  UNDER_INVESTIGATION: 'Under Investigation',
+  CLOSED: 'Closed',
+  N_A: 'N/A'
 } as const;
 
 export type RCASStatus = typeof RCASStatus[keyof typeof RCASStatus];
@@ -14,13 +16,29 @@ export const RootCauseAnalysis = {
 
 export type RootCauseAnalysis = typeof RootCauseAnalysis[keyof typeof RootCauseAnalysis];
 
+export type RootCauseAnalysisStatusDetails = {
+  status: RootCauseAnalysis;
+  details: string;
+  UTCDateStarted: string;
+  evaluatedBy: string;
+  type: string;
+  evaluationType: string;
+  primaryRootCause: string;
+  secondaryRootCause: string;
+  reason: string;
+};
+
+export type LoggerType = 'sentry' | 'sentinel' | 'web logger 2';
+
 export interface Logger {
   loggerId: string;
-  loggerType: string;
+  loggerType: LoggerType;
   loggerStarted: string | null;
   loggerEnded: string | null;
   alarms: number | null;
   rootCauseAnalysis: RootCauseAnalysis | null;
+  rootCauseAnalysisStatus?: RootCauseAnalysisStatusDetails | null;
+  rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;
   enrichedEvent?: {
     alarmType: string | null;
     timeline?: {
@@ -44,7 +62,6 @@ export interface Logger {
         duration: string;
         maxDeviation: string;
         averageDeviation: string;
-        affectedProducts: string;
       };
     }[];
     events?: {
@@ -71,7 +88,6 @@ export interface Logger {
           duration: string;
           maxDeviation: string;
           averageDeviation: string;
-          affectedProducts: string;
         };
       }[];
     }[];

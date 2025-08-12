@@ -115,10 +115,12 @@ export const SidePanel: React.FC<SidePanelProps> = ({
 
           {/* Event Details - Milestone Timeline */}
           <div className="section">
-            <div className="section-title">Event Details</div>
+            <div className="section-title">
+              {isDelivered ? 'Excursion Details' : 'Transit Details'}
+            </div>
             
-            {/* Event Tabs for Multiple Events */}
-            {hasMultipleEvents && isDelivered && (
+            {/* Show event tabs only for delivered shipments with multiple events */}
+            {isDelivered && hasMultipleEvents && (
               <div className="event-tabs">
                 <div className="total-excursions">Total Excursion Events: {eventsList.length}</div>
                 {eventsList.map((_, index) => (
@@ -133,8 +135,8 @@ export const SidePanel: React.FC<SidePanelProps> = ({
               </div>
             )}
             
-            {/* Display current event alarm type */}
-            {hasEvents && isDelivered && (
+            {/* Display current event alarm type for delivered shipments */}
+            {isDelivered && hasEvents && (
               <div className="event-info">
                 <div className="alarm-type">
                   Alarm Type: {eventsList[activeEventTab]?.alarmType || 'Unknown'}
@@ -143,8 +145,8 @@ export const SidePanel: React.FC<SidePanelProps> = ({
             )}
             
             <div className="milestone-timeline">
-              {/* Show current event's timeline */}
-              {hasEvents && isDelivered && (
+              {/* Show alarm type again in the timeline section for delivered shipments */}
+              {isDelivered && hasEvents && (
                 <div className="event-info">
                   <div className="alarm-type">Alarm Type: {eventsList[activeEventTab]?.alarmType}</div>
                 </div>
@@ -198,6 +200,12 @@ export const SidePanel: React.FC<SidePanelProps> = ({
                               <span className="excursion-value">{event.excursionDetails.average}</span>
                             </div>
                           )}
+                          {event.excursionDetails.duration && (
+                            <div className="excursion-item">
+                              <span className="excursion-label">Duration:</span>
+                              <span className="excursion-value">{event.excursionDetails.duration}</span>
+                            </div>
+                          )}
                           {event.excursionDetails.startTime && (
                             <div className="excursion-item">
                               <span className="excursion-label">Start Time:</span>
@@ -242,14 +250,58 @@ export const SidePanel: React.FC<SidePanelProps> = ({
           <div className="section">
             <div className="root-cause-section">
               <div className="root-cause-title">Root Cause Analysis</div>
-              <div className="status-text">
-                <span
-                  className={`status-indicator ${
-                    logger.alarms && logger.alarms > 0 ? 'status-red' : 'status-green'
-                  }`}
-                ></span>
-                Status: {logger.rootCauseAnalysis || 'No issues detected'}
-              </div>
+              {logger.loggerType === 'web logger 2' && shipment?.status === 'In Transit' ? (
+                <div className="status-text">N/A - Root cause analysis not available for web logger 2 during transit</div>
+              ) : logger.rootCauseAnalysisStatusDetails ? (
+                <>
+                  <div className="status-text">
+                    <span
+                      className={`status-indicator ${
+                        logger.alarms && logger.alarms > 0 ? 'status-red' : 'status-green'
+                      }`}
+                    ></span>
+                    Status: {logger.rootCauseAnalysisStatusDetails.status || 'No issues detected'}
+                  </div>
+                  <div className="root-cause-details">
+                    <div className="info-row">
+                      <span className="info-label">Details:</span>
+                      <span className="info-value">{logger.rootCauseAnalysisStatusDetails.details}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Started:</span>
+                      <span className="info-value">
+                        {new Date(logger.rootCauseAnalysisStatusDetails.UTCDateStarted).toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Evaluated By:</span>
+                      <span className="info-value">{logger.rootCauseAnalysisStatusDetails.evaluatedBy}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Type:</span>
+                      <span className="info-value">{logger.rootCauseAnalysisStatusDetails.type}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Evaluation Type:</span>
+                      <span className="info-value">{logger.rootCauseAnalysisStatusDetails.evaluationType}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Primary Cause:</span>
+                      <span className="info-value">{logger.rootCauseAnalysisStatusDetails.primaryRootCause}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Secondary Cause:</span>
+                      <span className="info-value">{logger.rootCauseAnalysisStatusDetails.secondaryRootCause}</span>
+                    </div>
+                    <div className="info-row">
+                      <span className="info-label">Reason:</span>
+                      <span className="info-value">{logger.rootCauseAnalysisStatusDetails.reason}</span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="status-text">No root cause analysis available</div>
+              )}
             </div>
           </div>
         </div>

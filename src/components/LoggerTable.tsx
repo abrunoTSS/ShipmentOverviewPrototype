@@ -41,7 +41,7 @@ export function LoggerTable({ loggers, onLoggerClick, showSidePanel }: LoggerTab
       accessorKey: 'loggerEnded',
       cell: ({ getValue }) => {
         const ended = getValue() as string | null;
-        return ended ? new Date(ended).toLocaleString() : 'Active';
+        return ended ? new Date(ended).toLocaleString() : 'N/A';
       },
     },
     {
