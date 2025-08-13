@@ -16,11 +16,11 @@ interface ShipmentTableProps {
   shipments: Shipment[];
   expandedRow: string | null;
   onRowClick: (shipmentId: string) => void;
-  onLoggerClick: (logger: Logger) => void;
-  showSidePanel: boolean;
+  onLoggerClick: (shipment: Shipment, logger: Logger) => void;
+  selectedLoggerId: string | null;
 }
 
-export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, showSidePanel }: ShipmentTableProps) {
+export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, selectedLoggerId }: ShipmentTableProps) {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     origin: '',
@@ -40,18 +40,17 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
         const searchableFields = [
-          shipment.id,
+          shipment.shipmentId,
           shipment.origin,
           shipment.destination,
           shipment.eta,
           shipment.status,
-          shipment.FF,
+          shipment.freightForwarder,
           shipment.currentLocation,
           shipment.modeOfTransport,
           shipment.packagingType,
-          shipment.totalAlarms?.toString(),
-          shipment.RCAS,
-          shipment.lastSeen,
+          shipment.alarms?.toString(),
+          shipment.rcas,
         ];
         
         const matchesSearch = searchableFields.some(field => 
@@ -65,19 +64,19 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       if (filters.origin && shipment.origin?.toLowerCase() !== filters.origin.toLowerCase()) return false;
       if (filters.destination && shipment.destination?.toLowerCase() !== filters.destination.toLowerCase()) return false;
       if (filters.status && shipment.status?.toLowerCase() !== filters.status.toLowerCase()) return false;
-      if (filters.freightForwarder && shipment.FF?.toLowerCase() !== filters.freightForwarder.toLowerCase()) return false;
+      if (filters.freightForwarder && shipment.freightForwarder?.toLowerCase() !== filters.freightForwarder.toLowerCase()) return false;
       if (filters.modeOfTransport && shipment.modeOfTransport?.toLowerCase() !== filters.modeOfTransport.toLowerCase()) return false;
       if (filters.packagingType && shipment.packagingType?.toLowerCase() !== filters.packagingType.toLowerCase()) return false;
       
       // Alarms filter (Yes/No based on totalAlarms > 0)
       if (filters.alarms) {
-        const hasAlarms = (shipment.totalAlarms || 0) > 0;
+        const hasAlarms = (shipment.alarms || 0) > 0;
         if (filters.alarms === 'Yes' && !hasAlarms) return false;
         if (filters.alarms === 'No' && hasAlarms) return false;
       }
       
       // Root Cause Analysis filter (case-insensitive)
-      if (filters.rootCauseAnalysis && shipment.RCAS?.toLowerCase() !== filters.rootCauseAnalysis.toLowerCase()) return false;
+      if (filters.rootCauseAnalysis && shipment.rcas?.toLowerCase() !== filters.rootCauseAnalysis.toLowerCase()) return false;
 
       return true;
     });
@@ -86,10 +85,10 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     {
       id: 'shipmentId',
       header: 'Shipment ID',
-      accessorKey: 'id',
+      accessorKey: 'shipmentId',
       cell: ({ row }) => (
         <div className="company-info">
-          <span className="company-name">{row.original.id}</span>
+          <span className="company-name">{row.original.shipmentId}</span>
         </div>
       ),
     },
@@ -122,9 +121,9 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       },
     },
     {
-      id: 'FF',
+      id: 'freightForwarder',
       header: 'FF',
-      accessorKey: 'FF',
+      accessorKey: 'freightForwarder',
     },
     {
       id: 'currentLocation',
@@ -146,41 +145,29 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       header: 'Loggers',
       cell: ({ row }) => (
         <span className="logger-count">
-          {row.original.logger_data?.length || 0}
+          {row.original.loggerData?.length || 0}
         </span>
       ),
     },
     {
-      id: 'totalAlarms',
+      id: 'alarms',
       header: 'Total Alarms',
-      accessorKey: 'totalAlarms',
+      accessorKey: 'alarms',
       cell: ({ getValue }) => {
         const alarms = getValue() as number | null;
         return alarms && alarms > 0 ? alarms.toString() : '0';
       },
     },
     {
-      id: 'RCAS',
+      id: 'rcas',
       header: 'RCAS',
-      accessorKey: 'RCAS',
+      accessorKey: 'rcas',
       cell: ({ getValue }) => {
         const rcas = getValue() as string | null;
         return rcas || 'N/A';
       },
     },
-    {
-      id: 'lastSeen',
-      header: 'Last Seen',
-      accessorKey: 'lastSeen',
-      cell: ({ getValue }) => {
-        const lastSeen = getValue() as string | null;
-        return lastSeen ? (
-          <div className="last-seen">
-            {new Date(lastSeen).toLocaleString()}
-          </div>
-        ) : 'N/A';
-      },
-    },
+
     {
       id: 'expand',
       header: '',
@@ -188,11 +175,11 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onRowClick(row.original.id);
+            onRowClick(row.original.shipmentId);
           }}
           className="expand-button"
         >
-          {expandedRow === row.original.id ? (
+          {expandedRow === row.original.shipmentId ? (
             <ChevronUp className="expand-icon expanded" size={16} />
           ) : (
             <ChevronDown className="expand-icon" size={16} />
@@ -245,13 +232,14 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
               </tr>
               
               {/* Nested Logger Table */}
-              {expandedRow === row.original.id && (
+              {expandedRow === row.original.shipmentId && (
                 <tr>
                   <td colSpan={columns.length} className="nested-table-container">
                     <LoggerTable
-                      loggers={row.original.logger_data}
-                      onLoggerClick={onLoggerClick}
-                      showSidePanel={showSidePanel}
+                      loggers={row.original.loggerData}
+                      onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
+                      selectedLoggerId={selectedLoggerId}
+
                     />
                   </td>
                 </tr>

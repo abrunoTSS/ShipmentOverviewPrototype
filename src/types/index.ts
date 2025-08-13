@@ -17,7 +17,7 @@ export const RootCauseAnalysis = {
 export type RootCauseAnalysis = typeof RootCauseAnalysis[keyof typeof RootCauseAnalysis];
 
 export type RootCauseAnalysisStatusDetails = {
-  status: RootCauseAnalysis;
+  status: string;
   details: string;
   UTCDateStarted: string;
   evaluatedBy: string;
@@ -28,86 +28,84 @@ export type RootCauseAnalysisStatusDetails = {
   reason: string;
 };
 
-export type LoggerType = 'sentry' | 'sentinel' | 'web logger 2';
+export type LoggerType = 'sentry' | 'sentinel' | 'web logger 2' | 'Sentry' | 'Sentinel' | 'Web Logger 2';
+
+export interface ExcursionGraphData {
+  time: string;
+  temperature: number;
+  humidity?: number;
+}
+
+export interface Excursion {
+  highest: string;
+  lowest: string;
+  average: string;
+  startTime: string;
+  duration: string;
+  highestHumidity?: string;
+  lowestHumidity?: string;
+  averageHumidity?: string;
+  graphData?: ExcursionGraphData[];
+}
+
+export interface ExcursionMilestone {
+  type: string;
+  location: string;
+  arrivalTime: string;
+  departedTime?: string;
+  status: string;
+  transportMode: string;
+  vehicleNumber: string;
+  weatherConditions: string;
+  excursion?: Excursion;
+}
+
+export interface Alarm {
+  alarmId: number;
+  alarmType: string;
+  excursionMilestones: ExcursionMilestone[];
+}
+
+export interface ProductDetails {
+  prodfilename: string;
+  producttype: string;
+  temperatureProfile: string;
+  highThreshold: string;
+  lowThreshold: string;
+  humidityProfile?: string;
+  highHumidityThreshold?: string;
+  lowHumidityThreshold?: string;
+}
 
 export interface Logger {
   loggerId: string;
   loggerType: LoggerType;
-  loggerStarted: string | null;
-  loggerEnded: string | null;
-  alarms: number | null;
-  rootCauseAnalysis: RootCauseAnalysis | null;
-  rootCauseAnalysisStatus?: RootCauseAnalysisStatusDetails | null;
+  loggerStarted: string;
+  loggerEnded: string;
+  temperature?: string;
+  humidity?: string;
+  alarms: Alarm[] | number; // Can be a count or a detailed array
+  rootCauseAnalysis: string | null;
   rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;
-  enrichedEvent?: {
-    alarmType: string | null;
-    timeline?: {
-      title: string;
-      subtitle: string;
-      dot: 'green' | 'red' | 'orange' | 'blue' | 'gray';
-      extraInfo: {
-        time: string;
-        location: string;
-      };
-      status?: string;
-      timestamp?: string;
-      transportMode?: string;
-      vehicleNumber?: string;
-      weatherConditions?: string;
-      excursionDetails?: {
-        highest?: string;
-        lowest?: string;
-        average?: string;
-        startTime?: string;
-        duration: string;
-        maxDeviation: string;
-        averageDeviation: string;
-      };
-    }[];
-    events?: {
-      eventId: number;
-      alarmType: string | null;
-      timeline: {
-        title: string;
-        subtitle: string;
-        dot: 'green' | 'red' | 'orange' | 'blue' | 'gray';
-        extraInfo: {
-          time: string;
-          location: string;
-        };
-        status?: string;
-        timestamp?: string;
-        transportMode?: string;
-        vehicleNumber?: string;
-        weatherConditions?: string;
-        excursionDetails?: {
-          highest?: string;
-          lowest?: string;
-          average?: string;
-          startTime?: string;
-          duration: string;
-          maxDeviation: string;
-          averageDeviation: string;
-        };
-      }[];
-    }[];
-  };
+  events?: any[];
+  lastSeen?: string;
+  productDetails?: ProductDetails;
 }
 
-
 export interface Shipment {
-  id: string;
   shipmentId: string;
-  origin: string | null;
-  destination: string | null;
-  eta: string | null;
-  status: string | null;   
-  totalAlarms: number | null;
-  RCAS: RCASStatus | null;
-  lastSeen: string | null;
-  FF: string | null;
-  currentLocation: string | null;
-  modeOfTransport: string | null;
-  packagingType: string | null;
-  logger_data: Logger[];
+  origin: string;
+  destination: string;
+  eta: string;
+  etd?: string;
+  status: string;
+  loggers?: number;
+  freightForwarder?: string;
+  currentLocation?: string;
+  modeOfTransport: string;
+  packagingType: string;
+  alarms: number;
+  events: number | null;
+  rcas: string;
+  loggerData: Logger[];
 }

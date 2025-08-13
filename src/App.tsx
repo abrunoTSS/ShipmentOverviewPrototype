@@ -1,26 +1,29 @@
 import { useState } from 'react';
-import type { Logger } from './types';
+import type { Shipment, Logger } from './types';
 import { shipments } from './data/Shipments';
 import { ShipmentTable } from './components/ShipmentTable';
-import { SidePanel } from './components/SidePanel';
+import LoggerDashboard from './components/LoggerDashboard';
 
 function App() {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
-  const [sidePanelData, setSidePanelData] = useState<Logger | null>(null);
-  const [showSidePanel, setShowSidePanel] = useState(false);
+  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
+  const [selectedLogger, setSelectedLogger] = useState<Logger | null>(null);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
 
   const handleRowClick = (shipmentId: string) => {
-    setExpandedRow(expandedRow === shipmentId ? null : shipmentId);
+    setExpandedRow(prevId => (prevId === shipmentId ? null : shipmentId));
   };
 
-  const handleLoggerClick = (logger: Logger) => {
-    setSidePanelData(logger);
-    setShowSidePanel(true);
+  const handleLoggerClick = (shipment: Shipment, logger: Logger) => {
+    setSelectedShipment(shipment);
+    setSelectedLogger(logger);
+    setIsDashboardOpen(true);
   };
 
-  const closeSidePanel = () => {
-    setShowSidePanel(false);
-    setSidePanelData(null);
+  const closeDashboard = () => {
+    setIsDashboardOpen(false);
+    setSelectedLogger(null);
+    setSelectedShipment(null);
   };
 
   return (
@@ -38,15 +41,16 @@ function App() {
           expandedRow={expandedRow}
           onRowClick={handleRowClick}
           onLoggerClick={handleLoggerClick}
-          showSidePanel={showSidePanel}
+          selectedLoggerId={selectedLogger?.loggerId || null}
         />
       </div>
 
       {/* Side Panel */}
-      <SidePanel
-        logger={sidePanelData}
-        isOpen={showSidePanel}
-        onClose={closeSidePanel}
+      <LoggerDashboard
+        shipment={selectedShipment}
+        logger={selectedLogger}
+        isOpen={isDashboardOpen}
+        onClose={closeDashboard}
       />
     </div>
   );

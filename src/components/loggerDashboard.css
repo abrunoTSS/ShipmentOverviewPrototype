@@ -1,0 +1,315 @@
+.logger-dashboard {
+    position: fixed;
+    top: 0;
+    right: -450px; /* Initial position off-screen */
+    width: 450px;
+    height: 100vh;
+    background: #f8f9fa;
+    border-left: 1px solid #e9ecef;
+    box-shadow: -2px 0 15px rgba(0, 0, 0, 0.05);
+    transition: right 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    z-index: 1001;
+    overflow-y: auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.logger-dashboard.open {
+    right: 0; /* Slides in */
+}
+
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease-in-out, visibility 0.35s ease-in-out;
+}
+
+.sidebar-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.dashboard-header {
+    padding: 16px 24px;
+    border-bottom: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+.dashboard-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #212529;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 8px;
+    line-height: 1;
+}
+
+.close-button:hover {
+    color: #212529;
+}
+
+.dashboard-content {
+    padding: 24px;
+}
+
+.dashboard-section {
+    margin-bottom: 28px;
+    background-color: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #343a40;
+    margin: -20px -20px 20px -20px;
+    padding: 12px 20px;
+    border-bottom: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    border-radius: 8px 8px 0 0;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+}
+
+.info-item {
+    font-size: 14px;
+}
+
+.info-label {
+    color: #6c757d;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 12px;
+}
+
+.info-value {
+    color: #212529;
+    font-weight: 500;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 16px;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6c757d;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+}
+
+.tab-button.active {
+    color: #007bff;
+    border-bottom-color: #007bff;
+}
+
+.milestone-timeline {
+    position: relative;
+    padding-left: 20px;
+}
+
+.milestone-item {
+    position: relative;
+    padding-bottom: 24px;
+    border-left: 2px solid #e9ecef;
+    margin-left: 6px;
+}
+
+.milestone-item:last-child {
+    border-left: 2px solid transparent;
+    padding-bottom: 0;
+}
+
+.milestone-dot {
+    position: absolute;
+    left: -7px;
+    top: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #adb5bd;
+}
+
+.milestone-dot.completed { border-color: #28a745; }
+.milestone-dot.alert { border-color: #dc3545; }
+.milestone-dot.in-transit { border-color: #007bff; }
+.milestone-dot.warning { border-color: #ffc107; }
+
+.milestone-content {
+    padding-left: 20px;
+}
+
+.milestone-type {
+    font-weight: 600;
+    font-size: 14px;
+    color: #343a40;
+}
+
+.milestone-location {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 4px;
+}
+
+.milestone-time {
+    font-size: 12px;
+    color: #adb5bd;
+}
+
+.milestone-extra-details {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.milestone-extra-details p {
+    font-size: 12px;
+    color: #495057;
+    margin: 0 0 5px 0;
+}
+
+.milestone-extra-details p:last-child {
+    margin-bottom: 0;
+}
+
+.excursion-details {
+    background: #fff8e1;
+    border: 1px solid #ffeeba;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 12px;
+    font-size: 12px;
+}
+
+.rca-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status-dot.not-started { background-color: #6c757d; }
+.status-dot.in-progress { background-color: #007bff; }
+.status-dot.closed { background-color: #28a745; }
+
+.no-data-message {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* Graph Section Styling */
+.excursion-graph-section {
+    margin-top: 24px;
+    padding: 16px;
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+}
+
+.excursion-graph h4 {
+    margin: 0 0 16px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+}
+
+.graph-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    background: #f8f9fa;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.humidity-excursion-details {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e9ecef;
+}
+
+.excursion-subtitle {
+    color: #3498db;
+    margin-bottom: 8px;
+}
+
+/* Threshold Indicators */
+.threshold-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    border: 1px solid #e9ecef;
+}
+
+.threshold-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.threshold-label {
+    font-weight: 600;
+}
+
+.threshold-label.temp-high {
+    color: #e74c3c;
+}
+
+.threshold-label.temp-low {
+    color: #3498db;
+}
+
+.threshold-label.humidity-high {
+    color: #f39c12;
+}
+
+.threshold-label.humidity-low {
+    color: #2ecc71;
+}

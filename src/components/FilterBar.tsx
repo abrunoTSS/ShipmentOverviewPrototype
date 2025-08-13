@@ -21,10 +21,10 @@ interface FilterBarProps {
 
 export function FilterBar({ shipments, filters, onFiltersChange }: FilterBarProps) {
   // Extract unique values from shipment data for dropdowns
-  const getUniqueValues = (key: keyof Shipment) => {
+  const getUniqueValues = (key: 'origin' | 'destination' | 'status' | 'freightForwarder' | 'modeOfTransport' | 'packagingType') => {
     const values = shipments
       .map(shipment => shipment[key])
-      .filter((value): value is string => value != null && value !== '')
+      .filter((value): value is string => typeof value === 'string' && value !== '')
       .filter((value, index, array) => array.indexOf(value) === index)
       .sort();
     return values;

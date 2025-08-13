@@ -11,10 +11,10 @@ import type { Logger } from '../types';
 interface LoggerTableProps {
   loggers: Logger[];
   onLoggerClick: (logger: Logger) => void;
-  showSidePanel: boolean;
+  selectedLoggerId: string | null;
 }
 
-export function LoggerTable({ loggers, onLoggerClick, showSidePanel }: LoggerTableProps) {
+export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: LoggerTableProps) {
   const columns: ColumnDef<Logger>[] = [
     {
       id: 'loggerId',
@@ -40,17 +40,39 @@ export function LoggerTable({ loggers, onLoggerClick, showSidePanel }: LoggerTab
       header: 'Logger Ended',
       accessorKey: 'loggerEnded',
       cell: ({ getValue }) => {
-        const ended = getValue() as string | null;
+        const ended = getValue() as string;
         return ended ? new Date(ended).toLocaleString() : 'N/A';
       },
+    },
+    {
+      id: 'temperature',
+      header: 'Temp',
+      accessorKey: 'temperature',
+      cell: ({ getValue }) => getValue() as string || 'N/A',
+    },
+    {
+      id: 'humidity',
+      header: 'Humidity',
+      accessorKey: 'humidity',
+      cell: ({ getValue }) => getValue() as string || 'N/A',
     },
     {
       id: 'alarms',
       header: 'Alarms',
       accessorKey: 'alarms',
+      cell: ({ row }) => {
+        const alarms = row.original.alarms;
+        const alarmCount = Array.isArray(alarms) ? alarms.length : alarms;
+        return alarmCount > 0 ? alarmCount.toString() : '0';
+      },
+    },
+    {
+      id: 'lastSeen',
+      header: 'Last Seen',
+      accessorKey: 'lastSeen',
       cell: ({ getValue }) => {
-        const alarms = getValue() as number | null;
-        return alarms && alarms > 0 ? alarms.toString() : '0';
+        const lastSeen = getValue() as string | undefined;
+        return lastSeen ? new Date(lastSeen).toLocaleString() : 'N/A';
       },
     },
     {
@@ -74,7 +96,7 @@ export function LoggerTable({ loggers, onLoggerClick, showSidePanel }: LoggerTab
             }}
             className="expand-button"
           >
-            {showSidePanel ? (
+            {selectedLoggerId === row.original.loggerId ? (
               <ChevronLeft className="expand-icon expanded" size={16} />
             ) : (
               <ChevronRight className="expand-icon" size={16} />
