@@ -22,27 +22,26 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     <div className="milestone-item" key={index}>
       <div className={`milestone-dot ${milestone.status.toLowerCase()}`} />
       <div className="milestone-content">
-        <p className="milestone-type">{milestone.type}</p>
         <p className="milestone-location">{milestone.location}</p>
-        <p className="milestone-time"><strong>Arrival Time:</strong> {new Date(milestone.arrivalTime).toLocaleString()}</p>
-        {milestone.departedTime && (
-          <p className="milestone-time"><strong>Departed Time:</strong> {new Date(milestone.departedTime).toLocaleString()}</p>
-        )}
         <div className="milestone-extra-details">
+          <p><strong>Arrival Time:</strong> {new Date(milestone.arrivalTime).toLocaleString()}</p>
+          {milestone.departedTime && (
+            <p><strong>Departed Time:</strong> {new Date(milestone.departedTime).toLocaleString()}</p>
+          )}
           <p><strong>Status:</strong> {milestone.status}</p>
           <p><strong>Transport:</strong> {milestone.transportMode} ({milestone.vehicleNumber})</p>
           <p><strong>Weather:</strong> {milestone.weatherConditions}</p>
         </div>
         {milestone.excursion && (
           <div className="excursion-details">
-            <p><strong>Temperature Excursion:</strong></p>
+            <p><strong>Temperature Event:</strong></p>
             <p>Highest: {milestone.excursion.highest}</p>
             <p>Lowest: {milestone.excursion.lowest}</p>
             <p>Average: {milestone.excursion.average}</p>
             <p>Duration: {milestone.excursion.duration}</p>
             {['Sentry', 'Sentinel'].includes(logger.loggerType) && milestone.excursion.highestHumidity && (
               <div className="humidity-excursion-details">
-                <p className="excursion-subtitle"><strong>Humidity Excursion:</strong></p>
+                <p className="excursion-subtitle"><strong>Humidity Event:</strong></p>
                 <p>Highest: {milestone.excursion.highestHumidity}</p>
                 <p>Lowest: {milestone.excursion.lowestHumidity}</p>
                 <p>Average: {milestone.excursion.averageHumidity}</p>
@@ -154,43 +153,40 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
             </div>
           )}
 
-          <div className="dashboard-section">
-            <h3 className="section-title">Alarms</h3>
-            <div className="tabs">
-              {logger.alarms && Array.isArray(logger.alarms) && logger.alarms.map((alarm, index) => (
-                <button 
-                  key={alarm.alarmId}
-                  className={`tab-button ${activeTab === index ? 'active' : ''}`}
-                  onClick={() => setActiveTab(index)}
-                >
-                  {`Alarm ${index + 1}: ${alarm.alarmType}`}
-                </button>
-              ))}
-            </div>
+          {Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
+            <div className="dashboard-section">
+              <h3 className="section-title">Alarms</h3>
+              <div className="tabs">
+                {logger.alarms.map((alarm, index) => (
+                  <button 
+                    key={alarm.alarmId}
+                    className={`tab-button ${activeTab === index ? 'active' : ''}`}
+                    onClick={() => setActiveTab(index)}
+                  >
+                    {`Alarm ${index + 1}: ${alarm.alarmType}`}
+                  </button>
+                ))}
+              </div>
 
-            <div className="milestone-timeline">
-              {logger.alarms && Array.isArray(logger.alarms) && logger.alarms.length > 0 && logger.alarms[activeTab] ? (
-                <>
-                  {logger.alarms[activeTab].excursionMilestones.map(renderMilestone)}
-                  
-                  {/* Display graph for excursions with graph data */}
-                  {logger.alarms[activeTab].excursionMilestones.some(milestone => 
-                    milestone.excursion?.graphData && milestone.excursion.graphData.length > 0
-                  ) && (
-                    <div className="excursion-graph-section">
-                      <ExcursionGraph 
-                        data={logger.alarms[activeTab].excursionMilestones
-                          .find(milestone => milestone.excursion?.graphData)?.excursion?.graphData || []}
-                        logger={logger}
-                      />
-                    </div>
-                  )}
-                </>
-              ) : (
-                <p className='no-data-message'>No timeline events available for this logger.</p>
-              )}
+              <div className="milestone-timeline">
+                {logger.alarms[activeTab]?.excursionMilestones.map(renderMilestone)}
+                
+                {/* Display graph for excursions with graph data */}
+                {logger.alarms[activeTab]?.excursionMilestones.some(milestone => 
+                  milestone.excursion?.graphData && milestone.excursion.graphData.length > 0
+                ) && (
+                  <div className="excursion-graph-section">
+                    <ExcursionGraph 
+                      data={logger.alarms[activeTab]?.excursionMilestones
+                        .find(milestone => milestone.excursion?.graphData)?.excursion?.graphData || []}
+                      logger={logger}
+                      shipment={shipment}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {logger.rootCauseAnalysisStatusDetails && (
             <div className="dashboard-section">
@@ -202,6 +198,9 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
               <p className='info-value'>{logger.rootCauseAnalysisStatusDetails.details}</p>
             </div>
           )}
+        </div>
+        <div className="dashboard-footer">
+          <a href={`/shipment-report/${shipment.shipmentId}`} className="shipment-report-link">Link to Shipment Report</a>
         </div>
       </div>
     </>

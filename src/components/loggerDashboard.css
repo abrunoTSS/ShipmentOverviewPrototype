@@ -44,6 +44,27 @@
     background-color: #ffffff;
 }
 
+.dashboard-footer {
+  padding: 15px;
+}
+
+.shipment-report-link {
+  display: block;
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 10px 15px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.shipment-report-link:hover {
+  background-color: #dee2e6;
+}
+
 .dashboard-title {
     font-size: 18px;
     font-weight: 600;
@@ -206,8 +227,7 @@
 }
 
 .excursion-details {
-    background: #fff8e1;
-    border: 1px solid #ffeeba;
+    background: #ff333312;
     border-radius: 6px;
     padding: 12px;
     margin-top: 12px;
@@ -271,7 +291,6 @@
 }
 
 .excursion-subtitle {
-    color: #3498db;
     margin-bottom: 8px;
 }
 

@@ -51,12 +51,12 @@ export const shipments: Shipment[] = [
         packagingType: "Insulated Box",
         alarms: 4,
         events: 4,
-        rcas: "RCASStatus.NOT_STARTED",
+        rcas: "Not Started",
         loggerData: [
           {
             loggerId: "SENTRY-1002",
             loggerType: "Sentry",
-            loggerStarted: "2025-07-10T08:00:00Z",
+            loggerStarted: "2025-07-14T08:00:00Z",
             loggerEnded: "Active",
             temperature: "6°C",
             humidity: "40%",
@@ -67,8 +67,8 @@ export const shipments: Shipment[] = [
                 excursionMilestones: [
                   {
                     type: "lane 1 part A - destination before excursion",
-                    location: "Heathrow Airport Hub - Transfer",
-                    arrivalTime: "2025-07-15 08:30",
+                    location: "Macclesfield Loading Hub",
+                    arrivalTime: "2025-07-15 06:00",
                     status: "Completed",
                     transportMode: "Truck",
                     vehicleNumber: "DE HAM 456",
@@ -76,7 +76,7 @@ export const shipments: Shipment[] = [
                   },
                   {
                     type: "lane 2 part B - excursion lane",
-                    location: "Heathrow Airport Hub - Transfer",
+                    location: "Heathrow Airport Hub",
                     arrivalTime: "2025-07-15 09:00",
                     departedTime: "2025-07-15 10:15",
                     status: "Completed",
@@ -155,7 +155,7 @@ export const shipments: Shipment[] = [
                   },
                   {
                     type: "lane 3",
-                    location: "Tokyo Airport",
+                    location: "Tokyo Narita Airport",
                     arrivalTime: "2025-07-18 03:00",
                     status: "Pending",
                     transportMode: "N/A",
@@ -193,7 +193,7 @@ export const shipments: Shipment[] = [
                 excursionMilestones: [
                   {
                     type: "lane 1 part A - destination before excursion",
-                    location: "Heathrow Airport Hub - Transfer",
+                    location: "Heathrow Airport Hub",
                     arrivalTime: "2025-07-15 08:30",
                     status: "Completed",
                     transportMode: "Truck",
@@ -202,7 +202,7 @@ export const shipments: Shipment[] = [
                   },
                   {
                     type: "lane 2 part B - excursion lane",
-                    location: "Heathrow Airport Hub - Transfer",
+                    location: "Heathrow Airport Hub",
                     arrivalTime: "2025-07-15 09:00",
                     departedTime: "2025-07-15 10:15",
                     status: "Completed",
@@ -356,7 +356,7 @@ export const shipments: Shipment[] = [
         packagingType: "Insulated Box",
         alarms: 4,
         events: 4,
-        rcas: "RCASStatus.NOT_STARTED",
+        rcas: "Not Started",
         loggerData: [
           {
             loggerId: "WL-1002",
