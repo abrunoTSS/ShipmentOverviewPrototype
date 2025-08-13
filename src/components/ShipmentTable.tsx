@@ -133,7 +133,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       cell: ({ getValue }) => {
         const eta = getValue() as string | null;
         // Check if eta is a valid date string or a special value like "Unavailable"
-        if (!eta) return 'N/A';
+        if (!eta) return 'n/a';
         if (eta === 'Unavailable') return 'Unavailable';
         
         // Try to parse as date, but handle invalid dates gracefully
@@ -147,7 +147,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       accessorKey: 'status',
       cell: ({ getValue }) => {
         const status = getValue() as string | null;
-        return status || 'N/A';
+        return status || 'n/a';
       },
     },
     {
@@ -194,7 +194,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       accessorKey: 'rcas',
       cell: ({ getValue }) => {
         const rcas = getValue() as string | null;
-        return rcas || 'N/A';
+        return rcas || 'n/a';
       },
     },
     {

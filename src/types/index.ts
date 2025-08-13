@@ -3,7 +3,7 @@ export const RCASStatus = {
   IN_PROGRESS: 'In Progress',
   UNDER_INVESTIGATION: 'Under Investigation',
   CLOSED: 'Closed',
-  N_A: 'N/A'
+  N_A: 'n/a'
 } as const;
 
 export type RCASStatus = typeof RCASStatus[keyof typeof RCASStatus];

@@ -10,7 +10,7 @@ export const shipments: Shipment[] = [
         loggers: 5,
         freightForwarder: "Geodis",
         currentLocation: "53°34'31.15N, 10°05'5.22E",
-        modeOfTransport: "Truck",
+        modeOfTransport: "Road",
         packagingType: "Insulated Box",
         alarms: 0,
         events: 0,
@@ -36,15 +36,15 @@ export const shipments: Shipment[] = [
             status: "Pending"
           }
         ],        
-        rcas: "N/A",
+        rcas: "n/a",
         loggerData: [
           {
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "Active",
-            temperature: "N/A",
-            humidity: "N/A",
+            temperature: "n/a",
+            humidity: "n/a",
             alarms: [],
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -112,7 +112,7 @@ export const shipments: Shipment[] = [
                     location: "Macclesfield Loading Hub",
                     arrivalTime: "2025-07-15 06:00",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -122,7 +122,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-15 09:00",
                     departedTime: "2025-07-15 10:15",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -149,7 +149,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport",
                     arrivalTime: "2025-07-15 16:30",
                     status: "Completed",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F12345678",
                     weatherConditions: "Expected: Partly cloudy, 28°C"
                   }
@@ -164,7 +164,7 @@ export const shipments: Shipment[] = [
                     location: "Amsterdam Airport Hub",
                     arrivalTime: "2025-07-17 07:00",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -174,7 +174,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-17 09:00",
                     departedTime: "2025-07-17 11:00",
                     status: "Pending",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F1234567",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -200,8 +200,8 @@ export const shipments: Shipment[] = [
                     location: "Tokyo Narita Airport",
                     arrivalTime: "2025-07-18 03:00",
                     status: "Pending",
-                    transportMode: "N/A",
-                    vehicleNumber: "N/A",
+                    transportMode: "n/a",
+                    vehicleNumber: "n/a",
                     weatherConditions: "Expected: Partly cloudy, 38°C"
                   }
                 ]
@@ -238,7 +238,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport Hub",
                     arrivalTime: "2025-07-15 08:30",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -248,7 +248,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-15 09:00",
                     departedTime: "2025-07-15 10:15",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -275,7 +275,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport",
                     arrivalTime: "2025-07-15 16:30",
                     status: "Completed",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F12345678",
                     weatherConditions: "Expected: Partly cloudy, 28°C"
                   }
@@ -290,7 +290,7 @@ export const shipments: Shipment[] = [
                     location: "Amsterdam Airport Hub",
                     arrivalTime: "2025-07-17 07:00",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -300,7 +300,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-17 09:00",
                     departedTime: "2025-07-17 11:00",
                     status: "Pending",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F1234567",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -326,8 +326,8 @@ export const shipments: Shipment[] = [
                     location: "Tokyo Airport",
                     arrivalTime: "2025-07-18 03:00",
                     status: "Pending",
-                    transportMode: "N/A",
-                    vehicleNumber: "N/A",
+                    transportMode: "n/a",
+                    vehicleNumber: "n/a",
                     weatherConditions: "Expected: Partly cloudy, 38°C"
                   }
                 ]
@@ -362,15 +362,15 @@ export const shipments: Shipment[] = [
         packagingType: "Insulated Box",
         alarms: 0,
         events: 0,
-        rcas: "N/A",
+        rcas: "n/a",
         loggerData: [
           {
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "Active",
-            temperature: "N/A",
-            humidity: "N/A",
+            temperature: "n/a",
+            humidity: "n/a",
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -416,7 +416,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport Hub - Transfer",
                     arrivalTime: "2025-07-15 08:30",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -426,7 +426,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-15 09:00",
                     departedTime: "2025-07-15 10:15",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -445,7 +445,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport",
                     arrivalTime: "2025-07-15 16:30",
                     status: "Completed",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F12345678",
                     weatherConditions: "Expected: Partly cloudy, 28°C"
                   }
@@ -460,7 +460,7 @@ export const shipments: Shipment[] = [
                     location: "Amsterdam Airport Hub",
                     arrivalTime: "2025-07-17 07:00",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -470,7 +470,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-17 09:00",
                     departedTime: "2025-07-17 11:00",
                     status: "Pending",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F1234567",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -489,8 +489,8 @@ export const shipments: Shipment[] = [
                     location: "Tokyo Airport",
                     arrivalTime: "2025-07-18 03:00",
                     status: "Pending",
-                    transportMode: "N/A",
-                    vehicleNumber: "N/A",
+                    transportMode: "n/a",
+                    vehicleNumber: "n/a",
                     weatherConditions: "Expected: Partly cloudy, 38°C"
                   }
                 ]
@@ -523,7 +523,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport Hub - Transfer",
                     arrivalTime: "2025-07-15 08:30",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -533,7 +533,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-15 09:00",
                     departedTime: "2025-07-15 10:15",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -552,7 +552,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport",
                     arrivalTime: "2025-07-15 16:30",
                     status: "Completed",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F12345678",
                     weatherConditions: "Expected: Partly cloudy, 28°C"
                   }
@@ -567,7 +567,7 @@ export const shipments: Shipment[] = [
                     location: "Amsterdam Airport Hub",
                     arrivalTime: "2025-07-17 07:00",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -577,7 +577,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-07-17 09:00",
                     departedTime: "2025-07-17 11:00",
                     status: "Pending",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F1234567",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -596,8 +596,8 @@ export const shipments: Shipment[] = [
                     location: "Tokyo Airport",
                     arrivalTime: "2025-07-18 03:00",
                     status: "Pending",
-                    transportMode: "N/A",
-                    vehicleNumber: "N/A",
+                    transportMode: "n/a",
+                    vehicleNumber: "n/a",
                     weatherConditions: "Expected: Partly cloudy, 38°C"
                   }
                 ]
@@ -648,7 +648,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport Hub - Transfer",
                     arrivalTime: "2025-06-15 08:30",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -658,7 +658,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-06-15 09:00",
                     departedTime: "2025-06-15 10:15",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -677,7 +677,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport",
                     arrivalTime: "2025-06-15 16:30",
                     status: "Completed",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F12345678",
                     weatherConditions: "Expected: Partly cloudy, 28°C"
                   }
@@ -692,7 +692,7 @@ export const shipments: Shipment[] = [
                     location: "Amsterdam Airport Hub",
                     arrivalTime: "2025-06-17 07:00",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -702,7 +702,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-06-17 09:00",
                     departedTime: "2025-06-17 11:00",
                     status: "Pending",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F1234567",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -721,8 +721,8 @@ export const shipments: Shipment[] = [
                     location: "Tokyo Airport",
                     arrivalTime: "2025-06-18 03:00",
                     status: "Pending",
-                    transportMode: "N/A",
-                    vehicleNumber: "N/A",
+                    transportMode: "n/a",
+                    vehicleNumber: "n/a",
                     weatherConditions: "Expected: Partly cloudy, 38°C"
                   }
                 ]
@@ -765,7 +765,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport Hub - Transfer",
                     arrivalTime: "2025-06-15 08:30",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -775,7 +775,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-06-15 09:00",
                     departedTime: "2025-06-15 10:15",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -794,7 +794,7 @@ export const shipments: Shipment[] = [
                     location: "Heathrow Airport",
                     arrivalTime: "2025-06-15 16:30",
                     status: "Completed",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F12345678",
                     weatherConditions: "Expected: Partly cloudy, 28°C"
                   }
@@ -809,7 +809,7 @@ export const shipments: Shipment[] = [
                     location: "Amsterdam Airport Hub",
                     arrivalTime: "2025-06-17 07:00",
                     status: "Completed",
-                    transportMode: "Truck",
+                    transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
                     weatherConditions: "Sunny, 28°C"
                   },
@@ -819,7 +819,7 @@ export const shipments: Shipment[] = [
                     arrivalTime: "2025-06-17 09:00",
                     departedTime: "2025-06-17 11:00",
                     status: "Completed",
-                    transportMode: "Plane",
+                    transportMode: "Air",
                     vehicleNumber: "F1234567",
                     weatherConditions: "Sunny, 28°C",
                     excursion: {
@@ -838,8 +838,8 @@ export const shipments: Shipment[] = [
                     location: "Tokyo Airport",
                     arrivalTime: "2025-06-18 03:00",
                     status: "Pending",
-                    transportMode: "N/A",
-                    vehicleNumber: "N/A",
+                    transportMode: "n/a",
+                    vehicleNumber: "n/a",
                     weatherConditions: "Expected: Partly cloudy, 38°C"
                   }
                 ]
@@ -889,8 +889,8 @@ export const shipments: Shipment[] = [
             loggerType: "Web Logger 2",
             loggerStarted: "2025-08-10T08:00:00Z",
             loggerEnded: "Active",
-            temperature: "N/A",
-            humidity: "N/A",
+            temperature: "n/a",
+            humidity: "n/a",
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -908,8 +908,8 @@ export const shipments: Shipment[] = [
             loggerType: "Web Logger 2",
             loggerStarted: "2025-08-10T08:00:00Z",
             loggerEnded: "Active",
-            temperature: "N/A",
-            humidity: "N/A",
+            temperature: "n/a",
+            humidity: "n/a",
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -932,9 +932,9 @@ export const shipments: Shipment[] = [
         status: "Delivered",
         loggers: 2,
         freightForwarder: "DHL",
-        currentLocation: "Unavailable",
-        modeOfTransport: "Truck",
-        packagingType: "Unavailable",
+        currentLocation: "n/a",
+        modeOfTransport: "Road",
+        packagingType: "n/a",
         alarms: 1,
         totalAlarms: 1,
         events: 0,
@@ -946,8 +946,8 @@ export const shipments: Shipment[] = [
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
-            temperature: "N/A",
-            humidity: "N/A",
+            temperature: "n/a",
+            humidity: "n/a",
             alarms: [
               {
                 alarmId: 1,
@@ -993,8 +993,8 @@ export const shipments: Shipment[] = [
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
-            temperature: "N/A",
-            humidity: "N/A",
+            temperature: "n/a",
+            humidity: "n/a",
             alarms: [
               {
                 alarmId: 1,

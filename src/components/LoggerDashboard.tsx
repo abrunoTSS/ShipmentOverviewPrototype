@@ -27,8 +27,8 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
         {/* For SH014 and SH015, don't show the grey boxes with extra details */}
         {!(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
           <div className="milestone-extra-details">
-            {/* Only show arrival time if it exists and is not N/A */}
-            {milestone.arrivalTime && milestone.arrivalTime !== 'N/A' && (
+            {/* Only show arrival time if it exists and is not n/a */}
+            {milestone.arrivalTime && milestone.arrivalTime !== 'n/a' && (
               <p><strong>Arrival Time:</strong> {new Date(milestone.arrivalTime).toLocaleString()}</p>
             )}
             {/* Only show departed time if it exists */}
@@ -163,13 +163,13 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 <span className="info-label">Start Delay</span>
                 <span className="info-value">{logger.startDelay || '0 minute'}</span>
               </div>
-              {logger.temperature && logger.temperature !== 'N/A' && logger.loggerType !== 'Web Logger 2' && (
+              {logger.temperature && logger.temperature !== 'n/a' && logger.loggerType !== 'Web Logger 2' && (
                 <div className="info-item">
                   <span className="info-label">Temperature</span>
                   <span className="info-value">{logger.temperature}</span>
                 </div>
               )}
-              {logger.humidity && logger.humidity !== 'N/A' && logger.loggerType !== 'Web Logger 2' && (
+              {logger.humidity && logger.humidity !== 'n/a' && logger.loggerType !== 'Web Logger 2' && (
                 <div className="info-item">
                   <span className="info-label">Humidity</span>
                   <span className="info-value">{logger.humidity}</span>
@@ -182,9 +182,9 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                     {(() => {
                       try {
                         const date = new Date(logger.lastSeen);
-                        return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+                        return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
                       } catch {
-                        return 'N/A';
+                        return 'n/a';
                       }
                     })()}
                   </span>
@@ -338,7 +338,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
           )}
         </div>
         <div className="dashboard-footer">
-          <a href={`/shipment-report/${shipment.shipmentId}`} className="shipment-report-link">Link to Shipment Report</a>
+          <a href={`/shipment-report/${shipment.shipmentId}`} className="shipment-report-link">Link to Shipment Report (Opens in new tab)</a>
         </div>
       </div>
     </>

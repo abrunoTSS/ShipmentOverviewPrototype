@@ -32,12 +32,12 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       accessorKey: 'loggerStarted',
       cell: ({ getValue }) => {
         const started = getValue() as string | null;
-        if (!started) return 'N/A';
+        if (!started) return 'n/a';
         try {
           const date = new Date(started);
-          return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+          return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
         } catch {
-          return 'N/A';
+          return 'n/a';
         }
       },
     },
@@ -53,9 +53,9 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
         if (shipmentStatus === 'Delivered' && row.original.shipmentEta) {
           try {
             const date = new Date(row.original.shipmentEta);
-            return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+            return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
           } catch {
-            return 'N/A';
+            return 'n/a';
           }
         }
         
@@ -68,13 +68,13 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
         if (ended) {
           try {
             const date = new Date(ended);
-            return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+            return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
           } catch {
-            return 'N/A';
+            return 'n/a';
           }
         }
         
-        return 'N/A';
+        return 'n/a';
       },
     },
     {
@@ -83,8 +83,8 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       accessorKey: 'temperature',
       cell: ({ row }) => {
         // Don't show temperature for Web Logger 2 type loggers
-        if (row.original.loggerType === 'Web Logger 2') return 'N/A';
-        return row.original.temperature || 'N/A';
+        if (row.original.loggerType === 'Web Logger 2') return 'n/a';
+        return row.original.temperature || 'n/a';
       },
     },
     {
@@ -93,8 +93,8 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       accessorKey: 'humidity',
       cell: ({ row }) => {
         // Don't show humidity for Web Logger 2 type loggers
-        if (row.original.loggerType === 'Web Logger 2') return 'N/A';
-        return row.original.humidity || 'N/A';
+        if (row.original.loggerType === 'Web Logger 2') return 'n/a';
+        return row.original.humidity || 'n/a';
       },
     },
     {
@@ -113,12 +113,12 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       accessorKey: 'lastSeen',
       cell: ({ getValue }) => {
         const lastSeen = getValue() as string | undefined;
-        if (!lastSeen) return 'N/A';
+        if (!lastSeen) return 'n/a';
         try {
           const date = new Date(lastSeen);
-          return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+          return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
         } catch {
-          return 'N/A';
+          return 'n/a';
         }
       },
     },
@@ -128,7 +128,7 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       accessorKey: 'rootCauseAnalysis',
       cell: ({ getValue }) => {
         const rca = getValue() as string | null;
-        return rca || 'N/A';
+        return rca || 'n/a';
       },
     },
     {
