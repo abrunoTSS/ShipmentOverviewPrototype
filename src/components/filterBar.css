@@ -21,6 +21,13 @@
   width: 100%;
 }
 
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-left: auto;
+}
+
 /* Search Input */
 .search-container {
   position: relative;
@@ -67,6 +74,16 @@
 
 .filter-toggle-btn:hover {
   background-color: #e5e7eb;
+}
+
+.download-btn {
+  background-color: #e2f0ff;
+  border-color: #90cdf4;
+  margin-left: 8px;
+}
+
+.download-btn:hover {
+  background-color: #bfdbfe;
 }
 
 /* Collapsible Filter Section */

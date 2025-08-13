@@ -52,8 +52,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-3",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
             }
           }
         ]
@@ -101,7 +101,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-14T08:00:00Z",
             loggerEnded: "Active",
             temperature: "6°C",
-            humidity: "40%",
+            humidity: "40% RH",
             alarms: [
               {
                 alarmId: 1,
@@ -131,9 +131,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75%",
-                      lowestHumidity: "55%",
-                      averageHumidity: "65%",
+                      highestHumidity: "75% RH",
+                      lowestHumidity: "55% RH",
+                      averageHumidity: "65% RH",
                       graphData: [
                         { time: '09:00', temperature: 15, humidity: 60 },
                         { time: '09:15', temperature: 22, humidity: 66 },
@@ -183,9 +183,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72%",
-                      lowestHumidity: "60%",
-                      averageHumidity: "68%",
+                      highestHumidity: "72% RH",
+                      lowestHumidity: "60% RH",
+                      averageHumidity: "68% RH",
                       graphData: [
                         { time: '09:30', temperature: 18, humidity: 62 },
                         { time: '09:45', temperature: 24, humidity: 68 },
@@ -214,11 +214,11 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C",
               humidityProfile: "standard",
-              highHumidityThreshold: "60%",
-              lowHumidityThreshold: "30%"
+              highHumidityThreshold: "60% RH",
+              lowHumidityThreshold: "30% RH"
             }
           },
           {
@@ -227,7 +227,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "Active",
             temperature: "6°C",
-            humidity: "40%",
+            humidity: "40% RH",
             alarms: [
               {
                 alarmId: 1,
@@ -257,9 +257,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "78%",
-                      lowestHumidity: "58%",
-                      averageHumidity: "67%",
+                      highestHumidity: "78% RH",
+                      lowestHumidity: "58% RH",
+                      averageHumidity: "67% RH",
                       graphData: [
                         { time: '09:00', temperature: 16, humidity: 62 },
                         { time: '09:15', temperature: 23, humidity: 68 },
@@ -309,9 +309,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "71%",
-                      lowestHumidity: "62%",
-                      averageHumidity: "66%",
+                      highestHumidity: "71% RH",
+                      lowestHumidity: "62% RH",
+                      averageHumidity: "66% RH",
                       graphData: [
                         { time: '09:30', temperature: 19, humidity: 63 },
                         { time: '09:45', temperature: 23, humidity: 69 },
@@ -340,11 +340,11 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C",
               humidityProfile: "standard",
-              highHumidityThreshold: "60%",
-              lowHumidityThreshold: "30%"
+              highHumidityThreshold: "60% RH",
+              lowHumidityThreshold: "30% RH"
             }
           }
         ]
@@ -379,8 +379,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-3",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
             }
           }
         ]
@@ -435,9 +435,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75%",
-                      lowestHumidity: "55%",
-                      averageHumidity: "65%"
+                      highestHumidity: "75% RH",
+                      lowestHumidity: "55% RH",
+                      averageHumidity: "65% RH"
                     }
                   },
                   {
@@ -479,9 +479,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72%",
-                      lowestHumidity: "60%",
-                      averageHumidity: "68%"
+                      highestHumidity: "72% RH",
+                      lowestHumidity: "60% RH",
+                      averageHumidity: "68% RH"
                     }
                   },
                   {
@@ -503,8 +503,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C",
             }
           },
           {
@@ -542,9 +542,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75%",
-                      lowestHumidity: "55%",
-                      averageHumidity: "65%"
+                      highestHumidity: "75% RH",
+                      lowestHumidity: "55% RH",
+                      averageHumidity: "65% RH"
                     }
                   },
                   {
@@ -586,9 +586,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72%",
-                      lowestHumidity: "60%",
-                      averageHumidity: "68%"
+                      highestHumidity: "72% RH",
+                      lowestHumidity: "60% RH",
+                      averageHumidity: "68% RH"
                     }
                   },
                   {
@@ -610,8 +610,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C",
             }
           }
         ]
@@ -667,9 +667,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75%",
-                      lowestHumidity: "55%",
-                      averageHumidity: "65%"
+                      highestHumidity: "75% RH",
+                      lowestHumidity: "55% RH",
+                      averageHumidity: "65% RH"
                     }
                   },
                   {
@@ -711,9 +711,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72%",
-                      lowestHumidity: "60%",
-                      averageHumidity: "68%"
+                      highestHumidity: "72% RH",
+                      lowestHumidity: "60% RH",
+                      averageHumidity: "68% RH"
                     }
                   },
                   {
@@ -745,8 +745,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
             }
           },
           {
@@ -784,9 +784,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75%",
-                      lowestHumidity: "55%",
-                      averageHumidity: "65%"
+                      highestHumidity: "75% RH",
+                      lowestHumidity: "55% RH",
+                      averageHumidity: "65% RH"
                     }
                   },
                   {
@@ -828,9 +828,9 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72%",
-                      lowestHumidity: "60%",
-                      averageHumidity: "68%"
+                      highestHumidity: "72% RH",
+                      lowestHumidity: "60% RH",
+                      averageHumidity: "68% RH"
                     }
                   },
                   {
@@ -862,8 +862,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
-              highThreshold: "12 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
             }
           }
         ]
@@ -899,8 +899,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
               temperatureProfile: "profile",
-              highThreshold: "10 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "10 °C",
+              lowThreshold: "2 °C"
             }
           },
           {
@@ -918,8 +918,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
               temperatureProfile: "profile",
-              highThreshold: "10 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "10 °C",
+              lowThreshold: "2 °C"
             }
           },
         ]
@@ -984,8 +984,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
               temperatureProfile: "profile",
-              highThreshold: "10 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "10 °C",
+              lowThreshold: "2 °C"
             }
           },
           {
@@ -1031,8 +1031,8 @@ export const shipments: Shipment[] = [
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
               temperatureProfile: "profile",
-              highThreshold: "10 degrees celcius",
-              lowThreshold: "2 degrees celcius"
+              highThreshold: "10 °C",
+              lowThreshold: "2 °C"
             }
           }
         ]

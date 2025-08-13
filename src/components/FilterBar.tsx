@@ -1,4 +1,4 @@
-import { Search, X, Filter } from 'lucide-react';
+import { Search, X, Filter, Download } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -41,6 +41,14 @@ const getUniqueValues = (shipments: Shipment[], key: keyof Shipment) => {
 
 export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProps) => {
   const [showFilters, setShowFilters] = useState(false);
+
+  const handleDownloadXLSX = () => {
+    // This is a placeholder function for downloading shipment data as XLSX
+    console.log('Downloading shipment data as XLSX...');
+    alert('XLSX download functionality will be implemented in the next sprint');
+    // In a real implementation, we would use a library like xlsx or exceljs to generate
+    // and download the Excel file with the current filtered shipment data
+  };
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
     onFiltersChange({ ...filters, [key]: value });
@@ -143,10 +151,16 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
               onChange={(e) => handleFilterChange('search', e.target.value)}
             />
           </div>
-          <button onClick={() => setShowFilters(!showFilters)} className="filter-toggle-btn">
-            <Filter size={20} />
-            <span>Filters</span>
-          </button>
+          <div className="button-container">
+            <button onClick={() => handleDownloadXLSX()} className="filter-toggle-btn download-btn">
+              <Download size={20} />
+              <span>Download XLSX</span>
+            </button>
+            <button onClick={() => setShowFilters(!showFilters)} className="filter-toggle-btn">
+              <Filter size={20} />
+              <span>Filters</span>
+            </button>
+          </div>
         </div>
 
         {showFilters && (
