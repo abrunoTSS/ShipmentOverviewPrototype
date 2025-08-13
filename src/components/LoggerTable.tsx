@@ -32,16 +32,49 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       accessorKey: 'loggerStarted',
       cell: ({ getValue }) => {
         const started = getValue() as string | null;
-        return started ? new Date(started).toLocaleString() : 'N/A';
+        if (!started) return 'N/A';
+        try {
+          const date = new Date(started);
+          return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+        } catch {
+          return 'N/A';
+        }
       },
     },
     {
       id: 'loggerEnded',
       header: 'Logger Ended',
       accessorKey: 'loggerEnded',
-      cell: ({ getValue }) => {
-        const ended = getValue() as string;
-        return ended ? new Date(ended).toLocaleString() : 'N/A';
+      cell: ({ row }) => {
+        const ended = row.original.loggerEnded as string;
+        const shipmentStatus = row.original.shipmentStatus as string;
+        
+        // If the shipment is delivered, show the shipment ETA
+        if (shipmentStatus === 'Delivered' && row.original.shipmentEta) {
+          try {
+            const date = new Date(row.original.shipmentEta);
+            return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+          } catch {
+            return 'N/A';
+          }
+        }
+        
+        // If the shipment is in transit, show 'Active'
+        if (shipmentStatus === 'In Transit' || ended === 'Active') {
+          return 'Active';
+        }
+        
+        // Otherwise try to parse the logger end date
+        if (ended) {
+          try {
+            const date = new Date(ended);
+            return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+          } catch {
+            return 'N/A';
+          }
+        }
+        
+        return 'N/A';
       },
     },
     {
@@ -72,7 +105,13 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       accessorKey: 'lastSeen',
       cell: ({ getValue }) => {
         const lastSeen = getValue() as string | undefined;
-        return lastSeen ? new Date(lastSeen).toLocaleString() : 'N/A';
+        if (!lastSeen) return 'N/A';
+        try {
+          const date = new Date(lastSeen);
+          return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+        } catch {
+          return 'N/A';
+        }
       },
     },
     {

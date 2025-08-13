@@ -1,5 +1,9 @@
-import { Search, X } from 'lucide-react';
+import { Search, X, Filter } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import type { Shipment } from '../types';
+import './filterBar.css';
 
 export interface FilterState {
   search: string;
@@ -10,7 +14,9 @@ export interface FilterState {
   modeOfTransport: string;
   packagingType: string;
   alarms: string;
-  rootCauseAnalysis: string;
+  rcas: string;
+  startDate?: Date | null;
+  endDate?: Date | null;
 }
 
 interface FilterBarProps {
@@ -19,22 +25,25 @@ interface FilterBarProps {
   onFiltersChange: (filters: FilterState) => void;
 }
 
-export function FilterBar({ shipments, filters, onFiltersChange }: FilterBarProps) {
-  // Extract unique values from shipment data for dropdowns
-  const getUniqueValues = (key: 'origin' | 'destination' | 'status' | 'freightForwarder' | 'modeOfTransport' | 'packagingType') => {
-    const values = shipments
-      .map(shipment => shipment[key])
-      .filter((value): value is string => typeof value === 'string' && value !== '')
-      .filter((value, index, array) => array.indexOf(value) === index)
-      .sort();
-    return values;
-  };
+const FilterPill = ({ label, onRemove }: { label: string; onRemove: () => void }) => (
+  <div className="filter-pill">
+    <span>{label}</span>
+    <button onClick={onRemove} className="remove-pill-btn">
+      <X size={14} />
+    </button>
+  </div>
+);
 
-  const handleFilterChange = (key: keyof FilterState, value: string) => {
-    onFiltersChange({
-      ...filters,
-      [key]: value,
-    });
+const getUniqueValues = (shipments: Shipment[], key: keyof Shipment) => {
+  const values = shipments.map(shipment => shipment[key]);
+  return [...new Set(values)].filter(Boolean) as string[];
+};
+
+export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProps) => {
+  const [showFilters, setShowFilters] = useState(false);
+
+  const handleFilterChange = (key: keyof FilterState, value: any) => {
+    onFiltersChange({ ...filters, [key]: value });
   };
 
   const clearAllFilters = () => {
@@ -47,204 +56,153 @@ export function FilterBar({ shipments, filters, onFiltersChange }: FilterBarProp
       modeOfTransport: '',
       packagingType: '',
       alarms: '',
-      rootCauseAnalysis: '',
+      rcas: '',
+      startDate: null,
+      endDate: null,
     });
   };
 
-  const hasActiveFilters = Object.values(filters).some(value => value !== '');
+  const hasActiveFilters = useMemo(() => {
+    return Object.values(filters).some(value => value !== '' && value !== null && value !== undefined);
+  }, [filters]);
 
-  // Get active filters for display as bubbles
-  const getActiveFilters = () => {
-    const activeFilters: Array<{ key: string; label: string; value: string }> = [];
+  const activeFilters = useMemo(() => {
+    const active: Array<{ key: string; label: string; onRemove: () => void }> = [];
     
-    if (filters.search) activeFilters.push({ key: 'search', label: 'Search', value: filters.search });
-    if (filters.origin) activeFilters.push({ key: 'origin', label: 'Origin', value: filters.origin });
-    if (filters.destination) activeFilters.push({ key: 'destination', label: 'Destination', value: filters.destination });
-    if (filters.status) activeFilters.push({ key: 'status', label: 'Status', value: filters.status });
-    if (filters.freightForwarder) activeFilters.push({ key: 'freightForwarder', label: 'Freight Forwarder', value: filters.freightForwarder });
-    if (filters.modeOfTransport) activeFilters.push({ key: 'modeOfTransport', label: 'Mode of Transport', value: filters.modeOfTransport });
-    if (filters.packagingType) activeFilters.push({ key: 'packagingType', label: 'Packaging Type', value: filters.packagingType });
-    if (filters.alarms) activeFilters.push({ key: 'alarms', label: 'Alarms', value: filters.alarms });
-    if (filters.rootCauseAnalysis) activeFilters.push({ key: 'rootCauseAnalysis', label: 'Root Cause Analysis', value: filters.rootCauseAnalysis });
-    
-    return activeFilters;
-  };
+    (Object.keys(filters) as Array<keyof FilterState>).forEach(key => {
+      const value = filters[key];
+      if (!value) return;
 
-  // Remove individual filter
-  const removeFilter = (filterKey: string) => {
-    handleFilterChange(filterKey as keyof FilterState, '');
-  };
+      if (key === 'startDate' && filters.endDate) {
+        active.push({
+          key: 'dateRange',
+          label: `Date: ${new Date(filters.startDate!).toLocaleDateString()} - ${new Date(filters.endDate!).toLocaleDateString()}`,
+          onRemove: () => {
+            handleFilterChange('startDate', null);
+            handleFilterChange('endDate', null);
+          }
+        });
+      } else if (key !== 'endDate') {
+        let label = '';
+        switch(key) {
+          case 'search': label = `Search: ${value}`; break;
+          case 'origin': label = `Origin: ${value}`; break;
+          case 'destination': label = `Destination: ${value}`; break;
+          case 'status': label = `Status: ${value}`; break;
+          case 'freightForwarder': label = `Forwarder: ${value}`; break;
+          case 'modeOfTransport': label = `Transport: ${value}`; break;
+          case 'packagingType': label = `Packaging: ${value}`; break;
+          case 'alarms': label = `Alarms: ${value}`; break;
+          case 'rcas': label = `RCA: ${value}`; break;
+        }
+        if (label) {
+            active.push({ key, label, onRemove: () => handleFilterChange(key, '') });
+        }
+      }
+    });
+
+    return active;
+  }, [filters]);
+
+  const renderSelect = (key: keyof FilterState, label: string, options: string[]) => (
+    <div className="filter-group">
+      <label htmlFor={`${key}-filter`}>{label}</label>
+      <select
+        id={`${key}-filter`}
+        value={filters[key] as string}
+        onChange={(e) => handleFilterChange(key, e.target.value)}
+        className="filter-select"
+      >
+        <option value="">All</option>
+        {options.map(option => (
+          <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
+    </div>
+  );
+
+  const uniqueOrigins = useMemo(() => getUniqueValues(shipments, 'origin'), [shipments]);
+  const uniqueDestinations = useMemo(() => getUniqueValues(shipments, 'destination'), [shipments]);
+  const uniqueStatuses = useMemo(() => getUniqueValues(shipments, 'status'), [shipments]);
+  const uniqueForwarders = useMemo(() => getUniqueValues(shipments, 'freightForwarder'), [shipments]);
+  const uniqueTransportModes = useMemo(() => getUniqueValues(shipments, 'modeOfTransport'), [shipments]);
+  const uniquePackagingTypes = useMemo(() => getUniqueValues(shipments, 'packagingType'), [shipments]);
+    const uniqueRCAStatuses = useMemo(() => getUniqueValues(shipments, 'rcas'), [shipments]);
 
   return (
-    <div className="filter-bar">
-      <div className="filter-row">
-        {/* Search Bar */}
-        <div className="search-container">
-          <Search className="search-icon" size={16} />
-          <input
-            type="text"
-            placeholder="Search shipments…"
-            value={filters.search}
-            onChange={(e) => handleFilterChange('search', e.target.value)}
-            className="search-input"
-          />
+    <div className="filter-bar-wrapper">
+      <div className="filter-bar">
+        <div className="filter-main-controls">
+          <div className="search-container">
+            <Search className="search-icon" size={20} />
+            <input
+              type="text"
+              placeholder="Search shipments..."
+              className="search-input"
+              value={filters.search}
+              onChange={(e) => handleFilterChange('search', e.target.value)}
+            />
+          </div>
+          <button onClick={() => setShowFilters(!showFilters)} className="filter-toggle-btn">
+            <Filter size={20} />
+            <span>Filters</span>
+          </button>
         </div>
+
+        {showFilters && (
+          <div className="filter-dropdown-section">
+            <div className="filter-grid">
+              {renderSelect('origin', 'Origin', uniqueOrigins)}
+              {renderSelect('destination', 'Destination', uniqueDestinations)}
+              {renderSelect('status', 'Status', uniqueStatuses)}
+              {renderSelect('freightForwarder', 'Freight Forwarder', uniqueForwarders)}
+              {renderSelect('modeOfTransport', 'Transport', uniqueTransportModes)}
+              {renderSelect('packagingType', 'Packaging', uniquePackagingTypes)}
+              {renderSelect('alarms', 'Alarms', ['Yes', 'No'])}
+              {renderSelect('rcas', 'RCA', uniqueRCAStatuses)}
+            </div>
+            <div className="date-range-filter">
+              <label>Shipment Date Range</label>
+              <div className="date-pickers">
+                <DatePicker
+                  selected={filters.startDate}
+                  onChange={(date) => handleFilterChange('startDate', date)}
+                  selectsStart
+                  startDate={filters.startDate}
+                  endDate={filters.endDate}
+                  placeholderText="Start Date"
+                  className="date-input"
+                  isClearable
+                />
+                <DatePicker
+                  selected={filters.endDate}
+                  onChange={(date) => handleFilterChange('endDate', date)}
+                  selectsEnd
+                  startDate={filters.startDate}
+                  endDate={filters.endDate}
+                  minDate={filters.startDate}
+                  placeholderText="End Date"
+                  className="date-input"
+                  isClearable
+                />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      <div className="filters-grid">
-        {/* Origin Filter */}
-        <div className="filter-group">
-          <label htmlFor="origin-filter">Origin</label>
-          <select
-            id="origin-filter"
-            value={filters.origin}
-            onChange={(e) => handleFilterChange('origin', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Origins</option>
-            {getUniqueValues('origin').map(origin => (
-              <option key={origin} value={origin}>{origin}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Destination Filter */}
-        <div className="filter-group">
-          <label htmlFor="destination-filter">Destination</label>
-          <select
-            id="destination-filter"
-            value={filters.destination}
-            onChange={(e) => handleFilterChange('destination', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Destinations</option>
-            {getUniqueValues('destination').map(destination => (
-              <option key={destination} value={destination}>{destination}</option>
-            ))}
-          </select>
-        </div>
-
-        {/* Status Filter */}
-        <div className="filter-group">
-          <label htmlFor="status-filter">Status</label>
-          <select
-            id="status-filter"
-            value={filters.status}
-            onChange={(e) => handleFilterChange('status', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Statuses</option>
-            <option value="Delayed">Delayed</option>
-            <option value="In transit">In transit</option>
-            <option value="Delivered">Delivered</option>
-          </select>
-        </div>
-
-        {/* Freight Forwarder Filter */}
-        <div className="filter-group">
-          <label htmlFor="ff-filter">Freight Forwarder</label>
-          <select
-            id="ff-filter"
-            value={filters.freightForwarder}
-            onChange={(e) => handleFilterChange('freightForwarder', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Forwarders</option>
-            <option value="DHL">DHL</option>
-            <option value="Geodis">Geodis</option>
-            <option value="Yusen">Yusen</option>
-          </select>
-        </div>
-
-        {/* Mode of Transport Filter */}
-        <div className="filter-group">
-          <label htmlFor="transport-filter">Mode of Transport</label>
-          <select
-            id="transport-filter"
-            value={filters.modeOfTransport}
-            onChange={(e) => handleFilterChange('modeOfTransport', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Modes</option>
-            <option value="Air">Air</option>
-            <option value="Road">Road</option>
-            <option value="Sea">Sea</option>
-          </select>
-        </div>
-
-        {/* Packaging Type Filter */}
-        <div className="filter-group">
-          <label htmlFor="packaging-filter">Packaging Type</label>
-          <select
-            id="packaging-filter"
-            value={filters.packagingType}
-            onChange={(e) => handleFilterChange('packagingType', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All Packaging</option>
-            <option value="CryoBox">CryoBox</option>
-            <option value="Pallet Shipper">Pallet Shipper</option>
-            <option value="Insulated Cooler">Insulated Cooler</option>
-            <option value="BioTherm Case">BioTherm Case</option>
-            <option value="Phase Change Container">Phase Change Container</option>
-          </select>
-        </div>
-
-        {/* Alarms Filter */}
-        <div className="filter-group">
-          <label htmlFor="alarms-filter">Alarms</label>
-          <select
-            id="alarms-filter"
-            value={filters.alarms}
-            onChange={(e) => handleFilterChange('alarms', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-          </select>
-        </div>
-
-        {/* Root Cause Analysis Filter */}
-        <div className="filter-group">
-          <label htmlFor="rca-filter">Root Cause Analysis</label>
-          <select
-            id="rca-filter"
-            value={filters.rootCauseAnalysis}
-            onChange={(e) => handleFilterChange('rootCauseAnalysis', e.target.value)}
-            className="filter-select"
-          >
-            <option value="">All RCA</option>
-            <option value="Not started">Not started</option>
-            <option value="In progress">In progress</option>
-            <option value="Closed">Closed</option>
-          </select>
-        </div>
-      </div>
-
-      {/* Active Filter Bubbles */}
       {hasActiveFilters && (
         <div className="active-filters">
-          <div className="active-filters-row">
-            {getActiveFilters().map((filter) => (
-              <div key={filter.key} className="filter-bubble">
-                <span className="filter-bubble-label">{filter.label}:</span>
-                <span className="filter-bubble-value">{filter.value}</span>
-                <button 
-                  onClick={() => removeFilter(filter.key)}
-                  className="filter-bubble-remove"
-                  aria-label={`Remove ${filter.label} filter`}
-                >
-                  <X size={12} />
-                </button>
-              </div>
+          <div className="pills-container">
+            {activeFilters.map(filter => (
+              <FilterPill key={filter.key} label={filter.label} onRemove={filter.onRemove} />
             ))}
-            <button onClick={clearAllFilters} className="remove-all-filters-btn">
-              Remove All
-            </button>
           </div>
+          <button onClick={clearAllFilters} className="remove-all-filters-btn">
+            Remove All
+          </button>
         </div>
       )}
     </div>
   );
-}
+};

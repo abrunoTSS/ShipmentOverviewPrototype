@@ -6,12 +6,14 @@ import LoggerDashboard from './components/LoggerDashboard';
 
 function App() {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
+  const [selectedShipmentId, setSelectedShipmentId] = useState<string | null>(null);
   const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
   const [selectedLogger, setSelectedLogger] = useState<Logger | null>(null);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
 
   const handleRowClick = (shipmentId: string) => {
     setExpandedRow(prevId => (prevId === shipmentId ? null : shipmentId));
+    setSelectedShipmentId(shipmentId);
   };
 
   const handleLoggerClick = (shipment: Shipment, logger: Logger) => {
@@ -29,12 +31,6 @@ function App() {
   return (
     <div className="app-container">
       <div className="main-content">
-        {/* Header */}
-        <div className="header">
-          <h1>Shipment Visibility</h1>
-          <p>Track shipments and monitor logger data</p>
-        </div>
-
         {/* Main Table */}
         <ShipmentTable
           shipments={shipments}
@@ -42,6 +38,7 @@ function App() {
           onRowClick={handleRowClick}
           onLoggerClick={handleLoggerClick}
           selectedLoggerId={selectedLogger?.loggerId || null}
+          selectedShipmentId={selectedShipmentId}
         />
       </div>
 

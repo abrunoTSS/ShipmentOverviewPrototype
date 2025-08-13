@@ -18,9 +18,10 @@ interface ShipmentTableProps {
   onRowClick: (shipmentId: string) => void;
   onLoggerClick: (shipment: Shipment, logger: Logger) => void;
   selectedLoggerId: string | null;
+  selectedShipmentId: string | null;
 }
 
-export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, selectedLoggerId }: ShipmentTableProps) {
+export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, selectedLoggerId, selectedShipmentId }: ShipmentTableProps) {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     origin: '',
@@ -30,7 +31,9 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     modeOfTransport: '',
     packagingType: '',
     alarms: '',
-    rootCauseAnalysis: '',
+    rcas: '',
+    startDate: null,
+    endDate: null,
   });
 
   // Filter shipments based on current filters
@@ -76,7 +79,28 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       }
       
       // Root Cause Analysis filter (case-insensitive)
-      if (filters.rootCauseAnalysis && shipment.rcas?.toLowerCase() !== filters.rootCauseAnalysis.toLowerCase()) return false;
+      if (filters.rcas && shipment.rcas?.toLowerCase() !== filters.rcas.toLowerCase()) return false;
+
+      // Date range filter
+      if (filters.startDate && filters.endDate) {
+        const mostRecentLastSeen = shipment.loggerData?.reduce((latest, logger) => {
+          if (!logger.lastSeen) return latest;
+          const loggerDate = new Date(logger.lastSeen);
+          return latest && latest > loggerDate ? latest : loggerDate;
+        }, null as Date | null);
+
+        if (!mostRecentLastSeen) return false; // Filter out if no valid date
+
+        const startDate = new Date(filters.startDate);
+        startDate.setHours(0, 0, 0, 0);
+
+        const endDate = new Date(filters.endDate);
+        endDate.setHours(23, 59, 59, 999);
+
+        if (mostRecentLastSeen < startDate || mostRecentLastSeen > endDate) {
+          return false;
+        }
+      }
 
       return true;
     });
@@ -167,7 +191,6 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         return rcas || 'N/A';
       },
     },
-
     {
       id: 'expand',
       header: '',
@@ -223,7 +246,10 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         <tbody>
           {table.getRowModel().rows.map(row => (
             <React.Fragment key={row.id}>
-              <tr>
+              <tr 
+                className={`table-row ${row.original.shipmentId === selectedShipmentId ? 'selected-shipment' : ''}`}
+                onClick={() => onRowClick(row.original.shipmentId)}
+              >
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -233,7 +259,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
               
               {/* Nested Logger Table */}
               {expandedRow === row.original.shipmentId && (
-                <tr>
+                <tr className="nested-row">
                   <td colSpan={columns.length} className="nested-table-container">
                     <LoggerTable
                       loggers={row.original.loggerData}

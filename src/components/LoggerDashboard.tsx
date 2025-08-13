@@ -18,15 +18,16 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     return null;
   }
 
+  // Render excursion milestone for alarm events
   const renderMilestone = (milestone: ExcursionMilestone, index: number) => (
     <div className="milestone-item" key={index}>
       <div className={`milestone-dot ${milestone.status.toLowerCase()}`} />
       <div className="milestone-content">
         <p className="milestone-location">{milestone.location}</p>
         <div className="milestone-extra-details">
-          <p><strong>Arrival Time:</strong> {new Date(milestone.arrivalTime).toLocaleString()}</p>
+          <p><strong>Arrival Time:</strong> {milestone.arrivalTime ? new Date(milestone.arrivalTime).toLocaleString() : 'N/A'}</p>
           {milestone.departedTime && (
-            <p><strong>Departed Time:</strong> {new Date(milestone.departedTime).toLocaleString()}</p>
+            <p><strong>Departed Time:</strong> {milestone.departedTime ? new Date(milestone.departedTime).toLocaleString() : 'N/A'}</p>
           )}
           <p><strong>Status:</strong> {milestone.status}</p>
           <p><strong>Transport:</strong> {milestone.transportMode} ({milestone.vehicleNumber})</p>
@@ -58,7 +59,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
       <div className={`sidebar-overlay ${isOpen ? 'open' : ''}`} onClick={onClose} />
       <div className={`logger-dashboard ${isOpen ? 'open' : ''}`}>
         <div className="dashboard-header">
-          <h2 className="dashboard-title">Logger: {logger.loggerId}</h2>
+          <h2 className="dashboard-title">Logger Dashboard</h2>
           <button onClick={onClose} className="close-button"><X size={24} /></button>
         </div>
         <div className="dashboard-content">
@@ -82,27 +83,89 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 <span className="info-value">{shipment.status}</span>
               </div>
             </div>
+            
+            {/* Shipment Current Milestone Timeline - Only for In Transit shipments */}
+            {shipment.status === 'In Transit' && (
+              <div className="shipment-milestone-container">
+                <h4 className="milestone-subtitle">Current Lane</h4>
+                {shipment.shipmentCurrentMilestone && shipment.shipmentCurrentMilestone.length > 0 ? (
+                  <div className="milestone-timeline">
+                    {shipment.shipmentCurrentMilestone.map((milestone, index) => (
+                      <div className="milestone-item" key={index}>
+                        <div className={`milestone-dot ${milestone.status === 'Current' ? 'completed' : 
+                                                         milestone.status === 'Completed' ? 'pending' : 'pending'}`} />
+                        <div className="milestone-content">
+                          <p className="milestone-location">{milestone.location}</p>
+                          <div className="milestone-status-badge">
+                            <span className={`status-indicator ${milestone.status.toLowerCase()}`}>{milestone.status}</span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="milestone-error">
+                    <p className="error-message">Unable to get milestone data. Please check if the shipment number is correct and correct it if possible.</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="dashboard-section">
             <h3 className="section-title">Logger Details</h3>
             <div className="info-grid">
               <div className="info-item">
+                <span className="info-label">Logger ID</span>
+                <span className="info-value">{logger.loggerId}</span>
+              </div>
+              <div className="info-item">
                 <span className="info-label">Logger Type</span>
                 <span className="info-value">{logger.loggerType}</span>
               </div>
               <div className="info-item">
-                <span className="info-label">Temperature</span>
-                <span className="info-value">{logger.temperature || 'N/A'}</span>
+                <span className="info-label">Calibration Date</span>
+                <span className="info-value">{logger.calibrationDate || '2025-05-06 07:00'}</span>
               </div>
               <div className="info-item">
-                <span className="info-label">Humidity</span>
-                <span className="info-value">{logger.humidity || 'N/A'}</span>
+                <span className="info-label">Expiry Date</span>
+                <span className="info-value">{logger.expiryDate || '2028-05-06 07:00'}</span>
               </div>
               <div className="info-item">
-                <span className="info-label">Last Seen</span>
-                <span className="info-value">{logger.lastSeen ? new Date(logger.lastSeen).toLocaleString() : 'N/A'}</span>
+                <span className="info-label">Sample Rate</span>
+                <span className="info-value">{logger.sampleRate || '10 minute'}</span>
               </div>
+              <div className="info-item">
+                <span className="info-label">Start Delay</span>
+                <span className="info-value">{logger.startDelay || '0 minute'}</span>
+              </div>
+              {logger.temperature && logger.temperature !== 'N/A' && (
+                <div className="info-item">
+                  <span className="info-label">Temperature</span>
+                  <span className="info-value">{logger.temperature}</span>
+                </div>
+              )}
+              {logger.humidity && logger.humidity !== 'N/A' && (
+                <div className="info-item">
+                  <span className="info-label">Humidity</span>
+                  <span className="info-value">{logger.humidity}</span>
+                </div>
+              )}
+              {logger.lastSeen && (
+                <div className="info-item">
+                  <span className="info-label">Last Seen</span>
+                  <span className="info-value">
+                    {(() => {
+                      try {
+                        const date = new Date(logger.lastSeen);
+                        return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'N/A';
+                      } catch {
+                        return 'N/A';
+                      }
+                    })()}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 
@@ -195,7 +258,58 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 <span className={`status-dot ${logger.rootCauseAnalysisStatusDetails.status.toLowerCase().replace(/\s+/g, '-')}`}></span>
                 <span>{logger.rootCauseAnalysisStatusDetails.status}</span>
               </div>
-              <p className='info-value'>{logger.rootCauseAnalysisStatusDetails.details}</p>
+              
+              <div className="rca-details">
+                {/* RCA fields from the type definition */}
+                {logger.rootCauseAnalysisStatusDetails.details && (
+                  <div className="info-item full-width">
+                    <span className="info-label">Details</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.details}</span>
+                  </div>
+                )}
+                {logger.rootCauseAnalysisStatusDetails.UTCDateStarted && (
+                  <div className="info-item">
+                    <span className="info-label">Date Started</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.UTCDateStarted}</span>
+                  </div>
+                )}
+                {logger.rootCauseAnalysisStatusDetails.evaluatedBy && (
+                  <div className="info-item">
+                    <span className="info-label">Evaluated By</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.evaluatedBy}</span>
+                  </div>
+                )}
+                {logger.rootCauseAnalysisStatusDetails.type && (
+                  <div className="info-item">
+                    <span className="info-label">Type</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.type}</span>
+                  </div>
+                )}
+                {logger.rootCauseAnalysisStatusDetails.evaluationType && (
+                  <div className="info-item">
+                    <span className="info-label">Evaluation Type</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.evaluationType}</span>
+                  </div>
+                )}
+                {logger.rootCauseAnalysisStatusDetails.primaryRootCause && (
+                  <div className="info-item">
+                    <span className="info-label">Primary Root Cause</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.primaryRootCause}</span>
+                  </div>
+                )}
+                {logger.rootCauseAnalysisStatusDetails.secondaryRootCause && (
+                  <div className="info-item">
+                    <span className="info-label">Secondary Root Cause</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.secondaryRootCause}</span>
+                  </div>
+                )}
+                {logger.rootCauseAnalysisStatusDetails.reason && (
+                  <div className="info-item full-width">
+                    <span className="info-label">Reason</span>
+                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.reason}</span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

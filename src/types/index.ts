@@ -18,14 +18,14 @@ export type RootCauseAnalysis = typeof RootCauseAnalysis[keyof typeof RootCauseA
 
 export type RootCauseAnalysisStatusDetails = {
   status: string;
-  details: string;
-  UTCDateStarted: string;
-  evaluatedBy: string;
-  type: string;
-  evaluationType: string;
-  primaryRootCause: string;
-  secondaryRootCause: string;
-  reason: string;
+  details?: string;
+  UTCDateStarted?: string;
+  evaluatedBy?: string;
+  type?: string;
+  evaluationType?: string;
+  primaryRootCause?: string;
+  secondaryRootCause?: string;
+  reason?: string;
 };
 
 export type LoggerType = 'sentry' | 'sentinel' | 'web logger 2' | 'Sentry' | 'Sentinel' | 'Web Logger 2';
@@ -77,6 +77,18 @@ export interface ProductDetails {
   lowHumidityThreshold?: string;
 }
 
+export interface Milestone {
+  type: string;
+  location: string;
+  status: string;
+  arrivalTime?: string;
+  departedTime?: string;
+  transportMode?: string;
+  vehicleNumber?: string;
+  weatherConditions?: string;
+  excursion?: any;
+}
+
 export interface Logger {
   loggerId: string;
   loggerType: LoggerType;
@@ -90,6 +102,14 @@ export interface Logger {
   events?: any[];
   lastSeen?: string;
   productDetails?: ProductDetails;
+  excursionMilestones?: Milestone[];
+  calibrationDate?: string;
+  expiryDate?: string;
+  sampleRate?: string;
+  startDelay?: string;
+  // Added for logger end date display logic
+  shipmentStatus?: string;
+  shipmentEta?: string;
 }
 
 export interface Shipment {
@@ -104,8 +124,16 @@ export interface Shipment {
   currentLocation?: string;
   modeOfTransport: string;
   packagingType: string;
+  shipmentCurrentMilestone?: shipmentCurrentMilestone[];
   alarms: number;
+  totalAlarms?: number;
   events: number | null;
   rcas: string;
   loggerData: Logger[];
+}
+
+export interface shipmentCurrentMilestone {
+  type: string;
+  location: string;
+  status: string;
 }

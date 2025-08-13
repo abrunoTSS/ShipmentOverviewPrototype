@@ -182,10 +182,11 @@
     border: 2px solid #adb5bd;
 }
 
-.milestone-dot.completed { border-color: #28a745; }
-.milestone-dot.alert { border-color: #dc3545; }
-.milestone-dot.in-transit { border-color: #007bff; }
-.milestone-dot.warning { border-color: #ffc107; }
+.milestone-dot.completed { border-color: #28a745; background-color: #28a745; }
+.milestone-dot.alert { border-color: #dc3545; background-color: #dc3545; }
+.milestone-dot.in-transit { border-color: #007bff; background-color: #007bff; }
+.milestone-dot.warning { border-color: #ffc107; background-color: #ffc107; }
+.milestone-dot.pending { border-color: #adb5bd; background-color: #fff; }
 
 .milestone-content {
     padding-left: 20px;
@@ -195,6 +196,7 @@
     font-weight: 600;
     font-size: 14px;
     color: #343a40;
+    margin-bottom: 2px;
 }
 
 .milestone-location {
@@ -249,11 +251,47 @@
 
 .status-dot.not-started { background-color: #6c757d; }
 .status-dot.in-progress { background-color: #007bff; }
-.status-dot.closed { background-color: #28a745; }
+.status-dot.closed, .status-dot.completed { background-color: #28a745; }
+.status-dot.pending { background-color: #ffc107; }
 
 .no-data-message {
     color: #6c757d;
     font-style: italic;
+}
+
+.milestone-error {
+    padding: 15px;
+    background-color: #fff3f3;
+    border: 1px solid #ffcccb;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.error-message {
+    color: #dc3545;
+    font-size: 14px;
+    margin: 0;
+}
+
+.rca-details {
+    margin-top: 16px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.rca-details .info-item.full-width {
+    grid-column: 1 / -1;
+}
+
+.action-items-list {
+    margin: 8px 0 0 0;
+    padding-left: 20px;
+}
+
+.action-items-list li {
+    margin-bottom: 4px;
+    color: #495057;
 }
 
 /* Graph Section Styling */
@@ -290,8 +328,45 @@
     border-top: 1px solid #e9ecef;
 }
 
-.excursion-subtitle {
-    margin-bottom: 8px;
+.excursion-subtitle,
+.milestone-subtitle {
+    margin: 16px 0 12px 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: #495057;
+}
+
+.shipment-milestone-container {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e9ecef;
+}
+
+.milestone-status-badge {
+    margin-top: 6px;
+}
+
+.status-indicator {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-indicator.completed {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
+}
+
+.status-indicator.current {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+}
+
+.status-indicator.pending {
+    background-color: rgba(108, 117, 125, 0.1);
+    color: #6c757d;
 }
 
 /* Threshold Indicators */
@@ -311,6 +386,53 @@
     align-items: center;
     gap: 8px;
     font-size: 12px;
+}
+
+/* Table Styling */
+
+/* Default styles for all table cells */
+.main-table td {
+  white-space: nowrap; /* Prevent text from wrapping */
+  overflow: hidden; /* Hide overflow */
+  text-overflow: ellipsis; /* Add '...' for long text */
+  max-width: 200px;
+}
+
+/* Default state for main shipment rows */
+.main-table > tbody > .table-row {
+  background-color: #ffffff;
+  transition: background-color 0.2s;
+}
+
+/* Hover state for main shipment rows */
+.main-table > tbody > .table-row:hover {
+  background-color: #f1f5f9;
+}
+
+/* Selected shipment row highlight (overrides default and hover) */
+.main-table > tbody > .table-row.selected-shipment,
+.main-table > tbody > .table-row.selected-shipment:hover {
+  background-color: #f8f9fa; /* Match logger row color */
+}
+
+/* The TR that contains the nested table should have a plain background */
+.main-table > tbody > .nested-row,
+.main-table > tbody > .nested-row:hover {
+  background-color: #ffffff !important;
+}
+
+/* Styling for the rows INSIDE the nested table */
+.nested-table-container .main-table tr {
+  background-color: #f8f9fa; /* Distinct background */
+}
+
+.nested-table-container .main-table tr:hover {
+  background-color: #e9ecef;
+}
+
+.nested-table-container td {
+  border-color: #dee2e6;
+  padding: 12px 16px;
 }
 
 .threshold-label {

@@ -103,8 +103,8 @@ body {
 }
 
 .main-table thead {
-  background: #4299e1;
-  color: white;
+  background: #ffffff;
+  color: Black;
 }
 
 .main-table th {
@@ -134,10 +134,6 @@ body {
   background-color: #ebf8ff;
 }
 
-.main-table tbody tr:nth-child(even) {
-  background-color: #f7fafc;
-}
-
 .main-table td {
   padding: 16px 8px;
   vertical-align: top;
@@ -149,8 +145,6 @@ body {
   word-break: break-all;
   line-height: 1.4;
   min-height: 60px;
-  max-height: 80px;
-  overflow: hidden;
   text-align: left;
   hyphens: auto;
 }
