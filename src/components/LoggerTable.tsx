@@ -87,16 +87,7 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
         return row.original.temperature || 'n/a';
       },
     },
-    {
-      id: 'humidity',
-      header: 'Humidity',
-      accessorKey: 'humidity',
-      cell: ({ row }) => {
-        // Don't show humidity for Web Logger 2 type loggers
-        if (row.original.loggerType === 'Web Logger 2') return 'n/a';
-        return row.original.humidity || 'n/a';
-      },
-    },
+
     {
       id: 'alarms',
       header: 'Alarms',

@@ -322,12 +322,6 @@
     font-style: italic;
 }
 
-.humidity-excursion-details {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #e9ecef;
-}
-
 .excursion-subtitle,
 .milestone-subtitle {
     margin: 16px 0 12px 0;
@@ -445,12 +439,4 @@
 
 .threshold-label.temp-low {
     color: #3498db;
-}
-
-.threshold-label.humidity-high {
-    color: #f39c12;
-}
-
-.threshold-label.humidity-low {
-    color: #2ecc71;
 }

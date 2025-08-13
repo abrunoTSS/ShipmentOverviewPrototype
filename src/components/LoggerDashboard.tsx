@@ -56,14 +56,6 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
             <p>Lowest: {milestone.excursion.lowest}</p>
             <p>Average: {milestone.excursion.average}</p>
             <p>Duration: {milestone.excursion.duration}</p>
-            {['Sentry', 'Sentinel'].includes(logger.loggerType) && milestone.excursion.highestHumidity && (
-              <div className="humidity-excursion-details">
-                <p className="excursion-subtitle"><strong>Humidity Event:</strong></p>
-                <p>Highest: {milestone.excursion.highestHumidity}</p>
-                <p>Lowest: {milestone.excursion.lowestHumidity}</p>
-                <p>Average: {milestone.excursion.averageHumidity}</p>
-              </div>
-            )}
           </div>
         )}
       </div>
@@ -169,12 +161,6 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                   <span className="info-value">{logger.temperature}</span>
                 </div>
               )}
-              {logger.humidity && logger.humidity !== 'n/a' && logger.loggerType !== 'Web Logger 2' && (
-                <div className="info-item">
-                  <span className="info-label">Humidity</span>
-                  <span className="info-value">{logger.humidity}</span>
-                </div>
-              )}
               {logger.lastSeen && (
                 <div className="info-item">
                   <span className="info-label">Last Seen</span>
@@ -195,51 +181,22 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
 
           {logger.productDetails && (
             <>
+
               <div className="dashboard-section">
-                <h3 className="section-title">Product Details</h3>
+                <h3 className="section-title">Product Temperature Profile</h3>
                 <div className="info-grid">
-                  <div className="info-item">
-                    <span className="info-label">Product Name</span>
-                    <span className="info-value">{logger.productDetails.prodfilename}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Product Type</span>
-                    <span className="info-value">{logger.productDetails.producttype}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="dashboard-section">
-                <h3 className="section-title">Temperature Profile</h3>
-                <div className="info-grid">
-                  <div className="info-item">
-                    <span className="info-label">High Threshold</span>
-                    <span className="info-value">{logger.productDetails.highThreshold}</span>
-                  </div>
                   <div className="info-item">
                     <span className="info-label">Low Threshold</span>
                     <span className="info-value">{logger.productDetails.lowThreshold}</span>
+                  </div>
+                  <div className="info-item">
+                    <span className="info-label">High Threshold</span>
+                    <span className="info-value">{logger.productDetails.highThreshold}</span>
                   </div>
                 </div>
               </div>
             </>
           )}
-
-          {logger.productDetails && ['Sentry', 'Sentinel'].includes(logger.loggerType) && (
-            <div className="dashboard-section">
-              <h3 className="section-title">Humidity Profile</h3>
-              <div className="info-grid">
-                <div className="info-item">
-                  <span className="info-label">High Threshold</span>
-                  <span className="info-value">{logger.productDetails.highHumidityThreshold}</span>
-                </div>
-                <div className="info-item">
-                  <span className="info-label">Low Threshold</span>
-                  <span className="info-value">{logger.productDetails.lowHumidityThreshold}</span>
-                </div>
-              </div>
-            </div>
-          )}
-
           {Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
             <div className="dashboard-section">
               <h3 className="section-title">Alarms</h3>
@@ -259,18 +216,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 {logger.alarms[activeTab]?.excursionMilestones.map(renderMilestone)}
                 
                 {/* Display graph for excursions with graph data */}
-                {logger.alarms[activeTab]?.excursionMilestones.some(milestone => 
-                  milestone.excursion?.graphData && milestone.excursion.graphData.length > 0
-                ) && (
-                  <div className="excursion-graph-section">
-                    <ExcursionGraph 
-                      data={logger.alarms[activeTab]?.excursionMilestones
-                        .find(milestone => milestone.excursion?.graphData)?.excursion?.graphData || []}
-                      logger={logger}
-                      shipment={shipment}
-                    />
-                  </div>
-                )}
+
               </div>
             </div>
           )}
@@ -285,12 +231,6 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
               
               <div className="rca-details">
                 {/* RCA fields from the type definition */}
-                {logger.rootCauseAnalysisStatusDetails.details && (
-                  <div className="info-item full-width">
-                    <span className="info-label">Details</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.details}</span>
-                  </div>
-                )}
                 {logger.rootCauseAnalysisStatusDetails.UTCDateStarted && (
                   <div className="info-item">
                     <span className="info-label">Date Started</span>

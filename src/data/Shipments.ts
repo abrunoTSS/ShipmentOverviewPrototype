@@ -44,7 +44,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "Active",
             temperature: "n/a",
-            humidity: "n/a",
+         
             alarms: [],
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -101,7 +101,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-14T08:00:00Z",
             loggerEnded: "Active",
             temperature: "6°C",
-            humidity: "40% RH",
+         
             alarms: [
               {
                 alarmId: 1,
@@ -134,14 +134,6 @@ export const shipments: Shipment[] = [
                       highestHumidity: "75% RH",
                       lowestHumidity: "55% RH",
                       averageHumidity: "65% RH",
-                      graphData: [
-                        { time: '09:00', temperature: 15, humidity: 60 },
-                        { time: '09:15', temperature: 22, humidity: 66 },
-                        { time: '09:30', temperature: 25, humidity: 72 },
-                        { time: '09:45', temperature: 21, humidity: 70 },
-                        { time: '10:00', temperature: 15, humidity: 62 },
-                        { time: '10:15', temperature: 5, humidity: 55 },
-                      ]
                     }
                   },
                   {
@@ -186,15 +178,7 @@ export const shipments: Shipment[] = [
                       highestHumidity: "72% RH",
                       lowestHumidity: "60% RH",
                       averageHumidity: "68% RH",
-                      graphData: [
-                        { time: '09:30', temperature: 18, humidity: 62 },
-                        { time: '09:45', temperature: 24, humidity: 68 },
-                        { time: '10:00', temperature: 25, humidity: 72 },
-                        { time: '10:15', temperature: 20, humidity: 65 },
-                        { time: '10:30', temperature: 10, humidity: 60 },
-                      ]
-                    }
-                  },
+                   
                   {
                     type: "lane 3",
                     location: "Tokyo Narita Airport",
@@ -227,7 +211,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "Active",
             temperature: "6°C",
-            humidity: "40% RH",
+         
             alarms: [
               {
                 alarmId: 1,
@@ -260,14 +244,7 @@ export const shipments: Shipment[] = [
                       highestHumidity: "78% RH",
                       lowestHumidity: "58% RH",
                       averageHumidity: "67% RH",
-                      graphData: [
-                        { time: '09:00', temperature: 16, humidity: 62 },
-                        { time: '09:15', temperature: 23, humidity: 68 },
-                        { time: '09:30', temperature: 25, humidity: 78 },
-                        { time: '09:45', temperature: 20, humidity: 71 },
-                        { time: '10:00', temperature: 14, humidity: 64 },
-                        { time: '10:15', temperature: 6, humidity: 58 },
-                      ]
+                
                     }
                   },
                   {
@@ -312,13 +289,7 @@ export const shipments: Shipment[] = [
                       highestHumidity: "71% RH",
                       lowestHumidity: "62% RH",
                       averageHumidity: "66% RH",
-                      graphData: [
-                        { time: '09:30', temperature: 19, humidity: 63 },
-                        { time: '09:45', temperature: 23, humidity: 69 },
-                        { time: '10:00', temperature: 25, humidity: 71 },
-                        { time: '10:15', temperature: 21, humidity: 67 },
-                        { time: '10:30', temperature: 11, humidity: 62 },
-                      ]
+                  
                     }
                   },
                   {
@@ -370,7 +341,6 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "Active",
             temperature: "n/a",
-            humidity: "n/a",
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -890,7 +860,6 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-08-10T08:00:00Z",
             loggerEnded: "Active",
             temperature: "n/a",
-            humidity: "n/a",
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -909,7 +878,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-08-10T08:00:00Z",
             loggerEnded: "Active",
             temperature: "n/a",
-            humidity: "n/a",
+       
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -947,7 +916,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
             temperature: "n/a",
-            humidity: "n/a",
+           
             alarms: [
               {
                 alarmId: 1,
@@ -994,7 +963,6 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
             temperature: "n/a",
-            humidity: "n/a",
             alarms: [
               {
                 alarmId: 1,

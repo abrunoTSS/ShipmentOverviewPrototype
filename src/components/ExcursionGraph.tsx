@@ -52,11 +52,8 @@ const ExcursionGraph: React.FC<ExcursionGraphProps> = ({ data, logger, shipment 
   // --- Thresholds ---
   const tempHighThreshold = logger.productDetails?.highThreshold ? parseInt(logger.productDetails.highThreshold.replace(/[^\d]/g, '')) : 12;
   const tempLowThreshold = logger.productDetails?.lowThreshold ? parseInt(logger.productDetails.lowThreshold.replace(/[^\d]/g, '')) : 2;
-  const humidityHighThreshold = logger.productDetails?.highHumidityThreshold ? parseInt(logger.productDetails.highHumidityThreshold.replace(/[^\d]/g, '')) : 60;
-  const humidityLowThreshold = logger.productDetails?.lowHumidityThreshold ? parseInt(logger.productDetails.lowHumidityThreshold.replace(/[^\d]/g, '')) : 30;
 
   // --- Data Configuration ---
-  const hasHumidityData = logger.loggerType !== 'Web Logger 2' && data.some(point => point.humidity !== undefined);
 
   const chartData = {
     labels: data.map(point => point.time),
@@ -69,14 +66,6 @@ const ExcursionGraph: React.FC<ExcursionGraphProps> = ({ data, logger, shipment 
         tension: 0.4,
         yAxisID: 'y',
       },
-      ...(hasHumidityData ? [{
-        label: 'Humidity (%)',
-        data: data.map(point => point.humidity || 0),
-        borderColor: '#3498db',
-        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-        tension: 0.4,
-        yAxisID: 'y1',
-      }] : [])
     ],
   };
 
@@ -86,10 +75,6 @@ const ExcursionGraph: React.FC<ExcursionGraphProps> = ({ data, logger, shipment 
   const tempMax = Math.max(...tempValues);
   const tempPadding = (tempMax - tempMin) * 0.2;
 
-  const humidityValues = hasHumidityData ? data.map(d => d.humidity || 0) : [];
-  const humidityMin = hasHumidityData ? Math.min(...humidityValues) : 0;
-  const humidityMax = hasHumidityData ? Math.max(...humidityValues) : 0;
-  const humidityPadding = hasHumidityData ? (humidityMax - humidityMin) * 0.2 : 0;
 
   // --- Chart Options ---
   const options: ChartOptions<'line'> = {
@@ -121,28 +106,6 @@ const ExcursionGraph: React.FC<ExcursionGraphProps> = ({ data, logger, shipment 
             borderDash: [6, 6],
             label: { content: `Low Temp: ${tempLowThreshold}°C`, display: false, position: 'start' }
           },
-          ...(hasHumidityData ? {
-            humidityHigh: {
-              type: 'line',
-              yMin: humidityHighThreshold,
-              yMax: humidityHighThreshold,
-              borderColor: 'rgb(54, 162, 235)',
-              borderWidth: 2,
-              borderDash: [6, 6],
-              yScaleID: 'y1',
-              label: { content: `High Humidity: ${humidityHighThreshold}%`, display: false, position: 'end' }
-            },
-            humidityLow: {
-              type: 'line',
-              yMin: humidityLowThreshold,
-              yMax: humidityLowThreshold,
-              borderColor: 'rgb(54, 162, 235)',
-              borderWidth: 2,
-              borderDash: [6, 6],
-              yScaleID: 'y1',
-              label: { content: `Low Humidity: ${humidityLowThreshold}%`, display: false, position: 'start' }
-            }
-          } : {})
         }
       }
     },
@@ -156,17 +119,6 @@ const ExcursionGraph: React.FC<ExcursionGraphProps> = ({ data, logger, shipment 
         min: Math.floor(tempMin - tempPadding),
         max: Math.ceil(tempMax + tempPadding),
       },
-      ...(hasHumidityData ? {
-        y1: {
-          type: 'linear' as const,
-          display: true,
-          position: 'right' as const,
-          title: { display: true, text: 'Humidity (%)' },
-          grid: { drawOnChartArea: false },
-          min: Math.floor(humidityMin - humidityPadding),
-          max: Math.ceil(humidityMax + humidityPadding),
-        },
-      } : {}),
     },
   };
 

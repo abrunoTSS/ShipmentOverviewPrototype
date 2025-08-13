@@ -33,7 +33,6 @@ export type LoggerType = 'sentry' | 'sentinel' | 'web logger 2' | 'Sentry' | 'Se
 export interface ExcursionGraphData {
   time: string;
   temperature: number;
-  humidity?: number;
 }
 
 export interface Excursion {
@@ -45,7 +44,6 @@ export interface Excursion {
   highestHumidity?: string;
   lowestHumidity?: string;
   averageHumidity?: string;
-  graphData?: ExcursionGraphData[];
 }
 
 export interface ExcursionMilestone {
@@ -96,7 +94,6 @@ export interface Logger {
   loggerStarted: string;
   loggerEnded: string;
   temperature?: string;
-  humidity?: string;
   alarms: Alarm[] | number; // Can be a count or a detailed array
   rootCauseAnalysis: string | null;
   rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;
