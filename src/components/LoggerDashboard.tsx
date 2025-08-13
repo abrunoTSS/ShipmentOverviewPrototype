@@ -24,15 +24,31 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
       <div className={`milestone-dot ${milestone.status.toLowerCase()}`} />
       <div className="milestone-content">
         <p className="milestone-location">{milestone.location}</p>
-        <div className="milestone-extra-details">
-          <p><strong>Arrival Time:</strong> {milestone.arrivalTime ? new Date(milestone.arrivalTime).toLocaleString() : 'N/A'}</p>
-          {milestone.departedTime && (
-            <p><strong>Departed Time:</strong> {milestone.departedTime ? new Date(milestone.departedTime).toLocaleString() : 'N/A'}</p>
-          )}
-          <p><strong>Status:</strong> {milestone.status}</p>
-          <p><strong>Transport:</strong> {milestone.transportMode} ({milestone.vehicleNumber})</p>
-          <p><strong>Weather:</strong> {milestone.weatherConditions}</p>
-        </div>
+        {/* For SH014 and SH015, don't show the grey boxes with extra details */}
+        {!(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
+          <div className="milestone-extra-details">
+            {/* Only show arrival time if it exists and is not N/A */}
+            {milestone.arrivalTime && milestone.arrivalTime !== 'N/A' && (
+              <p><strong>Arrival Time:</strong> {new Date(milestone.arrivalTime).toLocaleString()}</p>
+            )}
+            {/* Only show departed time if it exists */}
+            {milestone.departedTime && (
+              <p><strong>Departed Time:</strong> {new Date(milestone.departedTime).toLocaleString()}</p>
+            )}
+            {/* Only show status if it's not Alert */}
+            {milestone.status && milestone.status !== 'Alert' && (
+              <p><strong>Status:</strong> {milestone.status}</p>
+            )}
+            {/* Only show transport if transportMode and vehicleNumber exist and are not empty */}
+            {milestone.transportMode && milestone.vehicleNumber && milestone.transportMode !== '' && milestone.vehicleNumber !== '' && (
+              <p><strong>Transport:</strong> {milestone.transportMode} ({milestone.vehicleNumber})</p>
+            )}
+            {/* Only show weather if it exists and is not empty */}
+            {milestone.weatherConditions && milestone.weatherConditions !== '' && (
+              <p><strong>Weather:</strong> {milestone.weatherConditions}</p>
+            )}
+          </div>
+        )}
         {milestone.excursion && (
           <div className="excursion-details">
             <p><strong>Temperature Event:</strong></p>
@@ -78,36 +94,44 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 <span className="info-label">Destination</span>
                 <span className="info-value">{shipment.destination}</span>
               </div>
-              <div className="info-item">
-                <span className="info-label">Status</span>
-                <span className="info-value">{shipment.status}</span>
-              </div>
+              {/* Only show status for shipments without error messages */}
+              {shipment.shipmentId !== "SH014" && shipment.shipmentId !== "SH015" && (
+                <div className="info-item">
+                  <span className="info-label">Status</span>
+                  <span className="info-value">{shipment.status}</span>
+                </div>
+              )}
+  
             </div>
+
+            {/* Error message for shipments with missing milestone data */}
+            {(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
+              <div className="milestone-error" style={{ marginTop: '15px', width: '100%' }}>
+                <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the shipment ID is correct.</p>
+              </div>
+            )}
             
-            {/* Shipment Current Milestone Timeline - Only for In Transit shipments */}
-            {shipment.status === 'In Transit' && (
+            {/* Shipment Current Milestone Timeline - Only for In Transit shipments with milestone data */}
+            {shipment.status === 'In Transit' && 
+             !(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && 
+             shipment.shipmentCurrentMilestone && 
+             shipment.shipmentCurrentMilestone.length > 0 && (
               <div className="shipment-milestone-container">
                 <h4 className="milestone-subtitle">Current Lane</h4>
-                {shipment.shipmentCurrentMilestone && shipment.shipmentCurrentMilestone.length > 0 ? (
-                  <div className="milestone-timeline">
-                    {shipment.shipmentCurrentMilestone.map((milestone, index) => (
-                      <div className="milestone-item" key={index}>
-                        <div className={`milestone-dot ${milestone.status === 'Current' ? 'completed' : 
-                                                         milestone.status === 'Completed' ? 'pending' : 'pending'}`} />
-                        <div className="milestone-content">
-                          <p className="milestone-location">{milestone.location}</p>
-                          <div className="milestone-status-badge">
-                            <span className={`status-indicator ${milestone.status.toLowerCase()}`}>{milestone.status}</span>
-                          </div>
+                <div className="milestone-timeline">
+                  {shipment.shipmentCurrentMilestone.map((milestone, index) => (
+                    <div className="milestone-item" key={index}>
+                      <div className={`milestone-dot ${milestone.status === 'Current' ? 'completed' : 
+                                                       milestone.status === 'Completed' ? 'pending' : 'pending'}`} />
+                      <div className="milestone-content">
+                        <p className="milestone-location">{milestone.location}</p>
+                        <div className="milestone-status-badge">
+                          <span className={`status-indicator ${milestone.status.toLowerCase()}`}>{milestone.status}</span>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="milestone-error">
-                    <p className="error-message">Unable to get milestone data. Please check if the shipment number is correct and correct it if possible.</p>
-                  </div>
-                )}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -139,13 +163,13 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 <span className="info-label">Start Delay</span>
                 <span className="info-value">{logger.startDelay || '0 minute'}</span>
               </div>
-              {logger.temperature && logger.temperature !== 'N/A' && (
+              {logger.temperature && logger.temperature !== 'N/A' && logger.loggerType !== 'Web Logger 2' && (
                 <div className="info-item">
                   <span className="info-label">Temperature</span>
                   <span className="info-value">{logger.temperature}</span>
                 </div>
               )}
-              {logger.humidity && logger.humidity !== 'N/A' && (
+              {logger.humidity && logger.humidity !== 'N/A' && logger.loggerType !== 'Web Logger 2' && (
                 <div className="info-item">
                   <span className="info-label">Humidity</span>
                   <span className="info-value">{logger.humidity}</span>

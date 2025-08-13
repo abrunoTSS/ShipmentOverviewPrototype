@@ -81,13 +81,21 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       id: 'temperature',
       header: 'Temp',
       accessorKey: 'temperature',
-      cell: ({ getValue }) => getValue() as string || 'N/A',
+      cell: ({ row }) => {
+        // Don't show temperature for Web Logger 2 type loggers
+        if (row.original.loggerType === 'Web Logger 2') return 'N/A';
+        return row.original.temperature || 'N/A';
+      },
     },
     {
       id: 'humidity',
       header: 'Humidity',
       accessorKey: 'humidity',
-      cell: ({ getValue }) => getValue() as string || 'N/A',
+      cell: ({ row }) => {
+        // Don't show humidity for Web Logger 2 type loggers
+        if (row.original.loggerType === 'Web Logger 2') return 'N/A';
+        return row.original.humidity || 'N/A';
+      },
     },
     {
       id: 'alarms',

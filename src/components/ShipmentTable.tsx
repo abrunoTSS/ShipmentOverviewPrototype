@@ -132,7 +132,13 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       accessorKey: 'eta',
       cell: ({ getValue }) => {
         const eta = getValue() as string | null;
-        return eta ? new Date(eta).toLocaleDateString() : 'N/A';
+        // Check if eta is a valid date string or a special value like "Unavailable"
+        if (!eta) return 'N/A';
+        if (eta === 'Unavailable') return 'Unavailable';
+        
+        // Try to parse as date, but handle invalid dates gracefully
+        const date = new Date(eta);
+        return isNaN(date.getTime()) ? eta : date.toLocaleDateString();
       },
     },
     {
@@ -262,10 +268,13 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                 <tr className="nested-row">
                   <td colSpan={columns.length} className="nested-table-container">
                     <LoggerTable
-                      loggers={row.original.loggerData}
+                      loggers={row.original.loggerData.map(logger => ({
+                        ...logger,
+                        shipmentStatus: row.original.status,
+                        shipmentEta: row.original.eta
+                      }))}
                       onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
                       selectedLoggerId={selectedLoggerId}
-
                     />
                   </td>
                 </tr>

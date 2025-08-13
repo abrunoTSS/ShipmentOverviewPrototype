@@ -40,7 +40,7 @@ export interface Excursion {
   highest: string;
   lowest: string;
   average: string;
-  startTime: string;
+  startTime?: string;
   duration: string;
   highestHumidity?: string;
   lowestHumidity?: string;
@@ -49,20 +49,21 @@ export interface Excursion {
 }
 
 export interface ExcursionMilestone {
-  type: string;
+  type?: string;
   location: string;
-  arrivalTime: string;
+  arrivalTime?: string;
   departedTime?: string;
   status: string;
-  transportMode: string;
-  vehicleNumber: string;
-  weatherConditions: string;
-  excursion?: Excursion;
+  transportMode?: string;
+  vehicleNumber?: string;
+  weatherConditions?: string;
+  excursion?: Excursion | null;
 }
 
 export interface Alarm {
   alarmId: number;
   alarmType: string;
+  errorMessage?: string;
   excursionMilestones: ExcursionMilestone[];
 }
 

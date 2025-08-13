@@ -624,6 +624,7 @@ export const shipments: Shipment[] = [
         eta: "2025-06-20",
         status: "Delivered",
         freightForwarder: "DHL",
+        currentLocation: "n/a",
         modeOfTransport: "Air",
         packagingType: "Insulated Box",
         alarms: 4,
@@ -876,7 +877,7 @@ export const shipments: Shipment[] = [
         loggers: 2,
         freightForwarder: "DHL",
         currentLocation: "Unavailable",
-        modeOfTransport: "Truck",
+        modeOfTransport: "Road",
         packagingType: "Unavailable",
         alarms: 1,
         totalAlarms: 1,
@@ -921,6 +922,119 @@ export const shipments: Shipment[] = [
               lowThreshold: "2 degrees celcius"
             }
           },
+        ]
+      },
+      {
+        shipmentId: "SH015",
+        origin: "Paris, France",
+        destination: "Madrid, Spain",
+        eta: "2025-07-13",
+        status: "Delivered",
+        loggers: 2,
+        freightForwarder: "DHL",
+        currentLocation: "Unavailable",
+        modeOfTransport: "Truck",
+        packagingType: "Unavailable",
+        alarms: 1,
+        totalAlarms: 1,
+        events: 0,
+        rcas: "Not Started",
+        shipmentCurrentMilestone: [],
+        loggerData: [
+          {
+            loggerId: "WB-1015A",
+            loggerType: "Web Logger 2",
+            loggerStarted: "2025-07-10T08:00:00Z",
+            loggerEnded: "2025-07-13T08:00:00Z",
+            temperature: "N/A",
+            humidity: "N/A",
+            alarms: [
+              {
+                alarmId: 1,
+                alarmType: "temperature",
+                errorMessage: "Unable to get milestone data from FF",
+                excursionMilestones: [
+                  {
+                    location: "48.8566° N, 2.3522° E",
+                    status: "Completed",
+                    excursion: null
+                  },
+                  {
+                    location: "45.7640° N, 4.8357° E",
+                    status: "Alert",
+                    excursion: {
+                      highest: "25°C",
+                      lowest: "5°C",
+                      average: "21°C",
+                      duration: "1h 15m"
+                    }
+                  },
+                  {
+                    location: "40.4168° N, 3.7038° W",
+                    status: "Completed",
+                    excursion: null
+                  }
+                ]
+              }
+            ],
+            rootCauseAnalysis: null,
+            rootCauseAnalysisStatusDetails: null,
+            lastSeen: "2025-07-13 14:30",
+            productDetails: {
+              prodfilename: "Vaccine-X",
+              producttype: "cold chain",
+              temperatureProfile: "profile",
+              highThreshold: "10 degrees celcius",
+              lowThreshold: "2 degrees celcius"
+            }
+          },
+          {
+            loggerId: "WB-1015B",
+            loggerType: "Web Logger 2",
+            loggerStarted: "2025-07-10T08:00:00Z",
+            loggerEnded: "2025-07-13T08:00:00Z",
+            temperature: "N/A",
+            humidity: "N/A",
+            alarms: [
+              {
+                alarmId: 1,
+                alarmType: "temperature",
+                errorMessage: "Unable to get milestone data from FF",
+                excursionMilestones: [
+                  {
+                    location: "48.8566° N, 2.3522° E",
+                    status: "Completed",
+                    excursion: null
+                  },
+                  {
+                    location: "45.7640° N, 4.8357° E",
+                    status: "Alert",
+                    excursion: {
+                      highest: "24°C",
+                      lowest: "4°C",
+                      average: "20°C",
+                      duration: "1h 30m"
+                    }
+                  },
+                  {
+                    location: "40.4168° N, 3.7038° W",
+                    status: "Completed",
+                    excursion: null
+                  }
+                ]
+              }
+            ],
+            rootCauseAnalysis: null,
+            rootCauseAnalysisStatusDetails: null,
+            lastSeen: "2025-07-13 14:35",
+            productDetails: {
+              prodfilename: "Vaccine-X",
+              producttype: "cold chain",
+              temperatureProfile: "profile",
+              highThreshold: "10 degrees celcius",
+              lowThreshold: "2 degrees celcius"
+            }
+          }
         ]
       }
 ];
