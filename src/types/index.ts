@@ -41,9 +41,7 @@ export interface Excursion {
   average: string;
   startTime?: string;
   duration: string;
-  highestHumidity?: string;
-  lowestHumidity?: string;
-  averageHumidity?: string;
+
 }
 
 export interface ExcursionMilestone {
@@ -71,9 +69,7 @@ export interface ProductDetails {
   temperatureProfile: string;
   highThreshold: string;
   lowThreshold: string;
-  humidityProfile?: string;
-  highHumidityThreshold?: string;
-  lowHumidityThreshold?: string;
+ 
 }
 
 export interface Milestone {

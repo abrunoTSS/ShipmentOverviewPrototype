@@ -131,9 +131,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75% RH",
-                      lowestHumidity: "55% RH",
-                      averageHumidity: "65% RH",
+                    
                     }
                   },
                   {
@@ -175,10 +173,8 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72% RH",
-                      lowestHumidity: "60% RH",
-                      averageHumidity: "68% RH",
-                   
+                    }
+                  },
                   {
                     type: "lane 3",
                     location: "Tokyo Narita Airport",
@@ -200,9 +196,7 @@ export const shipments: Shipment[] = [
               temperatureProfile: "profile",
               highThreshold: "12 °C",
               lowThreshold: "2 °C",
-              humidityProfile: "standard",
-              highHumidityThreshold: "60% RH",
-              lowHumidityThreshold: "30% RH"
+           
             }
           },
           {
@@ -241,9 +235,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "78% RH",
-                      lowestHumidity: "58% RH",
-                      averageHumidity: "67% RH",
+                    
                 
                     }
                   },
@@ -286,9 +278,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "71% RH",
-                      lowestHumidity: "62% RH",
-                      averageHumidity: "66% RH",
+                    
                   
                     }
                   },
@@ -313,9 +303,7 @@ export const shipments: Shipment[] = [
               temperatureProfile: "profile",
               highThreshold: "12 °C",
               lowThreshold: "2 °C",
-              humidityProfile: "standard",
-              highHumidityThreshold: "60% RH",
-              lowHumidityThreshold: "30% RH"
+           
             }
           }
         ]
@@ -405,9 +393,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75% RH",
-                      lowestHumidity: "55% RH",
-                      averageHumidity: "65% RH"
+                
                     }
                   },
                   {
@@ -449,9 +435,8 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72% RH",
-                      lowestHumidity: "60% RH",
-                      averageHumidity: "68% RH"
+                  
+   
                     }
                   },
                   {
@@ -512,9 +497,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75% RH",
-                      lowestHumidity: "55% RH",
-                      averageHumidity: "65% RH"
+                
                     }
                   },
                   {
@@ -556,9 +539,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-07-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72% RH",
-                      lowestHumidity: "60% RH",
-                      averageHumidity: "68% RH"
+                  
                     }
                   },
                   {
@@ -637,9 +618,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75% RH",
-                      lowestHumidity: "55% RH",
-                      averageHumidity: "65% RH"
+                    
                     }
                   },
                   {
@@ -681,10 +660,8 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72% RH",
-                      lowestHumidity: "60% RH",
-                      averageHumidity: "68% RH"
-                    }
+                    
+                    },
                   },
                   {
                     type: "lane 3",
@@ -754,9 +731,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-15 09:00",
                       duration: "1h 15m",
-                      highestHumidity: "75% RH",
-                      lowestHumidity: "55% RH",
-                      averageHumidity: "65% RH"
+                    
                     }
                   },
                   {
@@ -798,9 +773,7 @@ export const shipments: Shipment[] = [
                       average: "21°C",
                       startTime: "2025-06-17 09:30",
                       duration: "1h 15m",
-                      highestHumidity: "72% RH",
-                      lowestHumidity: "60% RH",
-                      averageHumidity: "68% RH"
+                  
                     }
                   },
                   {

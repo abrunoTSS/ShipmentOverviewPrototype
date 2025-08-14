@@ -57,9 +57,12 @@ body {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   overflow: hidden;
-  background: #f8fafc;
+  background: #f1f8ff;
   table-layout: fixed;
 }
+
+
+
 
 .nested-table-container {
   width: 100% !important;
@@ -127,11 +130,11 @@ body {
 }
 
 .main-table tbody tr:hover {
-  background-color: #ebf8ff;
+  background-color: #f1f8ff;
 }
 
 .main-table tbody tr.expanded {
-  background-color: #ebf8ff;
+  background-color: #f1f8ff;
 }
 
 .main-table td {

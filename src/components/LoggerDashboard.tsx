@@ -21,7 +21,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
   // Render excursion milestone for alarm events
   const renderMilestone = (milestone: ExcursionMilestone, index: number) => (
     <div className="milestone-item" key={index}>
-      <div className={`milestone-dot ${milestone.status.toLowerCase()}`} />
+      <div className={`milestone-dot alert ${milestone.status.toLowerCase()}`} />
       <div className="milestone-content">
         <p className="milestone-location">{milestone.location}</p>
         {/* For SH014 and SH015, don't show the grey boxes with extra details */}
