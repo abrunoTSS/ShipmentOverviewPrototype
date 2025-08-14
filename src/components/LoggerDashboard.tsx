@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import type { Shipment, Logger, ExcursionMilestone } from '../types';
-import ExcursionGraph from './ExcursionGraph';
 import './loggerDashboard.css';
 
 interface LoggerDashboardProps {
