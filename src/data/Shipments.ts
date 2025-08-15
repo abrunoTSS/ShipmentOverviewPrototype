@@ -878,7 +878,7 @@ export const shipments: Shipment[] = [
         modeOfTransport: "Road",
         packagingType: "n/a",
         alarms: 1,
-        totalAlarms: 1,
+        totalAlarms: 0,
         events: 0,
         rcas: "Not Started",
         shipmentCurrentMilestone: [],
@@ -889,36 +889,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
             temperature: "n/a",
-           
-            alarms: [
-              {
-                alarmId: 1,
-                alarmType: "temperature",
-                errorMessage: "Unable to get milestone data from FF",
-                excursionMilestones: [
-                  {
-                    location: "48.8566° N, 2.3522° E",
-                    status: "Completed",
-                    excursion: null
-                  },
-                  {
-                    location: "45.7640° N, 4.8357° E",
-                    status: "Alert",
-                    excursion: {
-                      highest: "25°C",
-                      lowest: "5°C",
-                      average: "21°C",
-                      duration: "1h 15m"
-                    }
-                  },
-                  {
-                    location: "40.4168° N, 3.7038° W",
-                    status: "Completed",
-                    excursion: null
-                  }
-                ]
-              }
-            ],
+            alarms: [],
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
             lastSeen: "2025-07-13 14:30",
@@ -936,35 +907,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
             temperature: "n/a",
-            alarms: [
-              {
-                alarmId: 1,
-                alarmType: "temperature",
-                errorMessage: "Unable to get milestone data from FF",
-                excursionMilestones: [
-                  {
-                    location: "48.8566° N, 2.3522° E",
-                    status: "Completed",
-                    excursion: null
-                  },
-                  {
-                    location: "45.7640° N, 4.8357° E",
-                    status: "Alert",
-                    excursion: {
-                      highest: "24°C",
-                      lowest: "4°C",
-                      average: "20°C",
-                      duration: "1h 30m"
-                    }
-                  },
-                  {
-                    location: "40.4168° N, 3.7038° W",
-                    status: "Completed",
-                    excursion: null
-                  }
-                ]
-              }
-            ],
+            alarms: [],
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
             lastSeen: "2025-07-13 14:35",

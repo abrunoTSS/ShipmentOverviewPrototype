@@ -66,7 +66,6 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
       <div className={`sidebar-overlay ${isOpen ? 'open' : ''}`} onClick={onClose} />
       <div className={`logger-dashboard ${isOpen ? 'open' : ''}`}>
         <div className="dashboard-header">
-          <h2 className="dashboard-title">Logger Dashboard</h2>
           <button onClick={onClose} className="close-button"><X size={24} /></button>
         </div>
         <div className="dashboard-content">
