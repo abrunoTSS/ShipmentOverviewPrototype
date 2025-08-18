@@ -42,7 +42,7 @@ export const shipments: Shipment[] = [
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "Active",
+            loggerEnded: "n/a",
             temperature: "n/a",
          
             alarms: [],
@@ -99,7 +99,7 @@ export const shipments: Shipment[] = [
             loggerId: "SENTRY-1002",
             loggerType: "Sentry",
             loggerStarted: "2025-07-14T08:00:00Z",
-            loggerEnded: "Active",
+            loggerEnded: "n/a",
             temperature: "6°C",
          
             alarms: [
@@ -203,7 +203,7 @@ export const shipments: Shipment[] = [
             loggerId: "SENTINEL-1002",
             loggerType: "Sentinel",
             loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "Active",
+            loggerEnded: "n/a",
             temperature: "6°C",
          
             alarms: [
@@ -327,7 +327,7 @@ export const shipments: Shipment[] = [
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "Active",
+            loggerEnded: "n/a",
             temperature: "n/a",
             alarms: 0,
             rootCauseAnalysis: null,
@@ -831,7 +831,7 @@ export const shipments: Shipment[] = [
             loggerId: "WB-1014C",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-08-10T08:00:00Z",
-            loggerEnded: "Active",
+            loggerEnded: "n/a",
             temperature: "n/a",
             alarms: 0,
             rootCauseAnalysis: null,
@@ -849,7 +849,7 @@ export const shipments: Shipment[] = [
             loggerId: "WB-1014B",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-08-10T08:00:00Z",
-            loggerEnded: "Active",
+            loggerEnded: "n/a",
             temperature: "n/a",
        
             alarms: 0,
