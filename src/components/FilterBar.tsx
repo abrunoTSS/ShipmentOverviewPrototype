@@ -15,6 +15,7 @@ export interface FilterState {
   packagingType: string;
   alarms: string;
   rcas: string;
+  milestoneData: string;
   startDate?: Date | null;
   endDate?: Date | null;
 }
@@ -65,6 +66,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
       packagingType: '',
       alarms: '',
       rcas: '',
+      milestoneData: '',
       startDate: null,
       endDate: null,
     });
@@ -102,6 +104,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
           case 'packagingType': label = `Packaging: ${value}`; break;
           case 'alarms': label = `Alarms: ${value}`; break;
           case 'rcas': label = `RCA: ${value}`; break;
+          case 'milestoneData': label = `Milestone Data: ${value}`; break;
         }
         if (label) {
             active.push({ key, label, onRemove: () => handleFilterChange(key, '') });
@@ -174,6 +177,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
               {renderSelect('packagingType', 'Packaging', uniquePackagingTypes)}
               {renderSelect('alarms', 'Alarms', ['Yes', 'No'])}
               {renderSelect('rcas', 'RCA', uniqueRCAStatuses)}
+              {renderSelect('milestoneData', 'Milestone Data', ['Yes', 'No'])}
             </div>
             <div className="date-range-filter">
               <label>Shipment Date Range</label>

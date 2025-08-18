@@ -32,6 +32,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     packagingType: '',
     alarms: '',
     rcas: '',
+    milestoneData: '',
     startDate: null,
     endDate: null,
   });
@@ -80,6 +81,13 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       
       // Root Cause Analysis filter (case-insensitive)
       if (filters.rcas && shipment.rcas?.toLowerCase() !== filters.rcas.toLowerCase()) return false;
+      
+      // Milestone Data filter (SH014 is the only shipment without milestone data)
+      if (filters.milestoneData) {
+        const hasMilestoneData = shipment.shipmentId !== 'SH014';
+        if (filters.milestoneData === 'Yes' && !hasMilestoneData) return false;
+        if (filters.milestoneData === 'No' && hasMilestoneData) return false;
+      }
 
       // Date range filter
       if (filters.startDate && filters.endDate) {
