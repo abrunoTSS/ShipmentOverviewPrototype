@@ -60,8 +60,8 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
         }
         
         // If the shipment is in transit, show 'Active'
-        if (shipmentStatus === 'In Transit' || ended === 'Active') {
-          return 'Active';
+        if (shipmentStatus === 'In Transit' || ended === 'n/a') {
+          return 'n/a';
         }
         
         // Otherwise try to parse the logger end date
