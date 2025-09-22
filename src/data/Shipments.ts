@@ -1,4 +1,251 @@
-import type { Shipment } from '../types';
+import type { Shipment, LoggerTimeSeriesData, ShipmentMilestone } from '../types';
+
+// Helper function to generate time-series data with validation
+function generateTimeSeriesData(
+  startDate: string, 
+  endDate: string | null, 
+  baseTemp: number = 6, 
+  baseHumidity: number = 45
+): LoggerTimeSeriesData[] {
+  const data: LoggerTimeSeriesData[] = [];
+  const start = new Date(startDate);
+  const end = endDate && endDate !== 'n/a' ? new Date(endDate) : new Date();
+  
+  // Generate data points every 30 minutes
+  const intervalMs = 30 * 60 * 1000; // 30 minutes
+  let current = new Date(start);
+  
+  while (current <= end) {
+    // Add some realistic variation
+    const tempVariation = (Math.random() - 0.5) * 4; // ±2°C variation
+    const humidityVariation = (Math.random() - 0.5) * 20; // ±10% variation
+    
+    data.push({
+      timestamp: current.toISOString(),
+      temperature: Math.round((baseTemp + tempVariation) * 10) / 10,
+      humidity: Math.round((baseHumidity + humidityVariation) * 10) / 10
+    });
+    
+    current = new Date(current.getTime() + intervalMs);
+  }
+  
+  return data;
+}
+
+// Helper function to create shipment milestones
+function createShipmentMilestones(
+  origin: string,
+  destination: string,
+  status: string,
+  eta: string,
+  modeOfTransport: string = 'Road'
+): ShipmentMilestone[] {
+  const milestones: ShipmentMilestone[] = [];
+  
+  // Start milestone - Origin pickup
+  milestones.push({
+    location: origin,
+    arrivalTime: '2025-07-10T08:00:00Z',
+    status: 'Completed',
+    transportMode: 'Loading',
+    vehicleNumber: 'LOAD-001',
+    weather: 'Clear, 22°C',
+    milestoneType: 'start'
+  });
+
+  // Generate detailed route-specific milestones
+  if (origin.includes('Stockholm') && destination.includes('Berlin')) {
+    // Stockholm to Berlin route (Road)
+    milestones.push({
+      location: 'Malmö, Sweden',
+      arrivalTime: '2025-07-10T14:00:00Z',
+      status: 'Completed',
+      transportMode: 'Road',
+      vehicleNumber: 'SE-TR-456',
+      weather: 'Overcast, 16°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Copenhagen, Denmark',
+      arrivalTime: '2025-07-11T08:00:00Z',
+      status: 'Completed',
+      transportMode: 'Road',
+      vehicleNumber: 'DK-TR-789',
+      weather: 'Partly cloudy, 18°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Hamburg, Germany',
+      arrivalTime: '2025-07-12T15:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : (status === 'In Transit' ? 'Current' : 'Completed'),
+      transportMode: 'Road',
+      vehicleNumber: 'DE-TR-123',
+      weather: 'Sunny, 24°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Hannover, Germany',
+      arrivalTime: '2025-07-13T10:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : (status === 'In Transit' ? 'Pending' : 'Pending'),
+      transportMode: 'Road',
+      vehicleNumber: 'DE-TR-123',
+      weather: 'Clear, 26°C',
+      milestoneType: 'transit'
+    });
+    
+  } else if (origin.includes('Macclesfield') && destination.includes('Tokyo')) {
+    // UK to Japan route (Air)
+    milestones.push({
+      location: 'Manchester Hub, UK',
+      arrivalTime: '2025-07-11T06:00:00Z',
+      status: 'Completed',
+      transportMode: 'Road',
+      vehicleNumber: 'UK-TR-001',
+      weather: 'Rainy, 14°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Heathrow Airport, UK',
+      arrivalTime: '2025-07-11T12:00:00Z',
+      status: 'Completed',
+      transportMode: 'Air Cargo',
+      vehicleNumber: 'BA-CARGO-456',
+      weather: 'Cloudy, 18°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Amsterdam Schiphol, Netherlands',
+      arrivalTime: '2025-07-12T08:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : (status === 'In Transit' ? 'Current' : 'Completed'),
+      transportMode: 'Air Cargo',
+      vehicleNumber: 'KL-CARGO-789',
+      weather: 'Clear, 22°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Dubai International, UAE',
+      arrivalTime: '2025-07-13T14:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : (status === 'In Transit' ? 'Pending' : 'Pending'),
+      transportMode: 'Air Cargo',
+      vehicleNumber: 'EK-CARGO-123',
+      weather: 'Hot, 38°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Narita Airport, Japan',
+      arrivalTime: '2025-07-14T22:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : 'Pending',
+      transportMode: 'Air Cargo',
+      vehicleNumber: 'JL-CARGO-456',
+      weather: 'Humid, 32°C',
+      milestoneType: 'transit'
+    });
+    
+  } else if (origin.includes('Paris') && destination.includes('Madrid')) {
+    // Paris to Madrid route (Road)
+    milestones.push({
+      location: 'Orleans, France',
+      arrivalTime: '2025-07-10T12:00:00Z',
+      status: 'Completed',
+      transportMode: 'Road',
+      vehicleNumber: 'FR-TR-234',
+      weather: 'Sunny, 28°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Bordeaux, France',
+      arrivalTime: '2025-07-10T18:00:00Z',
+      status: 'Completed',
+      transportMode: 'Road',
+      vehicleNumber: 'FR-TR-234',
+      weather: 'Clear, 30°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'San Sebastian, Spain',
+      arrivalTime: '2025-07-11T08:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : (status === 'In Transit' ? 'Current' : 'Completed'),
+      transportMode: 'Road',
+      vehicleNumber: 'ES-TR-567',
+      weather: 'Partly cloudy, 26°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Burgos, Spain',
+      arrivalTime: '2025-07-11T14:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : (status === 'In Transit' ? 'Pending' : 'Pending'),
+      transportMode: 'Road',
+      vehicleNumber: 'ES-TR-567',
+      weather: 'Hot, 34°C',
+      milestoneType: 'transit'
+    });
+    
+  } else {
+    // Generic route with 3 transit points
+    milestones.push({
+      location: 'Transit Hub 1',
+      arrivalTime: '2025-07-11T10:00:00Z',
+      status: 'Completed',
+      transportMode: modeOfTransport,
+      vehicleNumber: 'GEN-TR-001',
+      weather: 'Clear, 20°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Transit Hub 2',
+      arrivalTime: '2025-07-12T14:00:00Z',
+      status: 'Completed',
+      transportMode: modeOfTransport,
+      vehicleNumber: 'GEN-TR-002',
+      weather: 'Sunny, 24°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Transit Hub 3',
+      arrivalTime: '2025-07-13T08:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : (status === 'In Transit' ? 'Current' : 'Pending'),
+      transportMode: modeOfTransport,
+      vehicleNumber: 'GEN-TR-003',
+      weather: 'Partly cloudy, 22°C',
+      milestoneType: 'transit'
+    });
+    
+    milestones.push({
+      location: 'Final Transit Point',
+      arrivalTime: '2025-07-14T12:00:00Z',
+      status: status === 'Delivered' ? 'Completed' : 'Pending',
+      transportMode: modeOfTransport,
+      vehicleNumber: 'GEN-TR-004',
+      weather: 'Clear, 25°C',
+      milestoneType: 'transit'
+    });
+  }
+  
+  // End milestone - Final delivery
+  milestones.push({
+    location: destination,
+    arrivalTime: status === 'Delivered' ? eta + 'T16:00:00Z' : eta + 'T16:00:00Z',
+    status: status === 'Delivered' ? 'Completed' : 'Pending',
+    transportMode: 'Delivery',
+    vehicleNumber: status === 'Delivered' ? 'DEL-789' : 'TBD',
+    weather: status === 'Delivered' ? 'Clear, 20°C' : 'Expected: Clear, 20°C',
+    milestoneType: 'end'
+  });
+  
+  return milestones;
+}
 
 export const shipments: Shipment[] = [
      {
@@ -37,17 +284,20 @@ export const shipments: Shipment[] = [
           }
         ],        
         rcas: "n/a",
+        milestones: createShipmentMilestones("Stockholm, Sweden", "Berlin, Germany", "In Transit", "2025-07-20", "Road"),
         loggerData: [
           {
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "n/a",
-            temperature: "n/a",
-         
-            alarms: [],
+            loggerEnded: "2025-07-20T08:00:00Z",
+            temperature: "6°C",
+            deliveryId: "DEL-2025-004",
+            alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
+            events: [],
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", 5, 42),
             productDetails: {
               prodfilename: "Insulin-3",
               producttype: "controlled room temperature",
@@ -93,7 +343,8 @@ export const shipments: Shipment[] = [
             location: "Tokyo, Japan",
             status: "Pending"
           }
-        ],   
+        ],
+        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "In Transit", "2025-07-20", "Air"),
         loggerData: [
           {
             loggerId: "SENTRY-1002",
@@ -101,6 +352,8 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-14T08:00:00Z",
             loggerEnded: "n/a",
             temperature: "6°C",
+            deliveryId: "DEL-2025-002",
+            timeSeriesData: generateTimeSeriesData("2025-07-14T08:00:00Z", null, 6, 50),
          
             alarms: [
               {
@@ -195,8 +448,7 @@ export const shipments: Shipment[] = [
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
               highThreshold: "12 °C",
-              lowThreshold: "2 °C",
-           
+              lowThreshold: "2 °C"
             }
           },
           {
@@ -205,6 +457,8 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "n/a",
             temperature: "6°C",
+            deliveryId: "DEL-2025-003",
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", null, 6, 48),
          
             alarms: [
               {
@@ -322,17 +576,20 @@ export const shipments: Shipment[] = [
         alarms: 0,
         events: 0,
         rcas: "n/a",
+        milestones: createShipmentMilestones("Stockholm, Sweden", "Berlin, Germany", "Delivered", "2025-07-20", "Air"),
         loggerData: [
           {
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "n/a",
+            loggerEnded: "2025-07-20T08:00:00Z",
             temperature: "n/a",
+            deliveryId: "DEL-2025-011",
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
             events: [],
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", 5, 42),
             productDetails: {
               prodfilename: "Insulin-3",
               producttype: "controlled room temperature",
@@ -357,13 +614,16 @@ export const shipments: Shipment[] = [
         alarms: 4,
         events: 4,
         rcas: "Not Started",
+        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "Delivered", "2025-07-20", "Air"),
         loggerData: [
           {
             loggerId: "WL-1002",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-20T08:00:00Z",
-            temperature: "n/a",
+            temperature: "6°C",
+            deliveryId: "DEL-2025-005",
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", 7, 55),
             alarms: [
               {
                 alarmId: 1,
@@ -463,11 +723,12 @@ export const shipments: Shipment[] = [
             }
           },
           {
-            loggerId: "WL-1002",
+            loggerId: "WL-1003",
             loggerType: "Web Logger 2",
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-20T08:00:00Z",
             temperature: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", 6, 48),
             alarms: [
               {
                 alarmId: 1,
@@ -582,6 +843,7 @@ export const shipments: Shipment[] = [
         totalAlarms: 4,
         events: 4,
         rcas: "In Progress",
+        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "Delivered", "2025-06-20", "Air"),
         loggerData: [
           {
             loggerId: "WL-1006A",
@@ -589,6 +851,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-06-10T08:00:00Z",
             loggerEnded: "2025-06-20T08:00:00Z",
             temperature: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-06-10T08:00:00Z", "2025-06-20T08:00:00Z", 8, 52),
             alarms: [
               {
                 alarmId: 1,
@@ -702,6 +965,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-06-10T08:00:00Z",
             loggerEnded: "2025-06-20T08:00:00Z",
             temperature: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-06-10T08:00:00Z", "2025-06-20T08:00:00Z", 7, 49),
             alarms: [
               {
                 alarmId: 1,
@@ -826,6 +1090,7 @@ export const shipments: Shipment[] = [
         totalAlarms: 1,
         events: 0,
         rcas: "Not Started",
+        milestones: createShipmentMilestones("Paris, France", "Madrid, Spain", "In Transit", "2025-08-20", "Road"),
         loggerData: [
           {
             loggerId: "WB-1014C",
@@ -833,6 +1098,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-08-10T08:00:00Z",
             loggerEnded: "n/a",
             temperature: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-08-10T08:00:00Z", null, 4, 38),
             alarms: 0,
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -851,6 +1117,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-08-10T08:00:00Z",
             loggerEnded: "n/a",
             temperature: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-08-10T08:00:00Z", null, 5, 41),
        
             alarms: 0,
             rootCauseAnalysis: null,
@@ -881,6 +1148,7 @@ export const shipments: Shipment[] = [
         totalAlarms: 0,
         events: 0,
         rcas: "Not Started",
+        milestones: createShipmentMilestones("Paris, France", "Madrid, Spain", "Delivered", "2025-07-13", "Road"),
         shipmentCurrentMilestone: [],
         loggerData: [
           {
@@ -889,6 +1157,7 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
             temperature: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-13T08:00:00Z", 3, 35),
             alarms: [],
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,
@@ -907,6 +1176,8 @@ export const shipments: Shipment[] = [
             loggerStarted: "2025-07-10T08:00:00Z",
             loggerEnded: "2025-07-13T08:00:00Z",
             temperature: "n/a",
+            deliveryId: "DEL-010",
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-13T08:00:00Z", 4, 37),
             alarms: [],
             rootCauseAnalysis: null,
             rootCauseAnalysisStatusDetails: null,

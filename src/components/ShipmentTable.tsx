@@ -11,6 +11,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import { LoggerTable } from './LoggerTable';
 import { FilterBar, type FilterState } from './FilterBar';
+import TimeSeriesGraph from './TimeSeriesGraph';
 
 interface ShipmentTableProps {
   shipments: Shipment[];
@@ -36,6 +37,37 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     startDate: null,
     endDate: null,
   });
+
+  // State to manage logger visibility for each shipment
+  const [shipmentLoggerVisibility, setShipmentLoggerVisibility] = useState<Map<string, Set<string>>>(new Map());
+
+  // Get or initialize logger visibility for a shipment
+  const getLoggerVisibility = (shipmentId: string, loggers: Logger[]) => {
+    if (!shipmentLoggerVisibility.has(shipmentId)) {
+      const initialVisibility = new Set(loggers.map(logger => logger.loggerId));
+      setShipmentLoggerVisibility(prev => new Map(prev).set(shipmentId, initialVisibility));
+      return initialVisibility;
+    }
+    return shipmentLoggerVisibility.get(shipmentId)!;
+  };
+
+  // Handle logger visibility changes
+  const handleLoggerVisibilityChange = (shipmentId: string, loggerId: string, visible: boolean) => {
+    setShipmentLoggerVisibility(prev => {
+      const newMap = new Map(prev);
+      const currentVisibility = newMap.get(shipmentId) || new Set();
+      const newVisibility = new Set(currentVisibility);
+      
+      if (visible) {
+        newVisibility.add(loggerId);
+      } else {
+        newVisibility.delete(loggerId);
+      }
+      
+      newMap.set(shipmentId, newVisibility);
+      return newMap;
+    });
+  };
 
   // Filter shipments based on current filters
   const filteredShipments = useMemo(() => {
@@ -271,19 +303,42 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                 ))}
               </tr>
               
-              {/* Nested Logger Table */}
+              {/* Expanded Row Content */}
               {expandedRow === row.original.shipmentId && (
                 <tr className="nested-row">
                   <td colSpan={columns.length} className="nested-table-container">
-                    <LoggerTable
-                      loggers={row.original.loggerData.map(logger => ({
-                        ...logger,
-                        shipmentStatus: row.original.status,
-                        shipmentEta: row.original.eta
-                      }))}
-                      onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
-                      selectedLoggerId={selectedLoggerId}
-                    />
+                    {/* Time Series Graph Section */}
+                    <div className="expanded-content">
+                      {row.original.loggerData && row.original.loggerData.some(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0) && (
+                        <div className="graph-section">
+                          <h3 className="graph-title">Temperature & Humidity Timeline - {row.original.shipmentId}</h3>
+                          <TimeSeriesGraph 
+                            loggers={row.original.loggerData.filter(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0)}
+                            shipment={row.original}
+                            showHumidity={true}
+                            height={400}
+                            className="shipment-graph"
+                            visibleLoggerIds={getLoggerVisibility(row.original.shipmentId, row.original.loggerData)}
+                            onLoggerVisibilityChange={(loggerId, visible) => handleLoggerVisibilityChange(row.original.shipmentId, loggerId, visible)}
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Logger Table */}
+                      <div className="logger-table-section">
+                        <LoggerTable
+                          loggers={row.original.loggerData.map(logger => ({
+                            ...logger,
+                            shipmentStatus: row.original.status,
+                            shipmentEta: row.original.eta
+                          }))}
+                          onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
+                          selectedLoggerId={selectedLoggerId}
+                          visibleLoggerIds={getLoggerVisibility(row.original.shipmentId, row.original.loggerData)}
+                          onLoggerVisibilityChange={(loggerId, visible) => handleLoggerVisibilityChange(row.original.shipmentId, loggerId, visible)}
+                        />
+                      </div>
+                    </div>
                   </td>
                 </tr>
               )}

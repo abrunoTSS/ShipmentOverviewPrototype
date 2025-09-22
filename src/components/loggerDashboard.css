@@ -63,6 +63,8 @@
 
 .shipment-report-link:hover {
   background-color: #dee2e6;
+  color: #2563eb;
+  text-decoration: underline;
 }
 
 .dashboard-title {
@@ -439,4 +441,30 @@
 
 .threshold-label.temp-low {
     color: #3498db;
+}
+
+/* Time Series Graph Styles */
+.graph-section {
+  margin-top: 16px;
+}
+
+.all-loggers-section {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.subsection-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 16px 0;
+}
+
+.single-logger-graph {
+  margin-bottom: 0;
+}
+
+.multi-logger-graph {
+  margin-bottom: 0;
 }

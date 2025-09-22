@@ -35,6 +35,22 @@ export interface ExcursionGraphData {
   temperature: number;
 }
 
+export interface LoggerTimeSeriesData {
+  timestamp: string;
+  temperature: number; // °C
+  humidity: number; // %
+}
+
+export interface ShipmentMilestone {
+  location: string;
+  arrivalTime: string;
+  status: 'Completed' | 'Current' | 'Pending' | 'Delayed';
+  transportMode: string;
+  vehicleNumber?: string;
+  weather?: string;
+  milestoneType: 'start' | 'transit' | 'end' | 'current';
+}
+
 export interface Excursion {
   highest: string;
   lowest: string;
@@ -90,6 +106,7 @@ export interface Logger {
   loggerStarted: string;
   loggerEnded: string;
   temperature?: string;
+  deliveryId: string;
   alarms: Alarm[] | number; // Can be a count or a detailed array
   rootCauseAnalysis: string | null;
   rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;
@@ -104,6 +121,8 @@ export interface Logger {
   // Added for logger end date display logic
   shipmentStatus?: string;
   shipmentEta?: string;
+  // Time-series data for temperature and humidity readings
+  timeSeriesData?: LoggerTimeSeriesData[];
 }
 
 export interface Shipment {
@@ -124,6 +143,8 @@ export interface Shipment {
   events: number | null;
   rcas: string;
   loggerData: Logger[];
+  // Enhanced milestones for tracking and graph annotations
+  milestones?: ShipmentMilestone[];
 }
 
 export interface shipmentCurrentMilestone {

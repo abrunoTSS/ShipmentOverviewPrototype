@@ -12,10 +12,54 @@ interface LoggerTableProps {
   loggers: Logger[];
   onLoggerClick: (logger: Logger) => void;
   selectedLoggerId: string | null;
+  visibleLoggerIds?: Set<string>;
+  onLoggerVisibilityChange?: (loggerId: string, visible: boolean) => void;
 }
 
-export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: LoggerTableProps) {
+export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId, visibleLoggerIds, onLoggerVisibilityChange }: LoggerTableProps) {
+  // Calculate if all loggers are selected
+  const allSelected = visibleLoggerIds ? loggers.every(logger => visibleLoggerIds.has(logger.loggerId)) : true;
+  const someSelected = visibleLoggerIds ? loggers.some(logger => visibleLoggerIds.has(logger.loggerId)) : true;
+
+  const handleSelectAll = (checked: boolean) => {
+    if (onLoggerVisibilityChange) {
+      loggers.forEach(logger => {
+        onLoggerVisibilityChange(logger.loggerId, checked);
+      });
+    }
+  };
+
   const columns: ColumnDef<Logger>[] = [
+    {
+      id: 'checkbox',
+      header: () => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <input
+            type="checkbox"
+            checked={allSelected}
+            ref={(input) => {
+              if (input) input.indeterminate = someSelected && !allSelected;
+            }}
+            onChange={(e) => handleSelectAll(e.target.checked)}
+            disabled={!onLoggerVisibilityChange}
+            title={allSelected ? 'Deselect All' : 'Select All'}
+          />
+          <span>Show in Graph</span>
+        </div>
+      ),
+      cell: ({ row }) => (
+        <input
+          type="checkbox"
+          checked={visibleLoggerIds?.has(row.original.loggerId) ?? true}
+          onChange={(e) => {
+            if (onLoggerVisibilityChange) {
+              onLoggerVisibilityChange(row.original.loggerId, e.target.checked);
+            }
+          }}
+          disabled={!onLoggerVisibilityChange}
+        />
+      ),
+    },
     {
       id: 'loggerId',
       header: 'Logger ID',
@@ -78,13 +122,11 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
       },
     },
     {
-      id: 'temperature',
-      header: 'Temp',
-      accessorKey: 'temperature',
+      id: 'deliveryId',
+      header: 'Delivery ID',
+      accessorKey: 'deliveryId',
       cell: ({ row }) => {
-        // Don't show temperature for Web Logger 2 type loggers
-        if (row.original.loggerType === 'Web Logger 2') return 'n/a';
-        return row.original.temperature || 'n/a';
+        return row.original.deliveryId || 'n/a';
       },
     },
 
@@ -111,6 +153,17 @@ export function LoggerTable({ loggers, onLoggerClick, selectedLoggerId }: Logger
         } catch {
           return 'n/a';
         }
+      },
+    },
+    {
+      id: 'profile',
+      header: 'Profile',
+      cell: ({ row }) => {
+        const productDetails = row.original.productDetails;
+        if (productDetails) {
+          return `${productDetails.lowThreshold} to ${productDetails.highThreshold}`;
+        }
+        return 'n/a';
       },
     },
     {
