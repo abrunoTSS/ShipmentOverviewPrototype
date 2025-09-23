@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
 import type { Shipment, Logger, ExcursionMilestone } from '../types';
+import MilestoneTimeline from './MilestoneTimeline';
 import './loggerDashboard.css';
 
 interface LoggerDashboardProps {
@@ -72,132 +73,13 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
           <button onClick={onClose} className="close-button"><X size={24} /></button>
         </div>
         <div className="dashboard-content">
-          <div className="dashboard-section">
-            <h3 className="section-title">Shipment Details</h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="info-label">Shipment ID</span>
-                <span className="info-value">{shipment.shipmentId}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Origin</span>
-                <span className="info-value">{shipment.origin}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Destination</span>
-                <span className="info-value">{shipment.destination}</span>
-              </div>
-              {/* Only show status for shipments without error messages */}
-              {shipment.shipmentId !== "SH014" && shipment.shipmentId !== "SH015" && (
-                <div className="info-item">
-                  <span className="info-label">Status</span>
-                  <span className="info-value">{shipment.status}</span>
-                </div>
-              )}
-  
+          {/* Milestone Timeline */}
+          {shipment?.milestones && shipment.milestones.length > 0 && (
+            <div className="dashboard-section">
+              <MilestoneTimeline milestones={shipment.milestones} shipment={shipment} />
             </div>
-
-            {/* Error message for shipments with missing milestone data */}
-            {(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
-              <div className="milestone-error" style={{ marginTop: '15px', width: '100%' }}>
-                <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the shipment ID is correct.</p>
-              </div>
-            )}
-            
-            {/* Shipment Current Milestone Timeline - Only for In Transit shipments with milestone data */}
-            {shipment.status === 'In Transit' && 
-             !(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && 
-             shipment.shipmentCurrentMilestone && 
-             shipment.shipmentCurrentMilestone.length > 0 && (
-              <div className="shipment-milestone-container">
-                <h4 className="milestone-subtitle">Current Lane</h4>
-                <div className="milestone-timeline">
-                  {shipment.shipmentCurrentMilestone.map((milestone, index) => (
-                    <div className="milestone-item" key={index}>
-                      <div className={`milestone-dot ${milestone.status === 'Current' ? 'completed' : 
-                                                       milestone.status === 'Completed' ? 'pending' : 'pending'}`} />
-                      <div className="milestone-content">
-                        <p className="milestone-location">{milestone.location}</p>
-                        <div className="milestone-status-badge">
-                          <span className={`status-indicator ${milestone.status.toLowerCase()}`}>{milestone.status}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="dashboard-section">
-            <h3 className="section-title">Logger Details</h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="info-label">Logger ID</span>
-                <span className="info-value">{logger.loggerId}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Logger Type</span>
-                <span className="info-value">{logger.loggerType}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Calibration Date</span>
-                <span className="info-value">{logger.calibrationDate || '2025-05-06 07:00'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Expiry Date</span>
-                <span className="info-value">{logger.expiryDate || '2028-05-06 07:00'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Sample Rate</span>
-                <span className="info-value">{logger.sampleRate || '10 minute'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Start Delay</span>
-                <span className="info-value">{logger.startDelay || '0 minute'}</span>
-              </div>
-              {logger.temperature && logger.temperature !== 'n/a' && logger.loggerType !== 'Web Logger 2' && (
-                <div className="info-item">
-                  <span className="info-label">Temperature</span>
-                  <span className="info-value">{logger.temperature}</span>
-                </div>
-              )}
-              {logger.lastSeen && (
-                <div className="info-item">
-                  <span className="info-label">Last Seen</span>
-                  <span className="info-value">
-                    {(() => {
-                      try {
-                        const date = new Date(logger.lastSeen);
-                        return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
-                      } catch {
-                        return 'n/a';
-                      }
-                    })()}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {logger.productDetails && (
-            <>
-
-              <div className="dashboard-section">
-                <h3 className="section-title">Product Temperature Profile</h3>
-                <div className="info-grid">
-                  <div className="info-item">
-                    <span className="info-label">Low Threshold</span>
-                    <span className="info-value">{logger.productDetails.lowThreshold}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">High Threshold</span>
-                    <span className="info-value">{logger.productDetails.highThreshold}</span>
-                  </div>
-                </div>
-              </div>
-            </>
           )}
+
           {Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
             <div className="dashboard-section">
               <h3 className="section-title">Alarms</h3>

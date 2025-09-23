@@ -48,7 +48,8 @@ export interface ShipmentMilestone {
   transportMode: string;
   vehicleNumber?: string;
   weather?: string;
-  milestoneType: 'start' | 'transit' | 'end' | 'current';
+  milestoneType: string;
+  groundHandler?: string;
 }
 
 export interface Excursion {

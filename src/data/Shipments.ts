@@ -38,19 +38,21 @@ function createShipmentMilestones(
   destination: string,
   status: string,
   eta: string,
-  modeOfTransport: string = 'Road'
+  modeOfTransport: string = 'Road',
+  freightForwarder: string = 'FF'
 ): ShipmentMilestone[] {
   const milestones: ShipmentMilestone[] = [];
   
   // Start milestone - Origin pickup
   milestones.push({
     location: origin,
-    arrivalTime: '2025-07-10T08:00:00Z',
+    arrivalTime: '2025-07-09T10:00:00Z',
     status: 'Completed',
     transportMode: 'Loading',
     vehicleNumber: 'LOAD-001',
     weather: 'Clear, 22°C',
-    milestoneType: 'start'
+    milestoneType: 'Origin Pick Up',
+    groundHandler: freightForwarder
   });
 
   // Generate detailed route-specific milestones
@@ -63,7 +65,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'SE-TR-456',
       weather: 'Overcast, 16°C',
-      milestoneType: 'transit'
+      milestoneType: 'Transit Hub Sorting',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -73,7 +76,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'DK-TR-789',
       weather: 'Partly cloudy, 18°C',
-      milestoneType: 'transit'
+      milestoneType: 'Drop Off At Amager Distrubtion Facility',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -83,7 +87,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'DE-TR-123',
       weather: 'Sunny, 24°C',
-      milestoneType: 'transit'
+      milestoneType: 'Cross-Border Customs Clearance',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -93,7 +98,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'DE-TR-123',
       weather: 'Clear, 26°C',
-      milestoneType: 'transit'
+      milestoneType: 'Regional Distribution Center',
+      groundHandler: freightForwarder
     });
     
   } else if (origin.includes('Macclesfield') && destination.includes('Tokyo')) {
@@ -105,7 +111,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'UK-TR-001',
       weather: 'Rainy, 14°C',
-      milestoneType: 'transit'
+      milestoneType: 'Consolidation at Air Cargo Hub',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -115,7 +122,8 @@ function createShipmentMilestones(
       transportMode: 'Air Cargo',
       vehicleNumber: 'BA-CARGO-456',
       weather: 'Cloudy, 18°C',
-      milestoneType: 'transit'
+      milestoneType: 'Drop Off Shiphold',
+      groundHandler: 'British Airways Cargo'
     });
     
     milestones.push({
@@ -125,7 +133,8 @@ function createShipmentMilestones(
       transportMode: 'Air Cargo',
       vehicleNumber: 'KL-CARGO-789',
       weather: 'Clear, 22°C',
-      milestoneType: 'transit'
+      milestoneType: 'Flight Connection Hub',
+      groundHandler: 'KLM Cargo'
     });
     
     milestones.push({
@@ -135,7 +144,8 @@ function createShipmentMilestones(
       transportMode: 'Air Cargo',
       vehicleNumber: 'EK-CARGO-123',
       weather: 'Hot, 38°C',
-      milestoneType: 'transit'
+      milestoneType: 'International Transit Hub',
+      groundHandler: 'Emirates SkyCargo'
     });
     
     milestones.push({
@@ -145,7 +155,8 @@ function createShipmentMilestones(
       transportMode: 'Air Cargo',
       vehicleNumber: 'JL-CARGO-456',
       weather: 'Humid, 32°C',
-      milestoneType: 'transit'
+      milestoneType: 'Arrival at Destination Airport',
+      groundHandler: 'JAL Cargo'
     });
     
   } else if (origin.includes('Paris') && destination.includes('Madrid')) {
@@ -157,7 +168,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'FR-TR-234',
       weather: 'Sunny, 28°C',
-      milestoneType: 'transit'
+      milestoneType: 'Regional Sorting Facility',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -167,7 +179,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'FR-TR-234',
       weather: 'Clear, 30°C',
-      milestoneType: 'transit'
+      milestoneType: 'Cross-Dock Transfer',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -177,7 +190,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'ES-TR-567',
       weather: 'Partly cloudy, 26°C',
-      milestoneType: 'transit'
+      milestoneType: 'Border Crossing Checkpoint',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -187,7 +201,8 @@ function createShipmentMilestones(
       transportMode: 'Road',
       vehicleNumber: 'ES-TR-567',
       weather: 'Hot, 34°C',
-      milestoneType: 'transit'
+      milestoneType: 'Last Mile Distribution Hub',
+      groundHandler: freightForwarder
     });
     
   } else {
@@ -199,7 +214,8 @@ function createShipmentMilestones(
       transportMode: modeOfTransport,
       vehicleNumber: 'GEN-TR-001',
       weather: 'Clear, 20°C',
-      milestoneType: 'transit'
+      milestoneType: 'Consolidation Center',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -209,7 +225,8 @@ function createShipmentMilestones(
       transportMode: modeOfTransport,
       vehicleNumber: 'GEN-TR-002',
       weather: 'Sunny, 24°C',
-      milestoneType: 'transit'
+      milestoneType: 'Transfer Terminal',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -219,7 +236,8 @@ function createShipmentMilestones(
       transportMode: modeOfTransport,
       vehicleNumber: 'GEN-TR-003',
       weather: 'Partly cloudy, 22°C',
-      milestoneType: 'transit'
+      milestoneType: 'Final Mile Depot',
+      groundHandler: freightForwarder
     });
     
     milestones.push({
@@ -229,7 +247,8 @@ function createShipmentMilestones(
       transportMode: modeOfTransport,
       vehicleNumber: 'GEN-TR-004',
       weather: 'Clear, 25°C',
-      milestoneType: 'transit'
+      milestoneType: 'Delivery Preparation',
+      groundHandler: freightForwarder
     });
   }
   
@@ -241,7 +260,8 @@ function createShipmentMilestones(
     transportMode: 'Delivery',
     vehicleNumber: status === 'Delivered' ? 'DEL-789' : 'TBD',
     weather: status === 'Delivered' ? 'Clear, 20°C' : 'Expected: Clear, 20°C',
-    milestoneType: 'end'
+    milestoneType: 'Final Delivery',
+    groundHandler: freightForwarder
   });
   
   return milestones;
@@ -284,7 +304,7 @@ export const shipments: Shipment[] = [
           }
         ],        
         rcas: "n/a",
-        milestones: createShipmentMilestones("Stockholm, Sweden", "Berlin, Germany", "In Transit", "2025-07-20", "Road"),
+        milestones: createShipmentMilestones("Stockholm, Sweden", "Berlin, Germany", "In Transit", "2025-07-20", "Road", "Geodis"),
         loggerData: [
           {
             loggerId: "LG-1001",
@@ -344,7 +364,7 @@ export const shipments: Shipment[] = [
             status: "Pending"
           }
         ],
-        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "In Transit", "2025-07-20", "Air"),
+        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "In Transit", "2025-07-20", "Air", "Geodis"),
         loggerData: [
           {
             loggerId: "SENTRY-1002",
@@ -576,7 +596,7 @@ export const shipments: Shipment[] = [
         alarms: 0,
         events: 0,
         rcas: "n/a",
-        milestones: createShipmentMilestones("Stockholm, Sweden", "Berlin, Germany", "Delivered", "2025-07-20", "Air"),
+        milestones: createShipmentMilestones("Stockholm, Sweden", "Berlin, Germany", "Delivered", "2025-07-20", "Air", "DHL"),
         loggerData: [
           {
             loggerId: "LG-1001",
@@ -614,7 +634,7 @@ export const shipments: Shipment[] = [
         alarms: 4,
         events: 4,
         rcas: "Not Started",
-        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "Delivered", "2025-07-20", "Air"),
+        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "Delivered", "2025-07-20", "Air", "DHL"),
         loggerData: [
           {
             loggerId: "WL-1002",
@@ -843,7 +863,7 @@ export const shipments: Shipment[] = [
         totalAlarms: 4,
         events: 4,
         rcas: "In Progress",
-        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "Delivered", "2025-06-20", "Air"),
+        milestones: createShipmentMilestones("Macclesfield, UK", "Tokyo, Japan", "Delivered", "2025-06-20", "Air", "Yusen"),
         loggerData: [
           {
             loggerId: "WL-1006A",
@@ -1090,7 +1110,7 @@ export const shipments: Shipment[] = [
         totalAlarms: 1,
         events: 0,
         rcas: "Not Started",
-        milestones: createShipmentMilestones("Paris, France", "Madrid, Spain", "In Transit", "2025-08-20", "Road"),
+        milestones: createShipmentMilestones("Paris, France", "Madrid, Spain", "In Transit", "2025-08-20", "Road", "DHL"),
         loggerData: [
           {
             loggerId: "WB-1014C",
@@ -1148,7 +1168,7 @@ export const shipments: Shipment[] = [
         totalAlarms: 0,
         events: 0,
         rcas: "Not Started",
-        milestones: createShipmentMilestones("Paris, France", "Madrid, Spain", "Delivered", "2025-07-13", "Road"),
+        milestones: createShipmentMilestones("Paris, France", "Madrid, Spain", "Delivered", "2025-07-13", "Road", "Geodis"),
         shipmentCurrentMilestone: [],
         loggerData: [
           {

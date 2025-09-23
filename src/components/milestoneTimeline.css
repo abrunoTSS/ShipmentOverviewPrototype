@@ -1,0 +1,332 @@
+.milestone-timeline-container {
+  width: 100%;
+  padding: 16px 0;
+}
+
+.timeline-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 20px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Timeline connecting line - full length */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: #e5e7eb;
+  z-index: 1;
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+
+/* Timeline icon styling - simple circles */
+.timeline-icon {
+  position: relative;
+  z-index: 2;
+  margin-right: 16px;
+  flex-shrink: 0;
+}
+
+.icon-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #bfdbfe;
+  border: none;
+  position: relative;
+}
+
+.icon-circle::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #3b82f6;
+}
+
+.timeline-icon.current .icon-circle {
+  width: 40px;
+  height: 40px;
+}
+
+.timeline-icon.current .icon-circle::after {
+  width: 16px;
+  height: 16px;
+}
+
+/* Latest milestone highlight */
+.timeline-item.latest .timeline-icon .icon-circle {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Milestone card */
+.milestone-card {
+  flex: 1;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  transition: all 0.3s ease;
+}
+
+.milestone-card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.milestone-card.active {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* Card header */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.milestone-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.milestone-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.milestone-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Milestone detail styling */
+.milestone-detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 4px;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.detail-label {
+  font-weight: 400;
+  color: #9ca3af;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.detail-value {
+  color: #374151;
+  font-weight: 400;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.status-badge .status-text.completed {
+  color: #10b981;
+  background: #ecfdf5;
+}
+
+.status-badge .status-text.current {
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+.status-badge .status-text.delayed {
+  color: #ef4444;
+  background: #fef2f2;
+}
+
+.status-badge .status-text.pending {
+  color: #6b7280;
+  background: #f9fafb;
+}
+
+/* Card content */
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.milestone-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #6b7280;
+  min-width: 70px;
+}
+
+.detail-value {
+  color: #374151;
+  font-weight: 400;
+}
+
+.timestamp {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 500;
+  text-align: right;
+  padding-top: 8px;
+  border-top: 1px solid #f3f4f6;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .milestone-timeline-container {
+    padding: 12px 0;
+  }
+  
+  .timeline-title {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  
+  .timeline-item {
+    margin-bottom: 20px;
+  }
+  
+  .timeline-icon {
+    margin-right: 12px;
+  }
+  
+  .icon-circle {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .milestone-card {
+    padding: 12px;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .milestone-title {
+    font-size: 14px;
+  }
+  
+  .detail-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+  
+  .detail-label {
+    min-width: auto;
+    font-size: 12px;
+  }
+  
+  .detail-value {
+    font-size: 12px;
+  }
+  
+  .timestamp {
+    text-align: left;
+    font-size: 11px;
+  }
+}
+
+/* Custom scrollbar for timeline */
+.timeline::-webkit-scrollbar {
+  width: 6px;
+}
+
+.timeline::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.timeline::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.timeline::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Animation for latest milestone */
+@keyframes fadeInSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.timeline-item.latest {
+  animation: fadeInSlide 0.6s ease-out;
+}
