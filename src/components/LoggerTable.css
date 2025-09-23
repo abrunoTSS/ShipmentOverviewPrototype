@@ -1,0 +1,190 @@
+/* Logger Table Styles */
+
+/* Column headers - allow wrapping to two lines with consistent font size */
+.column-header {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: left;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-height: 2.6rem; /* Approximately 2 lines at 0.65rem font size */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Mission ID header - wider column with two-line text */
+.mission-id-header {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+}
+
+/* Mission date headers - wider columns for longer text */
+.mission-date-header {
+  width: 140px;
+  min-width: 140px;
+}
+
+/* Table cell content - allow wrapping to two lines, truncate with ellipsis if exceeds */
+.table-cell-content {
+  font-size: 0.65rem;
+  line-height: 1.2;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-height: 2.6rem; /* Approximately 2 lines at 0.65rem font size */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: default;
+  text-align: left;
+}
+
+/* Visibility column header styling */
+.visibility-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px;
+}
+
+.visibility-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.master-checkbox {
+  cursor: pointer;
+  transform: scale(1.1);
+  margin: 0;
+}
+
+/* Visibility cell styling */
+.visibility-cell {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 4px;
+}
+
+.logger-visibility-checkbox {
+  cursor: pointer;
+  transform: scale(1.1);
+  margin: 0;
+}
+
+/* Nested table wrapper */
+.nested-table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Nested table styling */
+.nested-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.65rem;
+}
+
+.nested-table th {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 8px 6px;
+  text-align: left;
+  vertical-align: middle;
+  min-width: 80px;
+}
+
+.nested-table td {
+  border: 1px solid #e5e7eb;
+  padding: 8px 6px;
+  text-align: left;
+  vertical-align: middle;
+  min-width: 80px;
+}
+
+/* Specific column widths */
+.nested-table th:nth-child(2), /* Mission ID column */
+.nested-table td:nth-child(2) {
+  width: 100px;
+  min-width: 100px;
+  max-width: 100px;
+}
+
+.nested-table th:nth-child(3), /* Serial Number column */
+.nested-table td:nth-child(3) {
+  width: 70px;
+  min-width: 70px;
+  max-width: 70px;
+}
+
+.nested-table th:nth-child(6), /* Mission Started column */
+.nested-table td:nth-child(6),
+.nested-table th:nth-child(7), /* Mission Ended column */
+.nested-table td:nth-child(7) {
+  width: 140px;
+  min-width: 140px;
+}
+
+/* Expand button styling */
+.logger-expand-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.expand-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.expand-button:hover {
+  background-color: #f3f4f6;
+}
+
+.expand-icon {
+  color: #6b7280;
+  transition: transform 0.2s;
+}
+
+.expand-icon.expanded {
+  transform: rotate(0deg);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nested-table th,
+  .nested-table td {
+    min-width: 60px;
+    padding: 6px 4px;
+  }
+  
+  .visibility-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .visibility-label {
+    text-align: center;
+  }
+}

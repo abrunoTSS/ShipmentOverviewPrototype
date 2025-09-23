@@ -45,15 +45,21 @@ export interface Excursion {
 }
 
 export interface ExcursionMilestone {
-  type?: string;
+  type: string;
   location: string;
-  arrivalTime?: string;
+  arrivalTime: string;
   departedTime?: string;
   status: string;
-  transportMode?: string;
-  vehicleNumber?: string;
-  weatherConditions?: string;
-  excursion?: Excursion | null;
+  transportMode: string;
+  vehicleNumber: string;
+  weatherConditions: string;
+  temperature: number;
+}
+
+export interface LoggerTimeSeriesData {
+  timestamp: string;
+  temperature: number; // °C
+  humidity?: number; // % (only for Sentinel/Sentry loggers)
 }
 
 export interface Alarm {
@@ -87,14 +93,15 @@ export interface Milestone {
 export interface Logger {
   loggerId: string;
   loggerType: LoggerType;
-  loggerStarted: string;
-  loggerEnded: string;
-  temperature?: string;
+  missionStarted: string; // Renamed from loggerStarted
+  missionEnded: string; // Renamed from loggerEnded
+  deliveryId: string; // New column
+  tempProfile: string; // New column
+  serialNumber: number; // New column
   alarms: Alarm[] | number; // Can be a count or a detailed array
-  rootCauseAnalysis: string | null;
+  evaluation: string | null; // Renamed from rootCauseAnalysis
   rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;
   events?: any[];
-  lastSeen?: string;
   productDetails?: ProductDetails;
   excursionMilestones?: Milestone[];
   calibrationDate?: string;
@@ -104,6 +111,8 @@ export interface Logger {
   // Added for logger end date display logic
   shipmentStatus?: string;
   shipmentEta?: string;
+  // Time-series data for temperature and humidity readings
+  timeSeriesData?: LoggerTimeSeriesData[];
 }
 
 export interface Shipment {

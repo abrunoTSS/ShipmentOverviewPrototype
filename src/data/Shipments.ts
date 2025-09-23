@@ -1,4 +1,49 @@
-import type { Shipment } from '../types';
+import type { Shipment, LoggerTimeSeriesData } from '../types';
+
+// Helper function to generate time-series data with validation
+function generateTimeSeriesData(
+  startDate: string, 
+  endDate: string | null, 
+  loggerType: string,
+  shipmentStatus: string,
+  baseTemp: number = 6, 
+  baseHumidity: number = 45
+): LoggerTimeSeriesData[] {
+  const data: LoggerTimeSeriesData[] = [];
+  
+  // Web loggers should only have temperature data if shipment is delivered
+  if (loggerType.includes('Web Logger') && shipmentStatus !== 'Delivered') {
+    return [];
+  }
+  
+  const start = new Date(startDate);
+  const end = endDate && endDate !== 'n/a' ? new Date(endDate) : new Date();
+  
+  // Generate data points every 15 minutes
+  const intervalMs = 15 * 60 * 1000; // 15 minutes
+  let current = new Date(start);
+  
+  while (current <= end) {
+    // Add some realistic variation
+    const tempVariation = (Math.random() - 0.5) * 4; // ±2°C variation
+    const humidityVariation = (Math.random() - 0.5) * 20; // ±10% variation
+    
+    const dataPoint: LoggerTimeSeriesData = {
+      timestamp: current.toISOString(),
+      temperature: Math.round((baseTemp + tempVariation) * 10) / 10,
+    };
+    
+    // Add humidity data only for Sentinel and Sentry loggers (exclude web loggers)
+    if ((loggerType.includes('Sentinel') || loggerType.includes('Sentry')) && !loggerType.includes('Web Logger')) {
+      dataPoint.humidity = Math.round((baseHumidity + humidityVariation) * 10) / 10;
+    }
+    
+    data.push(dataPoint);
+    current = new Date(current.getTime() + intervalMs);
+  }
+  
+  return data;
+}
 
 export const shipments: Shipment[] = [
      {
@@ -41,13 +86,15 @@ export const shipments: Shipment[] = [
           {
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "n/a",
-            temperature: "n/a",
-         
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "n/a",
+            deliveryId: "DLV-001",
+            tempProfile: "controlled room temperature",
+            serialNumber: 1,
             alarms: [],
-            rootCauseAnalysis: null,
+            evaluation: null,
             rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Web Logger 2", "In Transit", 5, 42),
             productDetails: {
               prodfilename: "Insulin-3",
               producttype: "controlled room temperature",
@@ -98,10 +145,12 @@ export const shipments: Shipment[] = [
           {
             loggerId: "SENTRY-1002",
             loggerType: "Sentry",
-            loggerStarted: "2025-07-14T08:00:00Z",
-            loggerEnded: "n/a",
-            temperature: "6°C",
-         
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "n/a",
+            deliveryId: "DLV-002",
+            tempProfile: "controlled room temperature",
+            serialNumber: 2,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Sentry", "In Transit", 6, 50),
             alarms: [
               {
                 alarmId: 1,
@@ -187,9 +236,8 @@ export const shipments: Shipment[] = [
                 ]
               }
             ],
-            rootCauseAnalysis: "Not Started",
+            evaluation: "Not Started",
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "2025-07-17 10:00",
             productDetails: {
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
@@ -202,10 +250,11 @@ export const shipments: Shipment[] = [
           {
             loggerId: "SENTINEL-1002",
             loggerType: "Sentinel",
-            loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "n/a",
-            temperature: "6°C",
-         
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "n/a",
+            deliveryId: "DLV-003",
+            tempProfile: "controlled room temperature",
+            serialNumber: 3,
             alarms: [
               {
                 alarmId: 1,
@@ -294,9 +343,9 @@ export const shipments: Shipment[] = [
                 ]
               }
             ],
-            rootCauseAnalysis: "Not Started",
+            evaluation: "Not Started",
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "2025-07-17 10:00",
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Sentinel", "In Transit", 6, 45),
             productDetails: {
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
@@ -326,13 +375,16 @@ export const shipments: Shipment[] = [
           {
             loggerId: "LG-1001",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "n/a",
-            temperature: "n/a",
+            deliveryId: "DL-1001",
+            tempProfile: "controlled room temperature",
+            serialNumber: 1,
+            missionStarted: "2025-07-10T08:00:00Z",
+            missionEnded: "2025-07-20T08:00:00Z",
             alarms: 0,
-            rootCauseAnalysis: null,
+            evaluation: null,
             rootCauseAnalysisStatusDetails: null,
             events: [],
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "Web Logger 2", "Delivered", 6, 45),
             productDetails: {
               prodfilename: "Insulin-3",
               producttype: "controlled room temperature",
@@ -376,7 +428,7 @@ export const shipments: Shipment[] = [
                     status: "Completed",
                     transportMode: "Road",
                     vehicleNumber: "DE HAM 456",
-                    weatherConditions: "Sunny, 28°C"
+                    weatherConditions: "Sunny, 28°C",
                   },
                   {
                     type: "lane 2 part B - excursion lane",
@@ -451,9 +503,8 @@ export const shipments: Shipment[] = [
                 ]
               }
             ],
-            rootCauseAnalysis: "Not Started",
+            evaluation: "Not Started",
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "2025-07-17 10:00",
             productDetails: {
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
@@ -554,9 +605,9 @@ export const shipments: Shipment[] = [
                 ]
               }
             ],
-            rootCauseAnalysis: "Not Started",
+            evaluation: "Not Started",
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "2025-07-17 10:00",
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "Web Logger 2", "Delivered", 8, 50),
             productDetails: {
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
@@ -586,9 +637,11 @@ export const shipments: Shipment[] = [
           {
             loggerId: "WL-1006A",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-06-10T08:00:00Z",
-            loggerEnded: "2025-06-20T08:00:00Z",
-            temperature: "n/a",
+            deliveryId: "DL-1004",
+            tempProfile: "controlled room temperature",
+            serialNumber: 1,
+            missionStarted: "2025-06-10T08:00:00Z",
+            missionEnded: "2025-06-20T08:00:00Z",
             alarms: [
               {
                 alarmId: 1,
@@ -699,9 +752,11 @@ export const shipments: Shipment[] = [
           {
             loggerId: "WL-1006B",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-06-10T08:00:00Z",
-            loggerEnded: "2025-06-20T08:00:00Z",
-            temperature: "n/a",
+            deliveryId: "DL-1005",
+            tempProfile: "controlled room temperature",
+            serialNumber: 2,
+            missionStarted: "2025-06-10T08:00:00Z",
+            missionEnded: "2025-06-20T08:00:00Z",
             alarms: [
               {
                 alarmId: 1,
@@ -830,13 +885,15 @@ export const shipments: Shipment[] = [
           {
             loggerId: "WB-1014C",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-08-10T08:00:00Z",
-            loggerEnded: "n/a",
-            temperature: "n/a",
+            deliveryId: "DL-1006",
+            tempProfile: "controlled room temperature",
+            serialNumber: 3,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Web Logger 2", "In Transit", 5, 40),
             alarms: 0,
-            rootCauseAnalysis: null,
+            evaluation: null,
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "n/a",
             productDetails: {
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
@@ -848,14 +905,15 @@ export const shipments: Shipment[] = [
           {
             loggerId: "WB-1014B",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-08-10T08:00:00Z",
-            loggerEnded: "n/a",
-            temperature: "n/a",
-       
+            deliveryId: "DL-1007",
+            tempProfile: "controlled room temperature",
+            serialNumber: 2,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "n/a",
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Web Logger 2", "In Transit", 5, 38),
             alarms: 0,
-            rootCauseAnalysis: null,
+            evaluation: null,
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "n/a",
             productDetails: {
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
@@ -886,13 +944,15 @@ export const shipments: Shipment[] = [
           {
             loggerId: "WB-1015A",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "2025-07-13T08:00:00Z",
-            temperature: "n/a",
+            deliveryId: "DL-1008",
+            tempProfile: "controlled room temperature",
+            serialNumber: 1,
+            missionStarted: "2025-07-10T08:00:00Z",
+            missionEnded: "2025-07-13T08:00:00Z",
             alarms: [],
-            rootCauseAnalysis: null,
+            evaluation: null,
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "2025-07-13 14:30",
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-13T08:00:00Z", "Web Logger 2", "Delivered", 4, 40),
             productDetails: {
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
@@ -904,13 +964,14 @@ export const shipments: Shipment[] = [
           {
             loggerId: "WB-1015B",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "2025-07-13T08:00:00Z",
-            temperature: "n/a",
+            deliveryId: "DL-1009",
+            tempProfile: "controlled room temperature",
+            serialNumber: 2,
+            missionStarted: "2025-07-10T08:00:00Z",
+            missionEnded: "2025-07-13T08:00:00Z",
             alarms: [],
-            rootCauseAnalysis: null,
+            evaluation: null,
             rootCauseAnalysisStatusDetails: null,
-            lastSeen: "2025-07-13 14:35",
             productDetails: {
               prodfilename: "Vaccine-X",
               producttype: "cold chain",

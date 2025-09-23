@@ -407,9 +407,39 @@ body {
 
 
 
-.expanded-content {
+.nested-content-container {
   padding: 0;
   background-color: #f8fafc;
+}
+
+.expanded-content {
+  padding: 24px;
+  background-color: white;
+  margin: 16px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Graph section styling in expanded rows */
+.graph-section {
+  margin-bottom: 32px;
+}
+
+.graph-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.logger-table-section {
+  margin-top: 16px;
+}
+
+.shipment-graph {
+  margin: 0;
 }
 
 .logger-details {

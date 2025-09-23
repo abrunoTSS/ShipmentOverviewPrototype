@@ -11,6 +11,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import { LoggerTable } from './LoggerTable';
 import { FilterBar, type FilterState } from './FilterBar';
+import TimeSeriesGraph from './TimeSeriesGraph';
 
 interface ShipmentTableProps {
   shipments: Shipment[];
@@ -36,6 +37,36 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     startDate: null,
     endDate: null,
   });
+
+  // State for managing logger visibility in graphs
+  const [visibleLoggers, setVisibleLoggers] = useState<Map<string, Set<string>>>(new Map());
+
+  const handleLoggerVisibilityChange = (shipmentId: string, loggerId: string, visible: boolean) => {
+    setVisibleLoggers(prev => {
+      const newMap = new Map(prev);
+      const shipmentLoggers = newMap.get(shipmentId) || new Set();
+      
+      if (visible) {
+        shipmentLoggers.add(loggerId);
+      } else {
+        shipmentLoggers.delete(loggerId);
+      }
+      
+      newMap.set(shipmentId, shipmentLoggers);
+      return newMap;
+    });
+  };
+
+  // Initialize visible loggers for expanded shipment
+  const getVisibleLoggersForShipment = (shipmentId: string, loggers: Logger[]) => {
+    if (!visibleLoggers.has(shipmentId)) {
+      // Initialize with all loggers visible by default
+      const allLoggerIds = new Set(loggers.map(logger => logger.loggerId));
+      setVisibleLoggers(prev => new Map(prev).set(shipmentId, allLoggerIds));
+      return allLoggerIds;
+    }
+    return visibleLoggers.get(shipmentId) || new Set();
+  };
 
   // Filter shipments based on current filters
   const filteredShipments = useMemo(() => {
@@ -89,15 +120,15 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         if (filters.milestoneData === 'No' && hasMilestoneData) return false;
       }
 
-      // Date range filter
+      // Date range filter - using mission started date instead of lastSeen
       if (filters.startDate && filters.endDate) {
-        const mostRecentLastSeen = shipment.loggerData?.reduce((latest, logger) => {
-          if (!logger.lastSeen) return latest;
-          const loggerDate = new Date(logger.lastSeen);
+        const mostRecentMissionStarted = shipment.loggerData?.reduce((latest, logger) => {
+          if (!logger.missionStarted) return latest;
+          const loggerDate = new Date(logger.missionStarted);
           return latest && latest > loggerDate ? latest : loggerDate;
         }, null as Date | null);
 
-        if (!mostRecentLastSeen) return false; // Filter out if no valid date
+        if (!mostRecentMissionStarted) return false; // Filter out if no valid date
 
         const startDate = new Date(filters.startDate);
         startDate.setHours(0, 0, 0, 0);
@@ -105,7 +136,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         const endDate = new Date(filters.endDate);
         endDate.setHours(23, 59, 59, 999);
 
-        if (mostRecentLastSeen < startDate || mostRecentLastSeen > endDate) {
+        if (mostRecentMissionStarted < startDate || mostRecentMissionStarted > endDate) {
           return false;
         }
       }
@@ -271,19 +302,43 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                 ))}
               </tr>
               
-              {/* Nested Logger Table */}
+              {/* Expanded Row Content */}
               {expandedRow === row.original.shipmentId && (
                 <tr className="nested-row">
-                  <td colSpan={columns.length} className="nested-table-container">
-                    <LoggerTable
-                      loggers={row.original.loggerData.map(logger => ({
-                        ...logger,
-                        shipmentStatus: row.original.status,
-                        shipmentEta: row.original.eta
-                      }))}
-                      onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
-                      selectedLoggerId={selectedLoggerId}
-                    />
+                  <td colSpan={columns.length} className="nested-content-container">
+                    <div className="expanded-content">
+                      {/* Time Series Graph Section */}
+                      {row.original.loggerData && row.original.loggerData.some(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0) && (
+                        <div className="graph-section">
+                          <h3 className="graph-title">Temperature & Humidity Timeline - {row.original.shipmentId}</h3>
+                          <TimeSeriesGraph 
+                            loggers={row.original.loggerData.filter(logger => {
+                              const visibleLoggersSet = getVisibleLoggersForShipment(row.original.shipmentId, row.original.loggerData);
+                              return logger.timeSeriesData && 
+                                     logger.timeSeriesData.length > 0 && 
+                                     visibleLoggersSet.has(logger.loggerId);
+                            })}
+                            shipment={row.original}
+                            showHumidity={true}
+                            height={400}
+                            className="shipment-graph"
+                          />
+                        </div>
+                      )}
+                      
+                      {/* Logger Table Section */}
+                      <div className="logger-table-section">
+                        <LoggerTable
+                          loggers={row.original.loggerData.map(logger => ({
+                            ...logger,
+                            shipmentStatus: row.original.status,
+                            shipmentEta: row.original.eta
+                          }))}
+                          onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
+                          selectedLoggerId={selectedLoggerId}
+                        />
+                      </div>
+                    </div>
                   </td>
                 </tr>
               )}
