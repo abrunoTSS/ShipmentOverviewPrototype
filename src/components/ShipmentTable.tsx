@@ -166,21 +166,6 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       accessorKey: 'destination',
     },
     {
-      id: 'eta',
-      header: 'ETA',
-      accessorKey: 'eta',
-      cell: ({ getValue }) => {
-        const eta = getValue() as string | null;
-        // Check if eta is a valid date string or a special value like "Unavailable"
-        if (!eta) return 'n/a';
-        if (eta === 'Unavailable') return 'Unavailable';
-        
-        // Try to parse as date, but handle invalid dates gracefully
-        const date = new Date(eta);
-        return isNaN(date.getTime()) ? eta : date.toLocaleDateString();
-      },
-    },
-    {
       id: 'status',
       header: 'Status',
       accessorKey: 'status',
@@ -191,13 +176,8 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     },
     {
       id: 'freightForwarder',
-      header: 'FF',
+      header: 'Freight Forwarder',
       accessorKey: 'freightForwarder',
-    },
-    {
-      id: 'currentLocation',
-      header: 'Current Location',
-      accessorKey: 'currentLocation',
     },
     {
       id: 'modeOfTransport',
@@ -206,30 +186,29 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     },
     {
       id: 'packagingType',
-      header: 'Packaging Type',
+      header: 'Packaging Solution',
       accessorKey: 'packagingType',
     },
     {
-      id: 'loggers',
-      header: 'Loggers',
-      cell: ({ row }) => (
-        <span className="logger-count">
-          {row.original.loggerData?.length || 0}
-        </span>
-      ),
-    },
-    {
       id: 'alarms',
-      header: 'Total Alarms',
-      accessorKey: 'alarms',
-      cell: ({ getValue }) => {
-        const alarms = getValue() as number | null;
-        return alarms && alarms > 0 ? alarms.toString() : '0';
+      header: 'Alarms',
+      cell: ({ row }) => {
+        const loggers = row.original.loggerData || [];
+        const totalLoggers = loggers.length;
+        const loggersWithAlarms = loggers.filter(logger => {
+          if (!logger.alarms) return false;
+          // Handle both array and number types for alarms
+          if (Array.isArray(logger.alarms)) {
+            return logger.alarms.length > 0;
+          }
+          return logger.alarms > 0;
+        }).length;
+        return `${loggersWithAlarms}/${totalLoggers} loggers alarmed`;
       },
     },
     {
       id: 'rcas',
-      header: 'RCAS',
+      header: 'Evaluation',
       accessorKey: 'rcas',
       cell: ({ getValue }) => {
         const rcas = getValue() as string | null;
@@ -302,43 +281,43 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                 ))}
               </tr>
               
-              {/* Expanded Row Content */}
+              {/* Graph Section */}
+              {expandedRow === row.original.shipmentId && row.original.loggerData && row.original.loggerData.some(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0) && (
+                <tr className="graph-nested-row">
+                  <td colSpan={columns.length} className="graph-nested-container">
+                    <TimeSeriesGraph 
+                      loggers={row.original.loggerData.filter(logger => {
+                        const visibleLoggersSet = getVisibleLoggersForShipment(row.original.shipmentId, row.original.loggerData);
+                        return logger.timeSeriesData && 
+                               logger.timeSeriesData.length > 0 && 
+                               visibleLoggersSet.has(logger.loggerId);
+                      })}
+                      shipment={row.original}
+                      showHumidity={true}
+                      height={400}
+                      className="shipment-graph"
+                    />
+                  </td>
+                </tr>
+              )}
+              
+              {/* Logger Table as nested table */}
               {expandedRow === row.original.shipmentId && (
-                <tr className="nested-row">
-                  <td colSpan={columns.length} className="nested-content-container">
-                    <div className="expanded-content">
-                      {/* Time Series Graph Section */}
-                      {row.original.loggerData && row.original.loggerData.some(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0) && (
-                        <div className="graph-section">
-                          <h3 className="graph-title">Temperature & Humidity Timeline - {row.original.shipmentId}</h3>
-                          <TimeSeriesGraph 
-                            loggers={row.original.loggerData.filter(logger => {
-                              const visibleLoggersSet = getVisibleLoggersForShipment(row.original.shipmentId, row.original.loggerData);
-                              return logger.timeSeriesData && 
-                                     logger.timeSeriesData.length > 0 && 
-                                     visibleLoggersSet.has(logger.loggerId);
-                            })}
-                            shipment={row.original}
-                            showHumidity={true}
-                            height={400}
-                            className="shipment-graph"
-                          />
-                        </div>
-                      )}
-                      
-                      {/* Logger Table Section */}
-                      <div className="logger-table-section">
-                        <LoggerTable
-                          loggers={row.original.loggerData.map(logger => ({
-                            ...logger,
-                            shipmentStatus: row.original.status,
-                            shipmentEta: row.original.eta
-                          }))}
-                          onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
-                          selectedLoggerId={selectedLoggerId}
-                        />
-                      </div>
-                    </div>
+                <tr className="logger-nested-row">
+                  <td colSpan={columns.length} className="logger-nested-container">
+                    <LoggerTable
+                      loggers={row.original.loggerData.map(logger => ({
+                        ...logger,
+                        shipmentStatus: row.original.status,
+                        shipmentEta: row.original.eta
+                      }))}
+                      onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
+                      selectedLoggerId={selectedLoggerId}
+                      visibleLoggers={getVisibleLoggersForShipment(row.original.shipmentId, row.original.loggerData)}
+                      onLoggerVisibilityChange={(loggerId, visible) => 
+                        handleLoggerVisibilityChange(row.original.shipmentId, loggerId, visible)
+                      }
+                    />
                   </td>
                 </tr>
               )}

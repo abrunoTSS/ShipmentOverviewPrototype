@@ -41,6 +41,8 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
   height = 400, 
   className = '' 
 }) => {
+  const [humidityVisible, setHumidityVisible] = useState(showHumidity);
+  const [temperatureVisible, setTemperatureVisible] = useState(true);
   // Get threshold values from loggers
   const thresholds = React.useMemo(() => {
     const thresholdValues: { low: number | null, high: number | null } = { low: null, high: null };
@@ -295,9 +297,27 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
         <button type="button" className="zoom-out-btn" onClick={zoomOut}>
           Zoom Out
         </button>
-        <div className="graph-info">
-          <span>Temperature & Humidity Timeline</span>
-          {shipment && <span className="shipment-id">({shipment.shipmentId})</span>}
+        <div className="data-toggles">
+          <div className="temperature-toggle">
+            <label>
+              <input
+                type="checkbox"
+                checked={temperatureVisible}
+                onChange={(e) => setTemperatureVisible(e.target.checked)}
+              />
+              Show Temperature
+            </label>
+          </div>
+          <div className="humidity-toggle">
+            <label>
+              <input
+                type="checkbox"
+                checked={humidityVisible}
+                onChange={(e) => setHumidityVisible(e.target.checked)}
+              />
+              Show Humidity
+            </label>
+          </div>
         </div>
       </div>
 
@@ -329,14 +349,16 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
               hour12: false
             })}
           />
-          <YAxis 
-            allowDataOverflow 
-            domain={[yAxisRanges.temperature.min, yAxisRanges.temperature.max]} 
-            type="number" 
-            yAxisId="temperature"
-            label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
-          />
-          {showHumidity && humidityKeys.length > 0 && (
+          {temperatureVisible && (
+            <YAxis 
+              allowDataOverflow 
+              domain={[yAxisRanges.temperature.min, yAxisRanges.temperature.max]} 
+              type="number" 
+              yAxisId="temperature"
+              label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
+            />
+          )}
+          {humidityVisible && humidityKeys.length > 0 && (
             <YAxis 
               orientation="right" 
               allowDataOverflow 
@@ -364,7 +386,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
               if (isTemp) {
                 return [`${value}°C`, `${loggerName} Temperature`];
               } else if (isHumidity) {
-                return [`${value}%`, `${loggerName} Humidity`];
+                return [`${value}%`, `${loggerName} Humidity (Dashed)`];
               }
               return [value, name];
             }}
@@ -421,7 +443,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                               marginRight: '4px' 
                             }} 
                           />
-                          <span style={{ fontSize: '12px' }}>Humidity</span>
+                          <span style={{ fontSize: '12px' }}>Humidity (Dashed)</span>
                         </div>
                       )}
                     </div>
@@ -432,7 +454,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
           />
 
           {/* Temperature lines */}
-          {tempKeys.map((key, index) => (
+          {temperatureVisible && tempKeys.map((key, index) => (
             <Line
               key={key}
               yAxisId="temperature"
@@ -447,7 +469,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
           ))}
 
           {/* Humidity lines */}
-          {showHumidity && humidityKeys.map((key, index) => {
+          {humidityVisible && humidityKeys.map((key, index) => {
             // Find the matching temperature logger index to use the same color
             const loggerName = key.split('_')[0];
             const tempIndex = tempKeys.findIndex(tempKey => tempKey.split('_')[0] === loggerName);
@@ -463,7 +485,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                 strokeWidth={2}
                 strokeDasharray="5 5"
                 dot={false}
-                name={`${loggerName} Humidity`}
+                name={`${loggerName} Humidity (Dashed)`}
                 connectNulls={false}
               />
             );

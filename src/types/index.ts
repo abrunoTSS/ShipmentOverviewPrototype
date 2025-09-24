@@ -82,6 +82,8 @@ export interface Milestone {
   type: string;
   location: string;
   status: string;
+  milestoneName: string;
+  groundHandler: string;
   arrivalTime?: string;
   departedTime?: string;
   transportMode?: string;
@@ -127,16 +129,10 @@ export interface Shipment {
   currentLocation?: string;
   modeOfTransport: string;
   packagingType: string;
-  shipmentCurrentMilestone?: shipmentCurrentMilestone[];
+  milestones?: Milestone[];
   alarms: number;
   totalAlarms?: number;
   events: number | null;
   rcas: string;
   loggerData: Logger[];
-}
-
-export interface shipmentCurrentMilestone {
-  type: string;
-  location: string;
-  status: string;
 }

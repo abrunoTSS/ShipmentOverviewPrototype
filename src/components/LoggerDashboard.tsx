@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import type { Shipment, Logger, ExcursionMilestone } from '../types';
-import TimeSeriesGraph from './TimeSeriesGraph';
+import { X, AlertTriangle, CheckCircle, Clock, MapPin } from 'lucide-react';
+import type { Shipment, Logger } from '../types';
 import './loggerDashboard.css';
 
 interface LoggerDashboardProps {
@@ -199,19 +198,6 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
             </>
           )}
 
-          {/* Time Series Graph Section */}
-          {shipment && shipment.loggerData && shipment.loggerData.some(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0) && (
-            <div className="dashboard-section">
-              <h3 className="section-title">Temperature & Humidity Timeline</h3>
-              <TimeSeriesGraph 
-                loggers={shipment.loggerData.filter(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0)}
-                shipment={shipment}
-                showHumidity={true}
-                height={400}
-                className="logger-dashboard-graph"
-              />
-            </div>
-          )}
           {Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
             <div className="dashboard-section">
               <h3 className="section-title">Alarms</h3>

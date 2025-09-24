@@ -59,26 +59,51 @@ export const shipments: Shipment[] = [
         packagingType: "Insulated Box",
         alarms: 0,
         events: 0,
-        shipmentCurrentMilestone: [
+        milestones: [
           {
             type: "origin",
             location: "Stockholm, Sweden",
-            status: "Completed"
+            status: "Completed",
+            milestoneName: "Departure from Stockholm",
+            groundHandler: "Geodis",
+            arrivalTime: "2025-09-22T08:00:00Z",
+            departedTime: "2025-09-22T10:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T1234",
+            weatherConditions: "Clear, 15°C"
           },
           {
             type: "milestone",
             location: "Copenhagen, Denmark",
-            status: "Completed"
+            status: "Completed",
+            milestoneName: "Transit through Copenhagen",
+            groundHandler: "Geodis",
+            arrivalTime: "2025-09-22T14:30:00Z",
+            departedTime: "2025-09-22T15:30:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T1234",
+            weatherConditions: "Partly cloudy, 12°C"
           },
           {
             type: "milestone",
             location: "Hamburg, Germany",
-            status: "Current"
+            status: "Current",
+            milestoneName: "Transit through Hamburg",
+            groundHandler: "Geodis",
+            arrivalTime: "2025-09-22T18:45:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T1234",
+            weatherConditions: "Overcast, 10°C"
           },
           {
             type: "destination",
             location: "Berlin, Germany",
-            status: "Pending"
+            status: "Pending",
+            milestoneName: "Arrival in Berlin",
+            groundHandler: "Geodis",
+            transportMode: "Road",
+            vehicleNumber: "T1234",
+            weatherConditions: "Expected: Light rain, 8°C"
           }
         ],        
         rcas: "n/a",
@@ -119,26 +144,61 @@ export const shipments: Shipment[] = [
         alarms: 4,
         events: 4,
         rcas: "Not Started",
-        shipmentCurrentMilestone: [
+        milestones: [
           {
             type: "origin",
             location: "Macclesfield, UK",
-            status: "Completed"
+            status: "Completed",
+            milestoneName: "Departure from Macclesfield",
+            groundHandler: "Geodis",
+            arrivalTime: "2025-09-21T06:00:00Z",
+            departedTime: "2025-09-21T08:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T2456",
+            weatherConditions: "Foggy, 8°C"
           },
           {
             type: "milestone",
             location: "Heathrow Airport, UK",
-            status: "Completed"
+            status: "Completed",
+            milestoneName: "Departure from Heathrow",
+            groundHandler: "British Airways",
+            arrivalTime: "2025-09-21T10:30:00Z",
+            departedTime: "2025-09-21T14:15:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F8901",
+            weatherConditions: "Overcast, 11°C"
           },
           {
             type: "milestone",
             location: "Amsterdam, Netherlands",
-            status: "Current"
+            status: "Current",
+            milestoneName: "Transit through Amsterdam Schiphol",
+            groundHandler: "KLM",
+            arrivalTime: "2025-09-21T16:45:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F3456",
+            weatherConditions: "Light rain, 9°C"
+          },
+          {
+            type: "milestone",
+            location: "Dubai, UAE",
+            status: "Pending",
+            milestoneName: "Transit through Dubai",
+            groundHandler: "Emirates",
+            transportMode: "Air",
+            vehicleNumber: "F7890",
+            weatherConditions: "Expected: Clear, 28°C"
           },
           {
             type: "destination",
             location: "Tokyo, Japan",
-            status: "Pending"
+            status: "Pending",
+            milestoneName: "Arrival at Narita Airport",
+            groundHandler: "Japan Airlines",
+            transportMode: "Air",
+            vehicleNumber: "F1122",
+            weatherConditions: "Expected: Partly cloudy, 18°C"
           }
         ],   
         loggerData: [
@@ -371,6 +431,43 @@ export const shipments: Shipment[] = [
         alarms: 0,
         events: 0,
         rcas: "n/a",
+        milestones: [
+          {
+            type: "origin",
+            location: "Stockholm, Sweden",
+            status: "Completed",
+            milestoneName: "Departure from Stockholm Arlanda",
+            groundHandler: "SAS",
+            arrivalTime: "2025-07-10T08:00:00Z",
+            departedTime: "2025-07-10T11:30:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F2345",
+            weatherConditions: "Clear, 18°C"
+          },
+          {
+            type: "milestone",
+            location: "Frankfurt, Germany",
+            status: "Completed",
+            milestoneName: "Transit through Frankfurt",
+            groundHandler: "Lufthansa",
+            arrivalTime: "2025-07-10T13:15:00Z",
+            departedTime: "2025-07-10T15:45:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F6789",
+            weatherConditions: "Partly cloudy, 22°C"
+          },
+          {
+            type: "destination",
+            location: "Berlin, Germany",
+            status: "Completed",
+            milestoneName: "Arrival at Berlin Brandenburg",
+            groundHandler: "Lufthansa",
+            arrivalTime: "2025-07-20T08:00:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F6789",
+            weatherConditions: "Sunny, 24°C"
+          }
+        ],
         loggerData: [
           {
             loggerId: "LG-1001",
@@ -409,13 +506,64 @@ export const shipments: Shipment[] = [
         alarms: 4,
         events: 4,
         rcas: "Not Started",
+        milestones: [
+          {
+            type: "origin",
+            location: "Macclesfield, UK",
+            status: "Completed",
+            milestoneName: "Departure from Macclesfield",
+            groundHandler: "DHL",
+            arrivalTime: "2025-07-10T06:00:00Z",
+            departedTime: "2025-07-10T08:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T3456",
+            weatherConditions: "Overcast, 12°C"
+          },
+          {
+            type: "milestone",
+            location: "Heathrow Airport, UK",
+            status: "Completed",
+            milestoneName: "Departure from Heathrow",
+            groundHandler: "British Airways",
+            arrivalTime: "2025-07-10T10:30:00Z",
+            departedTime: "2025-07-10T14:15:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F4567",
+            weatherConditions: "Light rain, 14°C"
+          },
+          {
+            type: "milestone",
+            location: "Dubai, UAE",
+            status: "Completed",
+            milestoneName: "Transit through Dubai",
+            groundHandler: "Emirates",
+            arrivalTime: "2025-07-10T22:45:00Z",
+            departedTime: "2025-07-11T02:30:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F8901",
+            weatherConditions: "Clear, 32°C"
+          },
+          {
+            type: "destination",
+            location: "Tokyo, Japan",
+            status: "Completed",
+            milestoneName: "Arrival at Narita Airport",
+            groundHandler: "Japan Airlines",
+            arrivalTime: "2025-07-20T08:00:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F2345",
+            weatherConditions: "Humid, 26°C"
+          }
+        ],
         loggerData: [
           {
-            loggerId: "WL-1002",
+            loggerId: "WL-1004A",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "2025-07-20T08:00:00Z",
-            temperature: "n/a",
+            deliveryId: "DL-1004A",
+            tempProfile: "controlled room temperature",
+            serialNumber: 1,
+            missionStarted: "2025-07-10T08:00:00Z",
+            missionEnded: "2025-07-20T08:00:00Z",
             alarms: [
               {
                 alarmId: 1,
@@ -505,6 +653,7 @@ export const shipments: Shipment[] = [
             ],
             evaluation: "Not Started",
             rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "Web Logger 2", "Delivered", 6, 45),
             productDetails: {
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
@@ -514,11 +663,13 @@ export const shipments: Shipment[] = [
             }
           },
           {
-            loggerId: "WL-1002",
+            loggerId: "WL-1004B",
             loggerType: "Web Logger 2",
-            loggerStarted: "2025-07-10T08:00:00Z",
-            loggerEnded: "2025-07-20T08:00:00Z",
-            temperature: "n/a",
+            deliveryId: "DL-1004B",
+            tempProfile: "controlled room temperature",
+            serialNumber: 2,
+            missionStarted: "2025-07-10T08:00:00Z",
+            missionEnded: "2025-07-20T08:00:00Z",
             alarms: [
               {
                 alarmId: 1,
@@ -633,6 +784,55 @@ export const shipments: Shipment[] = [
         totalAlarms: 4,
         events: 4,
         rcas: "In Progress",
+        milestones: [
+          {
+            type: "origin",
+            location: "Macclesfield, UK",
+            status: "Completed",
+            milestoneName: "Departure from Macclesfield",
+            groundHandler: "DHL",
+            arrivalTime: "2025-06-10T06:00:00Z",
+            departedTime: "2025-06-10T08:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T7890",
+            weatherConditions: "Rainy, 10°C"
+          },
+          {
+            type: "milestone",
+            location: "Heathrow Airport, UK",
+            status: "Completed",
+            milestoneName: "Departure from Heathrow",
+            groundHandler: "British Airways",
+            arrivalTime: "2025-06-10T10:30:00Z",
+            departedTime: "2025-06-10T14:15:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F5678",
+            weatherConditions: "Cloudy, 13°C"
+          },
+          {
+            type: "milestone",
+            location: "Amsterdam, Netherlands",
+            status: "Completed",
+            milestoneName: "Transit through Amsterdam Schiphol",
+            groundHandler: "KLM",
+            arrivalTime: "2025-06-10T16:45:00Z",
+            departedTime: "2025-06-10T19:30:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F9012",
+            weatherConditions: "Light rain, 15°C"
+          },
+          {
+            type: "destination",
+            location: "Tokyo, Japan",
+            status: "Completed",
+            milestoneName: "Arrival at Narita Airport",
+            groundHandler: "Japan Airlines",
+            arrivalTime: "2025-06-20T08:00:00Z",
+            transportMode: "Air",
+            vehicleNumber: "F3456",
+            weatherConditions: "Overcast, 22°C"
+          }
+        ],
         loggerData: [
           {
             loggerId: "WL-1006A",
@@ -741,6 +941,7 @@ export const shipments: Shipment[] = [
               reason: "Temperature excursion detected during loading at Amsterdam Airport"
             },
             lastSeen: "2025-06-17 10:00",
+            timeSeriesData: generateTimeSeriesData("2025-06-10T08:00:00Z", "2025-06-20T08:00:00Z", "Web Logger 2", "Delivered", 6, 45),
             productDetails: {
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
@@ -856,6 +1057,7 @@ export const shipments: Shipment[] = [
               reason: "Extended tarmac wait time during peak summer temperatures combined with inadequate packaging for extreme conditions"
             },
             lastSeen: "2025-06-17 10:00",
+            timeSeriesData: generateTimeSeriesData("2025-06-10T08:00:00Z", "2025-06-20T08:00:00Z", "Web Logger 2", "Delivered", 8, 50),
             productDetails: {
               prodfilename: "Insulin-2",
               producttype: "controlled room temperature",
@@ -881,6 +1083,41 @@ export const shipments: Shipment[] = [
         totalAlarms: 1,
         events: 0,
         rcas: "Not Started",
+        milestones: [
+          {
+            type: "origin",
+            location: "Paris, France",
+            status: "Completed",
+            milestoneName: "Departure from Paris",
+            groundHandler: "DHL",
+            arrivalTime: "2025-09-22T07:00:00Z",
+            departedTime: "2025-09-22T09:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T5678",
+            weatherConditions: "Sunny, 16°C"
+          },
+          {
+            type: "milestone",
+            location: "Bordeaux, France",
+            status: "Current",
+            milestoneName: "Transit through Bordeaux",
+            groundHandler: "DHL",
+            arrivalTime: "2025-09-22T13:30:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T5678",
+            weatherConditions: "Partly cloudy, 18°C"
+          },
+          {
+            type: "destination",
+            location: "Madrid, Spain",
+            status: "Pending",
+            milestoneName: "Arrival in Madrid",
+            groundHandler: "DHL",
+            transportMode: "Road",
+            vehicleNumber: "T5678",
+            weatherConditions: "Expected: Clear, 22°C"
+          }
+        ],
         loggerData: [
           {
             loggerId: "WB-1014C",
@@ -939,7 +1176,55 @@ export const shipments: Shipment[] = [
         totalAlarms: 0,
         events: 0,
         rcas: "Not Started",
-        shipmentCurrentMilestone: [],
+        milestones: [
+          {
+            type: "origin",
+            location: "Paris, France",
+            status: "Completed",
+            milestoneName: "Departure from Paris",
+            groundHandler: "DHL",
+            arrivalTime: "2025-07-10T08:00:00Z",
+            departedTime: "2025-07-10T10:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T9012",
+            weatherConditions: "Clear, 14°C"
+          },
+          {
+            type: "milestone",
+            location: "Bordeaux, France",
+            status: "Completed",
+            milestoneName: "Transit through Bordeaux",
+            groundHandler: "DHL",
+            arrivalTime: "2025-07-10T14:30:00Z",
+            departedTime: "2025-07-10T16:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T9012",
+            weatherConditions: "Overcast, 17°C"
+          },
+          {
+            type: "milestone",
+            location: "Zaragoza, Spain",
+            status: "Completed",
+            milestoneName: "Transit through Zaragoza",
+            groundHandler: "DHL",
+            arrivalTime: "2025-07-11T10:15:00Z",
+            departedTime: "2025-07-11T11:45:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T9012",
+            weatherConditions: "Sunny, 25°C"
+          },
+          {
+            type: "destination",
+            location: "Madrid, Spain",
+            status: "Completed",
+            milestoneName: "Delivered in Madrid",
+            groundHandler: "DHL",
+            arrivalTime: "2025-07-13T08:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T9012",
+            weatherConditions: "Clear, 20°C"
+          }
+        ],
         loggerData: [
           {
             loggerId: "WB-1015A",
@@ -972,6 +1257,7 @@ export const shipments: Shipment[] = [
             alarms: [],
             evaluation: null,
             rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-13T08:00:00Z", "Web Logger 2", "Delivered", 4, 40),
             productDetails: {
               prodfilename: "Vaccine-X",
               producttype: "cold chain",
