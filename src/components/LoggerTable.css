@@ -49,6 +49,30 @@
   text-align: left;
 }
 
+/* Mission error styling */
+.mission-error {
+  color: #dc2626; /* Red color for error state */
+}
+
+.mission-error-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+}
+
+.mission-error-text {
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.alarm-icon.default {
+  color: #dc2626; /* Red color for error icon */
+  flex-shrink: 0;
+}
+
 /* Visibility column header styling */
 .visibility-header {
   display: flex;
@@ -187,4 +211,49 @@
   .visibility-label {
     text-align: center;
   }
+}
+
+/* Alarm icons styling */
+.alarm-icons-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.alarm-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.alarm-icon {
+  color: #666;
+}
+
+.alarm-icon.humidity {
+  color: #3b82f6; /* Blue for humidity */
+}
+
+.alarm-icon.light {
+  color: #f59e0b; /* Amber for light */
+}
+
+.alarm-icon.pressure {
+  color: #8b5cf6; /* Purple for pressure */
+}
+
+.alarm-icon.shock {
+  color: #ef4444; /* Red for shock */
+}
+
+.alarm-icon.temperature {
+  color: #f97316; /* Orange for temperature */
+}
+
+.alarm-icon.tilt {
+  color: #10b981; /* Green for tilt */
+}
+
+.alarm-icon.default {
+  color: #6b7280; /* Gray for default/unknown */
 }

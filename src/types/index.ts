@@ -62,9 +62,11 @@ export interface LoggerTimeSeriesData {
   humidity?: number; // % (only for Sentinel/Sentry loggers)
 }
 
+export type AlarmType = 'Humidity' | 'Light' | 'Pressure' | 'Shock' | 'Temperature' | 'Tilt';
+
 export interface Alarm {
   alarmId: number;
-  alarmType: string;
+  alarmType: AlarmType;
   errorMessage?: string;
   excursionMilestones: ExcursionMilestone[];
 }
@@ -105,6 +107,7 @@ export interface Logger {
   tempProfile: string; // New column
   serialNumber: number; // New column
   alarms: Alarm[] | number; // Can be a count or a detailed array
+  alarmTypes?: AlarmType[]; // Array of alarm types for this logger
   evaluation: string | null; // Renamed from rootCauseAnalysis
   rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;
   events?: any[];
@@ -141,4 +144,6 @@ export interface Shipment {
   events: number | null;
   rcas: string;
   loggerData: Logger[];
+  distance: number; // Distance in kilometers
+  co2Emissions: number; // CO2 emissions in kg
 }

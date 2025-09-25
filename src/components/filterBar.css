@@ -203,5 +203,27 @@
 }
 
 .remove-all-filters-btn:hover {
-  background-color: #fecaca;
+  background-color: #dc2626;
+}
+
+/* Alarm type filter styling */
+.selected-alarm-preview {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 6px 10px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.selected-alarm-preview span {
+  font-weight: 500;
+}
+
+.alarm-type-select {
+  margin-bottom: 8px;
 }

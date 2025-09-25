@@ -32,8 +32,11 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     modeOfTransport: '',
     packagingType: '',
     alarms: '',
+    alarmType: '',
     rcas: '',
     milestoneData: '',
+    missionStarted: '',
+    missionEnded: '',
     startDate: null,
     endDate: null,
   });
@@ -110,6 +113,22 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         if (filters.alarms === 'No' && hasAlarms) return false;
       }
       
+      // Alarm Type filter - check if any logger has the selected alarm type
+      if (filters.alarmType) {
+        try {
+          const hasAlarmType = shipment.loggerData && Array.isArray(shipment.loggerData) && 
+            shipment.loggerData.some((logger: any) => {
+              if (!logger || !logger.alarmTypes) return false;
+              if (!Array.isArray(logger.alarmTypes)) return false;
+              return logger.alarmTypes.includes(filters.alarmType);
+            });
+          if (!hasAlarmType) return false;
+        } catch (error) {
+          console.error('Error filtering by alarm type:', error, shipment);
+          return false;
+        }
+      }
+      
       // Root Cause Analysis filter (case-insensitive)
       if (filters.rcas && shipment.rcas?.toLowerCase() !== filters.rcas.toLowerCase()) return false;
       
@@ -118,6 +137,28 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         const hasMilestoneData = shipment.shipmentId !== 'SH014';
         if (filters.milestoneData === 'Yes' && !hasMilestoneData) return false;
         if (filters.milestoneData === 'No' && hasMilestoneData) return false;
+      }
+
+      // Mission Started filter (Yes/No based on whether loggers have mission started)
+      if (filters.missionStarted) {
+        const allLoggersStarted = shipment.loggerData?.every(logger => 
+          logger.missionStarted && logger.missionStarted !== 'n/a'
+        ) || false;
+        const hasNotStartedLoggers = shipment.loggerData?.some(logger => 
+          !logger.missionStarted || logger.missionStarted === 'n/a'
+        ) || false;
+        
+        if (filters.missionStarted === 'Yes' && !allLoggersStarted) return false;
+        if (filters.missionStarted === 'No' && !hasNotStartedLoggers) return false;
+      }
+      
+      // Mission Ended filter (Yes/No based on whether any logger has mission ended)
+      if (filters.missionEnded) {
+        const hasEndedLoggers = shipment.loggerData?.some(logger => 
+          logger.missionEnded && logger.missionEnded !== 'n/a'
+        ) || false;
+        if (filters.missionEnded === 'Yes' && !hasEndedLoggers) return false;
+        if (filters.missionEnded === 'No' && hasEndedLoggers) return false;
       }
 
       // Date range filter - using mission started date instead of lastSeen

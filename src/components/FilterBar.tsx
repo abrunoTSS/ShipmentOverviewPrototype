@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import type { Shipment } from '../types';
 import './filterBar.css';
+import './LoggerTable.css';
 
 export interface FilterState {
   search: string;
@@ -14,8 +15,11 @@ export interface FilterState {
   modeOfTransport: string;
   packagingType: string;
   alarms: string;
+  alarmType: string;
   rcas: string;
   milestoneData: string;
+  missionStarted: string;
+  missionEnded: string;
   startDate?: Date | null;
   endDate?: Date | null;
 }
@@ -39,6 +43,7 @@ const getUniqueValues = (shipments: Shipment[], key: keyof Shipment) => {
   const values = shipments.map(shipment => shipment[key]);
   return [...new Set(values)].filter(Boolean) as string[];
 };
+
 
 export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProps) => {
   const [showFilters, setShowFilters] = useState(false);
@@ -65,8 +70,11 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
       modeOfTransport: '',
       packagingType: '',
       alarms: '',
+      alarmType: '',
       rcas: '',
       milestoneData: '',
+      missionStarted: '',
+      missionEnded: '',
       startDate: null,
       endDate: null,
     });
@@ -103,8 +111,11 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
           case 'modeOfTransport': label = `Transport: ${value}`; break;
           case 'packagingType': label = `Packaging: ${value}`; break;
           case 'alarms': label = `Alarms: ${value}`; break;
+          case 'alarmType': label = `Alarm Type: ${value}`; break;
           case 'rcas': label = `RCA: ${value}`; break;
           case 'milestoneData': label = `Milestone Data: ${value}`; break;
+          case 'missionStarted': label = `Mission Started: ${value}`; break;
+          case 'missionEnded': label = `Mission Ended: ${value}`; break;
         }
         if (label) {
             active.push({ key, label, onRemove: () => handleFilterChange(key, '') });
@@ -116,17 +127,34 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
   }, [filters]);
 
   const renderSelect = (key: keyof FilterState, label: string, options: string[]) => (
-    <div className="filter-group">
-      <label htmlFor={`${key}-filter`}>{label}</label>
+    <div className="filter-select-container">
+      <label>{label}</label>
       <select
-        id={`${key}-filter`}
         value={filters[key] as string}
         onChange={(e) => handleFilterChange(key, e.target.value)}
         className="filter-select"
       >
-        <option value="">All</option>
+        <option value="">All {label}</option>
         {options.map(option => (
           <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
+    </div>
+  );
+
+  const renderAlarmTypeSelect = () => (
+    <div className="filter-select-container">
+      <label>Alarm Type</label>
+      <select
+        value={filters.alarmType}
+        onChange={(e) => handleFilterChange('alarmType', e.target.value)}
+        className="filter-select alarm-type-select"
+      >
+        <option value="">All Alarm Types</option>
+        {uniqueAlarmTypes.map(alarmType => (
+          <option key={alarmType} value={alarmType}>
+            {alarmType}
+          </option>
         ))}
       </select>
     </div>
@@ -138,7 +166,30 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
   const uniqueForwarders = useMemo(() => getUniqueValues(shipments, 'freightForwarder'), [shipments]);
   const uniqueTransportModes = useMemo(() => getUniqueValues(shipments, 'modeOfTransport'), [shipments]);
   const uniquePackagingTypes = useMemo(() => getUniqueValues(shipments, 'packagingType'), [shipments]);
-    const uniqueRCAStatuses = useMemo(() => getUniqueValues(shipments, 'rcas'), [shipments]);
+  const uniqueRCAStatuses = useMemo(() => getUniqueValues(shipments, 'rcas'), [shipments]);
+
+  // Get unique alarm types from all loggers across all shipments
+  const uniqueAlarmTypes = useMemo(() => {
+    const alarmTypes = new Set<string>();
+    try {
+      shipments.forEach(shipment => {
+        if (shipment?.loggerData && Array.isArray(shipment.loggerData)) {
+          shipment.loggerData.forEach((logger: any) => {
+            if (logger?.alarmTypes && Array.isArray(logger.alarmTypes)) {
+              logger.alarmTypes.forEach((alarmType: string) => {
+                if (alarmType && typeof alarmType === 'string') {
+                  alarmTypes.add(alarmType);
+                }
+              });
+            }
+          });
+        }
+      });
+    } catch (error) {
+      console.error('Error extracting unique alarm types:', error);
+    }
+    return Array.from(alarmTypes).sort();
+  }, [shipments]);
 
   return (
     <div className="filter-bar-wrapper">
@@ -176,8 +227,11 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
               {renderSelect('modeOfTransport', 'Transport', uniqueTransportModes)}
               {renderSelect('packagingType', 'Packaging', uniquePackagingTypes)}
               {renderSelect('alarms', 'Alarms', ['Yes', 'No'])}
+              {renderAlarmTypeSelect()}
               {renderSelect('rcas', 'RCA', uniqueRCAStatuses)}
               {renderSelect('milestoneData', 'Milestone Data', ['Yes', 'No'])}
+              {renderSelect('missionStarted', 'Mission Started', ['Yes', 'No'])}
+              {renderSelect('missionEnded', 'Mission Ended', ['Yes', 'No'])}
             </div>
             <div className="date-range-filter">
               <label>Shipment Date Range</label>

@@ -6,7 +6,7 @@ import {
   flexRender,
 } from '@tanstack/react-table';
 import type { ColumnDef } from '@tanstack/react-table';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Droplets, Sun, Gauge, Zap, Thermometer, RotateCcw, AlertTriangle } from 'lucide-react';
 import type { Logger } from '../types';
 import './LoggerTable.css';
 
@@ -17,6 +17,27 @@ interface LoggerTableProps {
   visibleLoggers?: Set<string>;
   onLoggerVisibilityChange?: (loggerId: string, visible: boolean) => void;
 }
+
+// Function to get alarm icon based on alarm type
+const getAlarmIcon = (alarmType: string, size: number = 16) => {
+  const type = alarmType.toLowerCase();
+  switch (type) {
+    case 'humidity':
+      return <Droplets size={size} className="alarm-icon humidity" />;
+    case 'light':
+      return <Sun size={size} className="alarm-icon light" />;
+    case 'pressure':
+      return <Gauge size={size} className="alarm-icon pressure" />;
+    case 'shock':
+      return <Zap size={size} className="alarm-icon shock" />;
+    case 'temperature':
+      return <Thermometer size={size} className="alarm-icon temperature" />;
+    case 'tilt':
+      return <RotateCcw size={size} className="alarm-icon tilt" />;
+    default:
+      return <AlertTriangle size={size} className="alarm-icon default" />;
+  }
+};
 
 export function LoggerTable({ 
   loggers, 
@@ -175,6 +196,29 @@ export function LoggerTable({
       accessorKey: 'missionStarted',
       cell: ({ getValue, row }) => {
         const started = getValue() as string | null;
+        
+        // Check if mission hasn't started (n/a or null/undefined)
+        const missionNotStarted = !started || started === 'n/a';
+        
+        if (missionNotStarted) {
+          // Show error icon and text for missions that haven't started
+          const cellId = `${row.original.loggerId}-missionStarted`;
+          return (
+            <div 
+              className="table-cell-content mission-error"
+              onMouseEnter={() => setHoveredCell(cellId)}
+              onMouseLeave={() => setHoveredCell(null)}
+              title={hoveredCell === cellId ? "Error mission not started" : undefined}
+            >
+              <div className="mission-error-content">
+                {getAlarmIcon('default', 16)}
+                <span className="mission-error-text">Error mission not started</span>
+              </div>
+            </div>
+          );
+        }
+        
+        // For missions that have started, show the formatted date
         let value = 'n/a';
         if (started) {
           try {
@@ -184,6 +228,7 @@ export function LoggerTable({
             value = 'n/a';
           }
         }
+        
         const cellId = `${row.original.loggerId}-missionStarted`;
         return (
           <div 
@@ -276,24 +321,41 @@ export function LoggerTable({
         </div>
       ),
       cell: ({ row }) => {
-        const alarms = row.original.alarms;
-        let value = 'None';
-        if (Array.isArray(alarms) && alarms.length > 0) {
-          // Get unique alarm types
-          const alarmTypes = [...new Set(alarms.map(alarm => alarm.alarmType || 'Unknown'))];
-          value = alarmTypes.join(', ');
-        } else if (typeof alarms === 'number' && alarms > 0) {
-          value = 'Temperature'; // Default for numeric alarms
+        const logger = row.original;
+        const cellId = `${logger.loggerId}-alarms`;
+        
+        // Check if logger has alarmTypes property first, then fall back to alarms
+        let alarmTypes: string[] = [];
+        
+        if (logger.alarmTypes && Array.isArray(logger.alarmTypes) && logger.alarmTypes.length > 0) {
+          alarmTypes = logger.alarmTypes;
+        } else if (Array.isArray(logger.alarms) && logger.alarms.length > 0) {
+          // Get unique alarm types from alarms array
+          alarmTypes = [...new Set(logger.alarms.map(alarm => alarm.alarmType || 'Unknown'))];
+        } else if (typeof logger.alarms === 'number' && logger.alarms > 0) {
+          alarmTypes = ['Temperature']; // Default for numeric alarms
         }
-        const cellId = `${row.original.loggerId}-alarms`;
+        
+        if (alarmTypes.length === 0) {
+          return (
+            <div className="table-cell-content">
+              None
+            </div>
+          );
+        }
+        
         return (
           <div 
-            className="table-cell-content"
+            className="table-cell-content alarm-icons-container"
             onMouseEnter={() => setHoveredCell(cellId)}
             onMouseLeave={() => setHoveredCell(null)}
-            title={hoveredCell === cellId ? value : undefined}
+            title={hoveredCell === cellId ? alarmTypes.join(', ') : undefined}
           >
-            {value}
+            {alarmTypes.map((alarmType, index) => (
+              <span key={index} className="alarm-icon-wrapper">
+                {getAlarmIcon(alarmType, 16)}
+              </span>
+            ))}
           </div>
         );
       },

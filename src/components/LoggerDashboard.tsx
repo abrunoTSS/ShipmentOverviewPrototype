@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, AlertTriangle, CheckCircle, Clock, MapPin, Plane, Truck, Ship } from 'lucide-react';
+import { X, AlertTriangle, CheckCircle, Clock, MapPin, Plane, Truck, Ship, Droplets, Sun, Gauge, Zap, Thermometer, RotateCcw } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import './loggerDashboard.css';
 
@@ -29,6 +29,27 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     }
     // Default fallback - use a generic dot for unknown transport modes
     return <div className="milestone-dot-fallback"></div>;
+  };
+
+  // Function to get alarm icon based on alarm type
+  const getAlarmIcon = (alarmType: string, size: number = 16) => {
+    const type = alarmType.toLowerCase();
+    switch (type) {
+      case 'humidity':
+        return <Droplets size={size} className="alarm-icon humidity" />;
+      case 'light':
+        return <Sun size={size} className="alarm-icon light" />;
+      case 'pressure':
+        return <Gauge size={size} className="alarm-icon pressure" />;
+      case 'shock':
+        return <Zap size={size} className="alarm-icon shock" />;
+      case 'temperature':
+        return <Thermometer size={size} className="alarm-icon temperature" />;
+      case 'tilt':
+        return <RotateCcw size={size} className="alarm-icon tilt" />;
+      default:
+        return <AlertTriangle size={size} className="alarm-icon default" />;
+    }
   };
 
   // Render excursion milestone for alarm events
@@ -100,6 +121,14 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
               <div className="info-item">
                 <span className="info-label">Destination</span>
                 <span className="info-value">{shipment.destination}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">Distance</span>
+                <span className="info-value">{shipment.distance ? `${shipment.distance} km` : 'N/A'}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">CO₂ Emissions</span>
+                <span className="info-value">{shipment.co2Emissions ? `${shipment.co2Emissions} kg` : 'N/A'}</span>
               </div>
               {/* Only show status for shipments without error messages */}
               {shipment.shipmentId !== "SH014" && shipment.shipmentId !== "SH015" && (
