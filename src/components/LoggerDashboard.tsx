@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, AlertTriangle, CheckCircle, Clock, MapPin } from 'lucide-react';
+import { X, AlertTriangle, CheckCircle, Clock, MapPin, Plane, Truck, Ship } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import './loggerDashboard.css';
 
@@ -16,6 +16,20 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
   if (!isOpen || !shipment || !logger) {
     return null;
   }
+
+  // Function to get transport icon based on transport mode
+  const getTransportIcon = (transportMode: string) => {
+    const mode = transportMode.toLowerCase();
+    if (mode.includes('air') || mode.includes('flight')) {
+      return <Plane size={16} />;
+    } else if (mode.includes('road') || mode.includes('truck')) {
+      return <Truck size={16} />;
+    } else if (mode.includes('sea') || mode.includes('ship') || mode.includes('ocean')) {
+      return <Ship size={16} />;
+    }
+    // Default fallback - use a generic dot for unknown transport modes
+    return <div className="milestone-dot-fallback"></div>;
+  };
 
   // Render excursion milestone for alarm events
   const renderMilestone = (milestone: ExcursionMilestone, index: number) => {
@@ -103,99 +117,90 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the shipment ID is correct.</p>
               </div>
             )}
-            
-            {/* Shipment Current Milestone Timeline - Only for In Transit shipments with milestone data */}
-            {shipment.status === 'In Transit' && 
-             !(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && 
-             shipment.shipmentCurrentMilestone && 
-             shipment.shipmentCurrentMilestone.length > 0 && (
-              <div className="shipment-milestone-container">
-                <h4 className="milestone-subtitle">Current Lane</h4>
-                <div className="milestone-timeline">
-                  {shipment.shipmentCurrentMilestone.map((milestone, index) => (
-                    <div className="milestone-item" key={index}>
-                      <div className={`milestone-dot ${milestone.status === 'Current' ? 'completed' : 
-                                                       milestone.status === 'Completed' ? 'pending' : 'pending'}`} />
-                      <div className="milestone-content">
-                        <p className="milestone-location">{milestone.location}</p>
-                        <div className="milestone-status-badge">
-                          <span className={`status-indicator ${milestone.status.toLowerCase()}`}>{milestone.status}</span>
+          </div>
+
+          {/* Shipping Milestones Section */}
+          {shipment.milestones && shipment.milestones.length > 0 && (
+            <div className="dashboard-section">
+              <h3 className="section-title">Shipping Milestones</h3>
+                {shipment.milestones.map((milestone, index) => (
+                  <div key={index} className="milestone-item">
+                    <div className={`milestone-icon ${milestone.status.toLowerCase()}`}>
+                      {milestone.transportMode ? getTransportIcon(milestone.transportMode) : <div className="milestone-dot-fallback"></div>}
+                    </div>
+                    <div className="milestone-content">
+                      <div className="milestone-header">
+                        <h4 className="milestone-title">{milestone.location}</h4>
+                        <span className={`milestone-status ${milestone.status.toLowerCase()}`}>
+                          {milestone.status}
+                        </span>
+                      </div>
+                      <div className="milestone-details">
+                        <div className="milestone-info">
+                          <span className="info-label">Event:</span>
+                          <span className="info-value">{milestone.milestoneName}</span>
                         </div>
+                        <div className="milestone-info">
+                          <span className="info-label">Ground Handler:</span>
+                          <span className="info-value">{milestone.groundHandler}</span>
+                        </div>
+                        {milestone.transportMode && (
+                          <div className="milestone-info">
+                            <span className="info-label">Transport:</span>
+                            <span className="info-value">{milestone.transportMode}</span>
+                          </div>
+                        )}
+                        {milestone.vehicleNumber && (
+                          <div className="milestone-info">
+                            <span className="info-label">Vehicle:</span>
+                            <span className="info-value">{milestone.vehicleNumber}</span>
+                          </div>
+                        )}
+                        {milestone.status === 'Pending' && milestone.eta && (
+                          <div className="milestone-info">
+                            <span className="info-label">ETA:</span>
+                            <span className="info-value">
+                              {new Date(milestone.eta).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.etd && (
+                          <div className="milestone-info">
+                            <span className="info-label">ETD:</span>
+                            <span className="info-value">
+                              {new Date(milestone.etd).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Current' && milestone.arrivalTime && (
+                          <div className="milestone-info">
+                            <span className="info-label">Arrival:</span>
+                            <span className="info-value">
+                              {new Date(milestone.arrivalTime).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Completed' && milestone.arrived && (
+                          <div className="milestone-info">
+                            <span className="info-label">Arrived:</span>
+                            <span className="info-value">
+                              {new Date(milestone.arrived).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Completed' && milestone.delivered && (
+                          <div className="milestone-info">
+                            <span className="info-label">Delivered:</span>
+                            <span className="info-value">
+                              {new Date(milestone.delivered).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="dashboard-section">
-            <h3 className="section-title">Logger Details</h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="info-label">Logger ID</span>
-                <span className="info-value">{logger.loggerId}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Logger Type</span>
-                <span className="info-value">{logger.loggerType}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Calibration Date</span>
-                <span className="info-value">{logger.calibrationDate || '2025-05-06 07:00'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Expiry Date</span>
-                <span className="info-value">{logger.expiryDate || '2028-05-06 07:00'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Sample Rate</span>
-                <span className="info-value">{logger.sampleRate || '10 minute'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Start Delay</span>
-                <span className="info-value">{logger.startDelay || '0 minute'}</span>
-              </div>
-              {logger.temperature && logger.temperature !== 'n/a' && logger.loggerType !== 'Web Logger 2' && (
-                <div className="info-item">
-                  <span className="info-label">Temperature</span>
-                  <span className="info-value">{logger.temperature}</span>
-                </div>
-              )}
-              {logger.lastSeen && (
-                <div className="info-item">
-                  <span className="info-label">Last Seen</span>
-                  <span className="info-value">
-                    {(() => {
-                      try {
-                        const date = new Date(logger.lastSeen);
-                        return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
-                      } catch {
-                        return 'n/a';
-                      }
-                    })()}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {logger.productDetails && (
-            <>
-              <div className="dashboard-section">
-                <h3 className="section-title">Product Temperature Profile</h3>
-                <div className="info-grid">
-                  <div className="info-item">
-                    <span className="info-label">Low Threshold</span>
-                    <span className="info-value">{logger.productDetails.lowThreshold}</span>
                   </div>
-                  <div className="info-item">
-                    <span className="info-label">High Threshold</span>
-                    <span className="info-value">{logger.productDetails.highThreshold}</span>
-                  </div>
-                </div>
+                ))}
               </div>
-            </>
           )}
 
           {Array.isArray(logger.alarms) && logger.alarms.length > 0 && (

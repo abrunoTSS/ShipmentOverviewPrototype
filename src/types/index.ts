@@ -90,6 +90,10 @@ export interface Milestone {
   vehicleNumber?: string;
   weatherConditions?: string;
   excursion?: any;
+  eta?: string; // For pending milestones
+  etd?: string; // For pending and current milestones
+  arrived?: string; // For completed milestones
+  delivered?: string; // For completed milestones
 }
 
 export interface Logger {
@@ -110,6 +114,8 @@ export interface Logger {
   expiryDate?: string;
   sampleRate?: string;
   startDelay?: string;
+  temperature?: string; // Current temperature reading
+  lastSeen?: string; // Last communication timestamp
   // Added for logger end date display logic
   shipmentStatus?: string;
   shipmentEta?: string;

@@ -66,8 +66,8 @@ export const shipments: Shipment[] = [
             status: "Completed",
             milestoneName: "Departure from Stockholm",
             groundHandler: "Geodis",
-            arrivalTime: "2025-09-22T08:00:00Z",
-            departedTime: "2025-09-22T10:00:00Z",
+            arrived: "2025-09-22T08:00:00Z",
+            delivered: "2025-09-22T10:00:00Z",
             transportMode: "Road",
             vehicleNumber: "T1234",
             weatherConditions: "Clear, 15°C"
@@ -78,8 +78,8 @@ export const shipments: Shipment[] = [
             status: "Completed",
             milestoneName: "Transit through Copenhagen",
             groundHandler: "Geodis",
-            arrivalTime: "2025-09-22T14:30:00Z",
-            departedTime: "2025-09-22T15:30:00Z",
+            arrived: "2025-09-22T14:30:00Z",
+            delivered: "2025-09-22T15:30:00Z",
             transportMode: "Road",
             vehicleNumber: "T1234",
             weatherConditions: "Partly cloudy, 12°C"
@@ -91,6 +91,7 @@ export const shipments: Shipment[] = [
             milestoneName: "Transit through Hamburg",
             groundHandler: "Geodis",
             arrivalTime: "2025-09-22T18:45:00Z",
+            etd: "2025-09-22T22:30:00Z",
             transportMode: "Road",
             vehicleNumber: "T1234",
             weatherConditions: "Overcast, 10°C"
@@ -101,6 +102,8 @@ export const shipments: Shipment[] = [
             status: "Pending",
             milestoneName: "Arrival in Berlin",
             groundHandler: "Geodis",
+            eta: "2025-09-23T08:00:00Z",
+            etd: "2025-09-23T10:00:00Z",
             transportMode: "Road",
             vehicleNumber: "T1234",
             weatherConditions: "Expected: Light rain, 8°C"
@@ -151,8 +154,8 @@ export const shipments: Shipment[] = [
             status: "Completed",
             milestoneName: "Departure from Macclesfield",
             groundHandler: "Geodis",
-            arrivalTime: "2025-09-21T06:00:00Z",
-            departedTime: "2025-09-21T08:00:00Z",
+            arrived: "2025-09-21T06:00:00Z",
+            delivered: "2025-09-21T08:00:00Z",
             transportMode: "Road",
             vehicleNumber: "T2456",
             weatherConditions: "Foggy, 8°C"
@@ -163,8 +166,8 @@ export const shipments: Shipment[] = [
             status: "Completed",
             milestoneName: "Departure from Heathrow",
             groundHandler: "British Airways",
-            arrivalTime: "2025-09-21T10:30:00Z",
-            departedTime: "2025-09-21T14:15:00Z",
+            arrived: "2025-09-21T10:30:00Z",
+            delivered: "2025-09-21T14:15:00Z",
             transportMode: "Air",
             vehicleNumber: "F8901",
             weatherConditions: "Overcast, 11°C"
@@ -176,6 +179,7 @@ export const shipments: Shipment[] = [
             milestoneName: "Transit through Amsterdam Schiphol",
             groundHandler: "KLM",
             arrivalTime: "2025-09-21T16:45:00Z",
+            etd: "2025-09-21T18:45:00Z",
             transportMode: "Air",
             vehicleNumber: "F3456",
             weatherConditions: "Light rain, 9°C"
@@ -186,6 +190,8 @@ export const shipments: Shipment[] = [
             status: "Pending",
             milestoneName: "Transit through Dubai",
             groundHandler: "Emirates",
+            eta: "2025-09-22T02:30:00Z",
+            etd: "2025-09-22T06:15:00Z",
             transportMode: "Air",
             vehicleNumber: "F7890",
             weatherConditions: "Expected: Clear, 28°C"
@@ -196,6 +202,7 @@ export const shipments: Shipment[] = [
             status: "Pending",
             milestoneName: "Arrival at Narita Airport",
             groundHandler: "Japan Airlines",
+            eta: "2025-09-22T14:30:00Z",
             transportMode: "Air",
             vehicleNumber: "F1122",
             weatherConditions: "Expected: Partly cloudy, 18°C"
