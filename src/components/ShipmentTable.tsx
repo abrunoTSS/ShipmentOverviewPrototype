@@ -242,12 +242,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         const loggers = row.original.loggerData || [];
         const totalLoggers = loggers.length;
         const loggersWithAlarms = loggers.filter(logger => {
-          if (!logger.alarms) return false;
-          // Handle both array and number types for alarms
-          if (Array.isArray(logger.alarms)) {
-            return logger.alarms.length > 0;
-          }
-          return logger.alarms > 0;
+          return logger.alarms && logger.alarms.length > 0;
         }).length;
         return `${loggersWithAlarms}/${totalLoggers} loggers alarmed`;
       },

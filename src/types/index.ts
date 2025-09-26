@@ -36,12 +36,15 @@ export interface ExcursionGraphData {
 }
 
 export interface Excursion {
+  id: number;
   highest: string;
-  lowest: string;
-  average: string;
-  startTime?: string;
+  lowest?: string;
+  average?: string;
+  startTime: string;
+  endTime: string;
   duration: string;
-
+  type: string;
+  temperatureProfile?: string;
 }
 
 export interface ExcursionMilestone {
@@ -53,7 +56,14 @@ export interface ExcursionMilestone {
   transportMode: string;
   vehicleNumber: string;
   weatherConditions: string;
-  temperature: number;
+  temperature?: number;
+  excursion?: {
+    highest: string;
+    lowest: string;
+    average: string;
+    startTime: string;
+    duration: string;
+  };
 }
 
 export interface LoggerTimeSeriesData {
@@ -68,7 +78,7 @@ export interface Alarm {
   alarmId: number;
   alarmType: AlarmType;
   errorMessage?: string;
-  excursionMilestones: ExcursionMilestone[];
+  excursion: Excursion;
 }
 
 export interface ProductDetails {
@@ -106,7 +116,7 @@ export interface Logger {
   deliveryId: string; // New column
   tempProfile: string; // New column
   serialNumber: number; // New column
-  alarms: Alarm[] | number; // Can be a count or a detailed array
+  alarms: Alarm[]; // Array of detailed alarm objects
   alarmTypes?: AlarmType[]; // Array of alarm types for this logger
   evaluation: string | null; // Renamed from rootCauseAnalysis
   rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;

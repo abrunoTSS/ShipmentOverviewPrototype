@@ -358,11 +358,9 @@ export function LoggerTable({
         
         if (logger.alarmTypes && Array.isArray(logger.alarmTypes) && logger.alarmTypes.length > 0) {
           alarmTypes = logger.alarmTypes;
-        } else if (Array.isArray(logger.alarms) && logger.alarms.length > 0) {
+        } else if (logger.alarms && logger.alarms.length > 0) {
           // Get unique alarm types from alarms array
           alarmTypes = [...new Set(logger.alarms.map(alarm => alarm.alarmType || 'Unknown'))];
-        } else if (typeof logger.alarms === 'number' && logger.alarms > 0) {
-          alarmTypes = ['Temperature']; // Default for numeric alarms
         }
         
         if (alarmTypes.length === 0) {

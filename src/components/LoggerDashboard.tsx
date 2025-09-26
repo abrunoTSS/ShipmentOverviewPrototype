@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import { X, AlertTriangle, CheckCircle, Clock, MapPin, Plane, Truck, Ship, Droplets, Sun, Gauge, Zap, Thermometer, RotateCcw } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { X, Plane, Truck, Ship } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
+import { matchExcursionsToMilestones } from '../utils/excursionMatcher';
+import { ExcursionsComponent } from './ExcursionsComponent';
 import './loggerDashboard.css';
+import './ExcursionsComponent.css';
 
 interface LoggerDashboardProps {
   shipment: Shipment | null;
@@ -12,6 +15,16 @@ interface LoggerDashboardProps {
 
 const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<number>(0);
+
+  // Match excursions to milestones
+  const milestonesWithExcursions = useMemo(() => {
+    if (!shipment) return [];
+    const result = matchExcursionsToMilestones(shipment);
+    console.log('Shipment:', shipment.shipmentId);
+    console.log('Milestones with excursions:', result);
+    console.log('Logger data:', shipment.loggerData);
+    return result;
+  }, [shipment]);
 
   if (!isOpen || !shipment) {
     return null;
@@ -31,73 +44,6 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     return <div className="milestone-dot-fallback"></div>;
   };
 
-  // Function to get alarm icon based on alarm type
-  const getAlarmIcon = (alarmType: string, size: number = 16) => {
-    const type = alarmType.toLowerCase();
-    switch (type) {
-      case 'humidity':
-        return <Droplets size={size} className="alarm-icon humidity" />;
-      case 'light':
-        return <Sun size={size} className="alarm-icon light" />;
-      case 'pressure':
-        return <Gauge size={size} className="alarm-icon pressure" />;
-      case 'shock':
-        return <Zap size={size} className="alarm-icon shock" />;
-      case 'temperature':
-        return <Thermometer size={size} className="alarm-icon temperature" />;
-      case 'tilt':
-        return <RotateCcw size={size} className="alarm-icon tilt" />;
-      default:
-        return <AlertTriangle size={size} className="alarm-icon default" />;
-    }
-  };
-
-  // Render excursion milestone for alarm events
-  const renderMilestone = (milestone: ExcursionMilestone, index: number) => {
-    console.log('Milestone:', milestone.location, 'Has excursion:', !!milestone.excursion, milestone.excursion);
-    return (
-    <div className="milestone-item" key={index}>
-      <div className={`milestone-dot ${milestone.excursion ? 'alert' : 'pending'} ${milestone.status.toLowerCase()}`} />
-      <div className="milestone-content">
-        <p className="milestone-location">{milestone.location}</p>
-        {/* For SH014 and SH015, don't show the grey boxes with extra details */}
-        {!(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
-          <div className="milestone-extra-details">
-            {/* Only show arrival time if it exists and is not n/a */}
-            {milestone.arrivalTime && milestone.arrivalTime !== 'n/a' && (
-              <p><strong>Arrival Time:</strong> {new Date(milestone.arrivalTime).toLocaleString()}</p>
-            )}
-            {/* Only show departed time if it exists */}
-            {milestone.departedTime && (
-              <p><strong>Departed Time:</strong> {new Date(milestone.departedTime).toLocaleString()}</p>
-            )}
-            {/* Only show status if it's not Alert */}
-            {milestone.status && milestone.status !== 'Alert' && (
-              <p><strong>Status:</strong> {milestone.status}</p>
-            )}
-            {/* Only show transport if transportMode and vehicleNumber exist and are not empty */}
-            {milestone.transportMode && milestone.vehicleNumber && milestone.transportMode !== '' && milestone.vehicleNumber !== '' && (
-              <p><strong>Transport:</strong> {milestone.transportMode} ({milestone.vehicleNumber})</p>
-            )}
-            {/* Only show weather if it exists and is not empty */}
-            {milestone.weatherConditions && milestone.weatherConditions !== '' && (
-              <p><strong>Weather:</strong> {milestone.weatherConditions}</p>
-            )}
-          </div>
-        )}
-        {milestone.excursion && (
-          <div className="excursion-details">
-            <p><strong>Temperature Event:</strong></p>
-            <p>Highest: {milestone.excursion.highest}</p>
-            <p>Lowest: {milestone.excursion.lowest}</p>
-            <p>Average: {milestone.excursion.average}</p>
-            <p>Duration: {milestone.excursion.duration}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-  };
 
   return (
     <>
@@ -149,10 +95,10 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
           </div>
 
           {/* Shipping Milestones Section */}
-          {shipment.milestones && shipment.milestones.length > 0 && (
+          {milestonesWithExcursions && milestonesWithExcursions.length > 0 && (
             <div className="dashboard-section">
               <h3 className="section-title">Shipping Milestones</h3>
-                {shipment.milestones.map((milestone, index) => (
+                {milestonesWithExcursions.map((milestone, index) => (
                   <div key={index} className="milestone-item">
                     <div className={`milestone-icon ${milestone.status.toLowerCase()}`}>
                       {milestone.transportMode ? getTransportIcon(milestone.transportMode) : <div className="milestone-dot-fallback"></div>}
@@ -201,12 +147,10 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             </span>
                           </div>
                         )}
-                        {milestone.status === 'Current' && milestone.arrivalTime && (
+                        {milestone.weatherConditions && (
                           <div className="milestone-info">
-                            <span className="info-label">Arrival:</span>
-                            <span className="info-value">
-                              {new Date(milestone.arrivalTime).toLocaleString()} UTC
-                            </span>
+                            <span className="info-label">Weather:</span>
+                            <span className="info-value">{milestone.weatherConditions}</span>
                           </div>
                         )}
                         {milestone.status === 'Completed' && milestone.arrived && (
@@ -225,12 +169,20 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             </span>
                           </div>
                         )}
+                        
+                        {/* Add Excursions Component if there are excursions for this milestone */}
+                        {milestone.excursions && milestone.excursions.length > 0 && (
+                          <div className="milestone-excursions">
+                            <ExcursionsComponent excursions={milestone.excursions} />
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
                 ))}
               </div>
           )}
+
 
           {logger && Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
             <div className="dashboard-section">
@@ -248,13 +200,23 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
               </div>
 
               <div className="milestone-timeline">
-                {logger.alarms[activeTab]?.excursionMilestones.map(renderMilestone)}
-                
-                {/* Display graph for excursions with graph data */}
-
+                {logger.alarms[activeTab]?.excursion && (
+                  <div className="excursion-details">
+                    <h4>Excursion Details</h4>
+                    <p><strong>Type:</strong> {logger.alarms[activeTab].excursion.type}</p>
+                    <p><strong>Highest:</strong> {logger.alarms[activeTab].excursion.highest}</p>
+                    <p><strong>Start Time:</strong> {logger.alarms[activeTab].excursion.startTime}</p>
+                    <p><strong>End Time:</strong> {logger.alarms[activeTab].excursion.endTime}</p>
+                    <p><strong>Duration:</strong> {logger.alarms[activeTab].excursion.duration}</p>
+                    {logger.alarms[activeTab].excursion.temperatureProfile && (
+                      <p><strong>Temperature Profile:</strong> {logger.alarms[activeTab].excursion.temperatureProfile}</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}
+
 
           {logger && logger.rootCauseAnalysisStatusDetails && (
             <div className="dashboard-section">
