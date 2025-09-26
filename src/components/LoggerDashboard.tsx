@@ -13,7 +13,7 @@ interface LoggerDashboardProps {
 const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  if (!isOpen || !shipment || !logger) {
+  if (!isOpen || !shipment) {
     return null;
   }
 
@@ -232,7 +232,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
               </div>
           )}
 
-          {Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
+          {logger && Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
             <div className="dashboard-section">
               <h3 className="section-title">Alarms</h3>
               <div className="tabs">
@@ -256,7 +256,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
             </div>
           )}
 
-          {logger.rootCauseAnalysisStatusDetails && (
+          {logger && logger.rootCauseAnalysisStatusDetails && (
             <div className="dashboard-section">
               <h3 className="section-title">Root Cause Analysis</h3>
               <div className="rca-status">

@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-table';
 import type { ColumnDef } from '@tanstack/react-table';
 import { ChevronRight, ChevronLeft, Droplets, Sun, Gauge, Zap, Thermometer, RotateCcw, AlertTriangle } from 'lucide-react';
-import type { Logger } from '../types';
+import type { Logger, Shipment } from '../types';
 import './LoggerTable.css';
 
 interface LoggerTableProps {
@@ -16,6 +16,8 @@ interface LoggerTableProps {
   selectedLoggerId: string | null;
   visibleLoggers?: Set<string>;
   onLoggerVisibilityChange?: (loggerId: string, visible: boolean) => void;
+  shipment?: Shipment;
+  onViewShipmentDetails?: (shipment: Shipment) => void;
 }
 
 // Function to get alarm icon based on alarm type
@@ -44,7 +46,9 @@ export function LoggerTable({
   onLoggerClick, 
   selectedLoggerId, 
   visibleLoggers = new Set(loggers.map(l => l.loggerId)), 
-  onLoggerVisibilityChange 
+  onLoggerVisibilityChange,
+  shipment,
+  onViewShipmentDetails
 }: LoggerTableProps) {
   const [hoveredCell, setHoveredCell] = useState<string | null>(null);
 
@@ -119,8 +123,9 @@ export function LoggerTable({
     {
       id: 'serialNumber',
       header: () => (
-        <div className="column-header">
-          Serial Number
+        <div className="column-header serial-number-header">
+          <div>Serial</div>
+          <div>Number</div>
         </div>
       ),
       accessorKey: 'serialNumber',
@@ -166,8 +171,9 @@ export function LoggerTable({
     {
       id: 'loggerType',
       header: () => (
-        <div className="column-header">
-          Logger Type
+        <div className="column-header logger-type-header">
+          <div>Logger</div>
+          <div>Type</div>
         </div>
       ),
       accessorKey: 'loggerType',
@@ -253,6 +259,28 @@ export function LoggerTable({
       cell: ({ row }) => {
         const ended = row.original.missionEnded as string;
         const shipmentStatus = row.original.shipmentStatus as string;
+        
+        // Check if mission hasn't ended (n/a) and shipment is delivered - this is an error
+        const missionNotEnded = (!ended || ended === 'n/a') && shipmentStatus === 'Delivered';
+        
+        if (missionNotEnded) {
+          // Show error icon and text for missions that haven't ended on delivered shipments
+          const cellId = `${row.original.loggerId}-missionEnded`;
+          return (
+            <div 
+              className="table-cell-content mission-error"
+              onMouseEnter={() => setHoveredCell(cellId)}
+              onMouseLeave={() => setHoveredCell(null)}
+              title={hoveredCell === cellId ? "Error mission not ended" : undefined}
+            >
+              <div className="mission-error-content">
+                {getAlarmIcon('default', 16)}
+                <span className="mission-error-text">Error mission not ended</span>
+              </div>
+            </div>
+          );
+        }
+        
         let value = 'n/a';
         
         // If the shipment is delivered, show the shipment ETA
@@ -290,8 +318,9 @@ export function LoggerTable({
     {
       id: 'tempProfile',
       header: () => (
-        <div className="column-header">
-          Temperature Profile
+        <div className="column-header temp-profile-header">
+          <div>Temp</div>
+          <div>Profile</div>
         </div>
       ),
       cell: ({ row }) => {
@@ -388,10 +417,11 @@ export function LoggerTable({
       header: '',
       cell: ({ row }) => (
         <div className="logger-expand-cell">
+          <span className="report-view-text">Report View</span>
           <button
             onClick={(e) => {
               e.stopPropagation();
-              onLoggerClick(row.original);
+              alert(`Open shipment report for logger ${row.original.loggerId} in new tab`);
             }}
             className="expand-button"
           >
@@ -442,6 +472,23 @@ export function LoggerTable({
             </tr>
           ))}
         </tbody>
+        {shipment && onViewShipmentDetails && (
+          <tfoot>
+            <tr className="logger-table-footer">
+              <td colSpan={columns.length} className="footer-cell">
+                <button 
+                  className="view-more-details-button"
+                  onClick={() => {
+                    console.log('View More Shipping Details clicked for shipment:', shipment.shipmentId);
+                    onViewShipmentDetails(shipment);
+                  }}
+                >
+                  → View More Shipping Details
+                </button>
+              </td>
+            </tr>
+          </tfoot>
+        )}
       </table>
     </div>
   );

@@ -1101,43 +1101,9 @@ export const shipments: Shipment[] = [
         totalAlarms: 1,
         events: 0,
         rcas: "Not Started",
-        distance: 1053, // Paris to Madrid by road
-        co2Emissions: 65.29, // Road transport: 0.062 kg CO2/km
-        milestones: [
-          {
-            type: "origin",
-            location: "Paris, France",
-            status: "Completed",
-            milestoneName: "Departure from Paris",
-            groundHandler: "DHL",
-            arrivalTime: "2025-09-22T07:00:00Z",
-            departedTime: "2025-09-22T09:00:00Z",
-            transportMode: "Road",
-            vehicleNumber: "T5678",
-            weatherConditions: "Sunny, 16°C"
-          },
-          {
-            type: "milestone",
-            location: "Bordeaux, France",
-            status: "Current",
-            milestoneName: "Transit through Bordeaux",
-            groundHandler: "DHL",
-            arrivalTime: "2025-09-22T13:30:00Z",
-            transportMode: "Road",
-            vehicleNumber: "T5678",
-            weatherConditions: "Partly cloudy, 18°C"
-          },
-          {
-            type: "destination",
-            location: "Madrid, Spain",
-            status: "Pending",
-            milestoneName: "Arrival in Madrid",
-            groundHandler: "DHL",
-            transportMode: "Road",
-            vehicleNumber: "T5678",
-            weatherConditions: "Expected: Clear, 22°C"
-          }
-        ],
+        distance: "n/a", // Paris to Madrid by road
+        co2Emissions: "n/a", // Road transport: 0.062 kg CO2/km
+        milestones: [],
         loggerData: [
           {
             loggerId: "WB-1014C",
@@ -1196,57 +1162,9 @@ export const shipments: Shipment[] = [
         totalAlarms: 0,
         events: 0,
         rcas: "Not Started",
-        distance: 1053, // Paris to Madrid by road
-        co2Emissions: 65.29, // Road transport: 0.062 kg CO2/km
-        milestones: [
-          {
-            type: "origin",
-            location: "Paris, France",
-            status: "Completed",
-            milestoneName: "Departure from Paris",
-            groundHandler: "DHL",
-            arrivalTime: "2025-07-10T08:00:00Z",
-            departedTime: "2025-07-10T10:00:00Z",
-            transportMode: "Road",
-            vehicleNumber: "T9012",
-            weatherConditions: "Clear, 14°C"
-          },
-          {
-            type: "milestone",
-            location: "Bordeaux, France",
-            status: "Completed",
-            milestoneName: "Transit through Bordeaux",
-            groundHandler: "DHL",
-            arrivalTime: "2025-07-10T14:30:00Z",
-            departedTime: "2025-07-10T16:00:00Z",
-            transportMode: "Road",
-            vehicleNumber: "T9012",
-            weatherConditions: "Overcast, 17°C"
-          },
-          {
-            type: "milestone",
-            location: "Zaragoza, Spain",
-            status: "Completed",
-            milestoneName: "Transit through Zaragoza",
-            groundHandler: "DHL",
-            arrivalTime: "2025-07-11T10:15:00Z",
-            departedTime: "2025-07-11T11:45:00Z",
-            transportMode: "Road",
-            vehicleNumber: "T9012",
-            weatherConditions: "Sunny, 25°C"
-          },
-          {
-            type: "destination",
-            location: "Madrid, Spain",
-            status: "Completed",
-            milestoneName: "Delivered in Madrid",
-            groundHandler: "DHL",
-            arrivalTime: "2025-07-13T08:00:00Z",
-            transportMode: "Road",
-            vehicleNumber: "T9012",
-            weatherConditions: "Clear, 20°C"
-          }
-        ],
+        distance: "n/a", // Paris to Madrid by road
+        co2Emissions: "n/a", // Road transport: 0.062 kg CO2/km
+        milestones: [],
         loggerData: [
           {
             loggerId: "WB-1015A",
@@ -1576,6 +1494,289 @@ export const shipments: Shipment[] = [
             timeSeriesData: [],
             productDetails: {
               prodfilename: "Biologics-7J",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          }
+        ]
+      },
+      {
+        shipmentId: "SH014",
+        origin: "Hamburg, Germany",
+        destination: "Barcelona, Spain",
+        eta: "2025-09-24",
+        status: "Delivered",
+        loggers: 10,
+        freightForwarder: "DHL",
+        currentLocation: "Barcelona, Spain",
+        modeOfTransport: "Road",
+        packagingType: "Insulated Container",
+        alarms: 2,
+        events: 4,
+        rcas: "In Progress",
+        distance: 1165,
+        co2Emissions: 72.23,
+        milestones: [
+          {
+            type: "origin",
+            location: "Hamburg, Germany",
+            status: "Completed",
+            milestoneName: "Departure from Hamburg",
+            groundHandler: "DHL",
+            arrived: "2025-09-22T08:00:00Z",
+            delivered: "2025-09-22T10:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T8901",
+            weatherConditions: "Overcast, 12°C"
+          },
+          {
+            type: "milestone",
+            location: "Frankfurt, Germany",
+            status: "Completed",
+            milestoneName: "Transit through Frankfurt",
+            groundHandler: "DHL",
+            arrived: "2025-09-22T14:30:00Z",
+            delivered: "2025-09-22T15:30:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T8901",
+            weatherConditions: "Light rain, 10°C"
+          },
+          {
+            type: "milestone",
+            location: "Lyon, France",
+            status: "Completed",
+            milestoneName: "Transit through Lyon",
+            groundHandler: "DHL",
+            arrived: "2025-09-23T10:00:00Z",
+            delivered: "2025-09-23T11:00:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T8901",
+            weatherConditions: "Sunny, 15°C"
+          },
+          {
+            type: "destination",
+            location: "Barcelona, Spain",
+            status: "Completed",
+            milestoneName: "Arrival in Barcelona",
+            groundHandler: "DHL",
+            arrived: "2025-09-24T14:22:00Z",
+            delivered: "2025-09-24T15:22:00Z",
+            transportMode: "Road",
+            vehicleNumber: "T8901",
+            weatherConditions: "Sunny, 18°C"
+          }
+        ],
+        loggerData: [
+          {
+            loggerId: "SENTRY-14001",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14001",
+            tempProfile: "controlled room temperature",
+            serialNumber: 1,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 6, 50),
+            productDetails: {
+              prodfilename: "Biologics-14A",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14002",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14002",
+            tempProfile: "controlled room temperature",
+            serialNumber: 2,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [
+              {
+                alarmId: 14001,
+                alarmType: "Temperature",
+                errorMessage: "Temperature spike detected during loading",
+                excursionMilestones: []
+              }
+            ],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 7, 52),
+            productDetails: {
+              prodfilename: "Biologics-14B",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14003",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14003",
+            tempProfile: "controlled room temperature",
+            serialNumber: 3,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 5, 48),
+            productDetails: {
+              prodfilename: "Biologics-14C",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14004",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14004",
+            tempProfile: "controlled room temperature",
+            serialNumber: 4,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [
+              {
+                alarmId: 14002,
+                alarmType: "Humidity",
+                errorMessage: "Humidity levels exceeded threshold",
+                excursionMilestones: []
+              }
+            ],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 6, 55),
+            productDetails: {
+              prodfilename: "Biologics-14D",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14005",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14005",
+            tempProfile: "controlled room temperature",
+            serialNumber: 5,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 6, 49),
+            productDetails: {
+              prodfilename: "Biologics-14E",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14006",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14006",
+            tempProfile: "controlled room temperature",
+            serialNumber: 6,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 7, 51),
+            productDetails: {
+              prodfilename: "Biologics-14F",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14007",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14007",
+            tempProfile: "controlled room temperature",
+            serialNumber: 7,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 5, 47),
+            productDetails: {
+              prodfilename: "Biologics-14G",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14008",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14008",
+            tempProfile: "controlled room temperature",
+            serialNumber: 8,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "2025-09-24T17:00:00Z",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-24T17:00:00Z", "Sentry", "Delivered", 6, 53),
+            productDetails: {
+              prodfilename: "Biologics-14H",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14009",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14009",
+            tempProfile: "controlled room temperature",
+            serialNumber: 9,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "n/a",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-25T15:22:00Z", "Sentry", "Delivered", 5, 49),
+            productDetails: {
+              prodfilename: "Biologics-14I",
+              producttype: "controlled room temperature",
+              temperatureProfile: "profile",
+              highThreshold: "12 °C",
+              lowThreshold: "2 °C"
+            }
+          },
+          {
+            loggerId: "SENTRY-14010",
+            loggerType: "Sentry",
+            deliveryId: "DLV-14010",
+            tempProfile: "controlled room temperature",
+            serialNumber: 10,
+            missionStarted: "2025-09-22T08:00:00Z",
+            missionEnded: "n/a",
+            alarms: [],
+            evaluation: null,
+            rootCauseAnalysisStatusDetails: null,
+            timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", "2025-09-25T15:22:00Z", "Sentry", "Delivered", 6, 51),
+            productDetails: {
+              prodfilename: "Biologics-14J",
               producttype: "controlled room temperature",
               temperatureProfile: "profile",
               highThreshold: "12 °C",

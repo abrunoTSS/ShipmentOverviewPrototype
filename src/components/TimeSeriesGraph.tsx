@@ -308,16 +308,18 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
               Show Temperature
             </label>
           </div>
-          <div className="humidity-toggle">
-            <label>
-              <input
-                type="checkbox"
-                checked={humidityVisible}
-                onChange={(e) => setHumidityVisible(e.target.checked)}
-              />
-              Show Humidity
-            </label>
-          </div>
+          {humidityKeys.length > 0 && (
+            <div className="humidity-toggle">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={humidityVisible}
+                  onChange={(e) => setHumidityVisible(e.target.checked)}
+                />
+                Show Humidity
+              </label>
+            </div>
+          )}
         </div>
       </div>
 
@@ -369,6 +371,11 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
             />
           )}
           <Tooltip 
+            allowEscapeViewBox={{ x: false, y: true }}
+            offset={-80}
+            wrapperStyle={{
+              zIndex: 1000
+            }}
             labelFormatter={(value) => new Date(value).toLocaleString('en-US', {
               weekday: 'short',
               year: 'numeric',
@@ -378,17 +385,49 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
               minute: '2-digit',
               hour12: false
             })}
-            formatter={(value: any, name: string) => {
-              const isTemp = name.includes('_temp');
-              const isHumidity = name.includes('_humidity');
-              const loggerName = name.split('_')[0];
+            content={(props) => {
+              if (!props.active || !props.payload || !props.label) return null;
               
-              if (isTemp) {
-                return [`${value}°C`, `${loggerName} Temperature`];
-              } else if (isHumidity) {
-                return [`${value}%`, `${loggerName} Humidity (Dashed)`];
-              }
-              return [value, name];
+              // Group data by logger
+              const loggerData: { [key: string]: { temp?: number, humidity?: number } } = {};
+              
+              props.payload.forEach((entry: any) => {
+                const loggerName = entry.dataKey?.split('_')[0];
+                if (!loggerName) return;
+                
+                if (!loggerData[loggerName]) {
+                  loggerData[loggerName] = {};
+                }
+                
+                if (entry.dataKey?.includes('_temp')) {
+                  loggerData[loggerName].temp = entry.value;
+                } else if (entry.dataKey?.includes('_humidity')) {
+                  loggerData[loggerName].humidity = entry.value;
+                }
+              });
+              
+              return (
+                <div className="custom-tooltip">
+                  <div className="tooltip-timestamp">
+                    {new Date(props.label).toLocaleString('en-US', {
+                      weekday: 'short',
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: false
+                    })}
+                  </div>
+                  <div className="tooltip-content">
+                    {Object.entries(loggerData).map(([loggerName, data]) => (
+                      <div key={loggerName} className="tooltip-logger-line">
+                        {loggerName}: {data.temp !== undefined ? `${data.temp}°C` : 'N/A'}{data.humidity !== undefined ? `, ${data.humidity}% RH` : ''}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
             }}
           />
           <Legend 

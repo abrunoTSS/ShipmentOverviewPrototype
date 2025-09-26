@@ -20,9 +20,10 @@ interface ShipmentTableProps {
   onLoggerClick: (shipment: Shipment, logger: Logger) => void;
   selectedLoggerId: string | null;
   selectedShipmentId: string | null;
+  onViewShipmentDetails?: (shipment: Shipment) => void;
 }
 
-export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, selectedLoggerId, selectedShipmentId }: ShipmentTableProps) {
+export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, selectedLoggerId, selectedShipmentId, onViewShipmentDetails }: ShipmentTableProps) {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     origin: '',
@@ -152,13 +153,17 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         if (filters.missionStarted === 'No' && !hasNotStartedLoggers) return false;
       }
       
-      // Mission Ended filter (Yes/No based on whether any logger has mission ended)
+      // Mission Ended filter (Yes/No based on whether loggers have mission ended)
       if (filters.missionEnded) {
-        const hasEndedLoggers = shipment.loggerData?.some(logger => 
+        const allLoggersEnded = shipment.loggerData?.every(logger => 
           logger.missionEnded && logger.missionEnded !== 'n/a'
         ) || false;
-        if (filters.missionEnded === 'Yes' && !hasEndedLoggers) return false;
-        if (filters.missionEnded === 'No' && hasEndedLoggers) return false;
+        const hasNotEndedLoggers = shipment.loggerData?.some(logger => 
+          !logger.missionEnded || logger.missionEnded === 'n/a'
+        ) || false;
+        
+        if (filters.missionEnded === 'Yes' && !allLoggersEnded) return false;
+        if (filters.missionEnded === 'No' && !hasNotEndedLoggers) return false;
       }
 
       // Date range filter - using mission started date instead of lastSeen
@@ -358,6 +363,8 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                       onLoggerVisibilityChange={(loggerId, visible) => 
                         handleLoggerVisibilityChange(row.original.shipmentId, loggerId, visible)
                       }
+                      shipment={row.original}
+                      onViewShipmentDetails={onViewShipmentDetails}
                     />
                   </td>
                 </tr>
