@@ -276,7 +276,12 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
     bottom2,
   } = state;
 
-  if (!data || data.length === 0) {
+  // Check if any loggers have time series data
+  const hasTimeSeriesData = loggers.some(logger => 
+    logger.timeSeriesData && logger.timeSeriesData.length > 0
+  );
+
+  if (!data || data.length === 0 || !hasTimeSeriesData) {
     return (
       <div className={`time-series-graph ${className}`}>
         <div className="no-data-message">
@@ -462,8 +467,8 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                         <div style={{ display: 'flex', alignItems: 'center', marginRight: '10px' }}>
                           <div 
                             style={{ 
-                              width: '12px', 
-                              height: '2px', 
+                              width: '15px', 
+                              height: '5px', 
                               backgroundColor: data.temp.color, 
                               marginRight: '4px' 
                             }} 
@@ -473,16 +478,22 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                       )}
                       {data.humidity && (
                         <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <div 
-                            style={{ 
-                              width: '12px', 
-                              height: '2px', 
-                              backgroundColor: data.humidity.color,
-                              backgroundImage: `repeating-linear-gradient(90deg, ${data.humidity.color} 0px, ${data.humidity.color} 3px, transparent 3px, transparent 6px)`,
-                              marginRight: '4px' 
-                            }} 
-                          />
-                          <span style={{ fontSize: '12px' }}>Humidity (Dashed)</span>
+                          <svg 
+                            width="20" 
+                            height="5" 
+                            style={{ marginRight: '4px' }}
+                          >
+                            <line 
+                              x1="0" 
+                              y1="2.5" 
+                              x2="20" 
+                              y2="2.5" 
+                              stroke={data.humidity.color} 
+                              strokeWidth="4" 
+                              strokeDasharray="4 3"
+                            />
+                          </svg>
+                          <span style={{ fontSize: '12px' }}>Humidity</span>
                         </div>
                       )}
                     </div>
@@ -524,7 +535,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                 strokeWidth={2}
                 strokeDasharray="5 5"
                 dot={false}
-                name={`${loggerName} Humidity (Dashed)`}
+                name={`${loggerName} Humidity`}
                 connectNulls={false}
               />
             );

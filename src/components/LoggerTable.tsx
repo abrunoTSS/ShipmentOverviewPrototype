@@ -353,13 +353,11 @@ export function LoggerTable({
         const logger = row.original;
         const cellId = `${logger.loggerId}-alarms`;
         
-        // Check if logger has alarmTypes property first, then fall back to alarms
+        // Only show alarm icons if there are actual alarms, not just alarm types
         let alarmTypes: string[] = [];
         
-        if (logger.alarmTypes && Array.isArray(logger.alarmTypes) && logger.alarmTypes.length > 0) {
-          alarmTypes = logger.alarmTypes;
-        } else if (logger.alarms && logger.alarms.length > 0) {
-          // Get unique alarm types from alarms array
+        if (logger.alarms && logger.alarms.length > 0) {
+          // Get unique alarm types from actual alarms array
           alarmTypes = [...new Set(logger.alarms.map(alarm => alarm.alarmType || 'Unknown'))];
         }
         

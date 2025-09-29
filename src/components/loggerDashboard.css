@@ -48,6 +48,11 @@
   padding: 15px;
 }
 
+/* Alarms section styling - uses same CSS as excursions component */
+.milestone-alarms {
+  margin-top: 12px;
+}
+
 .shipment-report-link {
   display: block;
   background-color: #e9ecef;
@@ -466,10 +471,10 @@
 
 /* Default styles for all table cells */
 .main-table td {
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden; /* Hide overflow */
-  text-overflow: ellipsis; /* Add '...' for long text */
-  max-width: 200px;
+  white-space: normal; /* Allow wrapping */
+  word-wrap: normal;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 /* Default state for main shipment rows */

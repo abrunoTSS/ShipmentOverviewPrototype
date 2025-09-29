@@ -3,6 +3,7 @@ import { X, Plane, Truck, Ship } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import { matchExcursionsToMilestones } from '../utils/excursionMatcher';
 import { ExcursionsComponent } from './ExcursionsComponent';
+import { AlarmsComponent } from './AlarmsComponent';
 import './loggerDashboard.css';
 import './ExcursionsComponent.css';
 
@@ -26,6 +27,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     return result;
   }, [shipment]);
 
+
   if (!isOpen || !shipment) {
     return null;
   }
@@ -37,7 +39,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
       return <Plane size={16} />;
     } else if (mode.includes('road') || mode.includes('truck')) {
       return <Truck size={16} />;
-    } else if (mode.includes('sea') || mode.includes('ship') || mode.includes('ocean')) {
+    } else if (mode.includes('sea') || mode.includes('ship') || mode.includes('ocean') || mode.includes('ferry')) {
       return <Ship size={16} />;
     }
     // Default fallback - use a generic dot for unknown transport modes
@@ -86,18 +88,21 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
   
             </div>
 
-            {/* Error message for shipments with missing milestone data */}
-            {(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
-              <div className="milestone-error" style={{ marginTop: '15px', width: '100%' }}>
-                <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the shipment ID is correct.</p>
-              </div>
-            )}
           </div>
 
           {/* Shipping Milestones Section */}
-          {milestonesWithExcursions && milestonesWithExcursions.length > 0 && (
-            <div className="dashboard-section">
-              <h3 className="section-title">Shipping Milestones</h3>
+          <div className="dashboard-section">
+            <h3 className="section-title">Shipping Milestones</h3>
+            
+            {/* Error message for shipments with missing milestone data */}
+            {(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
+              <div className="milestone-error" style={{ marginBottom: '15px', width: '100%' }}>
+                <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the shipment ID is correct.</p>
+              </div>
+            )}
+            
+            {milestonesWithExcursions && milestonesWithExcursions.length > 0 && (
+              <>
                 {milestonesWithExcursions.map((milestone, index) => (
                   <div key={index} className="milestone-item">
                     <div className={`milestone-icon ${milestone.status.toLowerCase()}`}>
@@ -139,7 +144,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             </span>
                           </div>
                         )}
-                        {milestone.etd && (
+                        {milestone.status === 'Pending' && milestone.etd && (
                           <div className="milestone-info">
                             <span className="info-label">ETD:</span>
                             <span className="info-value">
@@ -147,41 +152,66 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             </span>
                           </div>
                         )}
-                        {milestone.weatherConditions && (
-                          <div className="milestone-info">
-                            <span className="info-label">Weather:</span>
-                            <span className="info-value">{milestone.weatherConditions}</span>
-                          </div>
-                        )}
-                        {milestone.status === 'Completed' && milestone.arrived && (
+                        {milestone.status === 'Current' && milestone.arrivalTime && (
                           <div className="milestone-info">
                             <span className="info-label">Arrived:</span>
                             <span className="info-value">
-                              {new Date(milestone.arrived).toLocaleString()} UTC
+                              {new Date(milestone.arrivalTime).toLocaleString()} UTC
                             </span>
                           </div>
                         )}
-                        {milestone.status === 'Completed' && milestone.delivered && (
+                        {milestone.status === 'Current' && milestone.etd && (
                           <div className="milestone-info">
-                            <span className="info-label">Delivered:</span>
+                            <span className="info-label">ETD:</span>
                             <span className="info-value">
-                              {new Date(milestone.delivered).toLocaleString()} UTC
+                              {new Date(milestone.etd).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Completed' && (milestone.arrived || milestone.arrivalTime) && (
+                          <div className="milestone-info">
+                            <span className="info-label">Arrived:</span>
+                            <span className="info-value">
+                              {(() => {
+                                const arrivedAt = milestone.arrived ?? milestone.arrivalTime;
+                                return arrivedAt ? `${new Date(arrivedAt).toLocaleString()} UTC` : 'N/A';
+                              })()}
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Completed' && (milestone.delivered || milestone.departedTime) && (
+                          <div className="milestone-info">
+                            <span className="info-label">Departed:</span>
+                            <span className="info-value">
+                              {(() => {
+                                const departedAt = milestone.delivered ?? milestone.departedTime;
+                                return departedAt ? `${new Date(departedAt).toLocaleString()} UTC` : 'N/A';
+                              })()}
                             </span>
                           </div>
                         )}
                         
-                        {/* Add Excursions Component if there are excursions for this milestone */}
-                        {milestone.excursions && milestone.excursions.length > 0 && (
+                        {/* Add Excursions Component for temperature excursions only */}
+                        {milestone.excursions && milestone.excursions.filter(exc => exc.alarmType.toLowerCase() === 'temperature').length > 0 && (
                           <div className="milestone-excursions">
-                            <ExcursionsComponent excursions={milestone.excursions} />
+                            <ExcursionsComponent excursions={milestone.excursions.filter(exc => exc.alarmType.toLowerCase() === 'temperature')} />
                           </div>
                         )}
+                        
+                        {/* Add Alarms Component for non-temperature alarms */}
+                        {milestone.excursions && milestone.excursions.filter(exc => exc.alarmType.toLowerCase() !== 'temperature').length > 0 && (
+                          <div className="milestone-alarms">
+                            <AlarmsComponent alarms={milestone.excursions.filter(exc => exc.alarmType.toLowerCase() !== 'temperature')} />
+                          </div>
+                        )}
+                        
                       </div>
                     </div>
                   </div>
                 ))}
-              </div>
-          )}
+              </>
+            )}
+          </div>
 
 
           {logger && Array.isArray(logger.alarms) && logger.alarms.length > 0 && (

@@ -237,14 +237,14 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     },
     {
       id: 'alarms',
-      header: 'Alarms',
+      header: 'Loggers Alarmed',
       cell: ({ row }) => {
         const loggers = row.original.loggerData || [];
         const totalLoggers = loggers.length;
         const loggersWithAlarms = loggers.filter(logger => {
           return logger.alarms && logger.alarms.length > 0;
         }).length;
-        return `${loggersWithAlarms}/${totalLoggers} loggers alarmed`;
+        return `${loggersWithAlarms}/${totalLoggers} loggers`;
       },
     },
     {
@@ -322,16 +322,15 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                 ))}
               </tr>
               
-              {/* Graph Section */}
-              {expandedRow === row.original.shipmentId && row.original.loggerData && row.original.loggerData.some(logger => logger.timeSeriesData && logger.timeSeriesData.length > 0) && (
+              {/* Graph Section - always render when expanded; TimeSeriesGraph will show a fallback message if no data */}
+              {expandedRow === row.original.shipmentId && row.original.loggerData && (
                 <tr className="graph-nested-row">
                   <td colSpan={columns.length} className="graph-nested-container">
                     <TimeSeriesGraph 
                       loggers={row.original.loggerData.filter(logger => {
                         const visibleLoggersSet = getVisibleLoggersForShipment(row.original.shipmentId, row.original.loggerData);
-                        return logger.timeSeriesData && 
-                               logger.timeSeriesData.length > 0 && 
-                               visibleLoggersSet.has(logger.loggerId);
+                        // Do not filter out loggers without time series here; allow graph to decide and show fallback
+                        return visibleLoggersSet.has(logger.loggerId);
                       })}
                       shipment={row.original}
                       showHumidity={true}
