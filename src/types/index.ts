@@ -105,7 +105,7 @@ export interface Milestone {
   eta?: string; // For pending milestones
   etd?: string; // For pending and current milestones
   arrived?: string; // For completed milestones
-  delivered?: string; // For completed milestones
+  departed?: string; // For completed milestones
 }
 
 export interface Logger {

@@ -34,7 +34,7 @@ export function matchExcursionsToMilestones(shipment: Shipment): MilestoneWithEx
   // Build milestone windows for overlap checks
   const milestoneWindows = milestonesWithExcursions.map((m, idx) => {
     const startStr = (m as any).arrivalTime || (m as any).arrived || '';
-    const endStr = (m as any).departedTime || (m as any).delivered || '';
+    const endStr = (m as any).departedTime || (m as any).departed || '';
     const start = new Date(startStr);
     const end = endStr ? new Date(endStr) : new Date(start.getTime() + 1000); // minimal window if no end
     return {

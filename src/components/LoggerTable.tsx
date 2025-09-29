@@ -260,11 +260,11 @@ export function LoggerTable({
         const ended = row.original.missionEnded as string;
         const shipmentStatus = row.original.shipmentStatus as string;
         
-        // Check if mission hasn't ended (n/a) and shipment is delivered - this is an error
+        // Check if mission hasn't ended (n/a) and shipment is departed - this is an error
         const missionNotEnded = (!ended || ended === 'n/a') && shipmentStatus === 'Delivered';
         
         if (missionNotEnded) {
-          // Show error icon and text for missions that haven't ended on delivered shipments
+          // Show error icon and text for missions that haven't ended on departed shipments
           const cellId = `${row.original.loggerId}-missionEnded`;
           return (
             <div 
@@ -283,7 +283,7 @@ export function LoggerTable({
         
         let value = 'n/a';
         
-        // If the shipment is delivered, show the shipment ETA
+        // If the shipment is departed, show the shipment ETA
         if (shipmentStatus === 'Delivered' && row.original.shipmentEta) {
           try {
             const date = new Date(row.original.shipmentEta);

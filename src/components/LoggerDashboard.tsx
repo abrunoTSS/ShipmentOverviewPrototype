@@ -198,12 +198,12 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             </span>
                           </div>
                         )}
-                        {milestone.status === 'Completed' && (milestone.delivered || milestone.departedTime) && (
+                        {milestone.status === 'Completed' && (milestone.departed || milestone.departedTime) && (
                           <div className="milestone-info">
                             <span className="info-label">Departed:</span>
                             <span className="info-value">
                               {(() => {
-                                const departedAt = milestone.delivered ?? milestone.departedTime;
+                                const departedAt = milestone.departed ?? milestone.departedTime;
                                 return departedAt ? `${new Date(departedAt).toLocaleString()} UTC` : 'N/A';
                               })()}
                             </span>
