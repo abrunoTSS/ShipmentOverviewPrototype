@@ -31,7 +31,6 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     status: '',
     freightForwarder: '',
     modeOfTransport: '',
-    packagingType: '',
     alarms: '',
     alarmType: '',
     rcas: '',
@@ -75,26 +74,21 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
   // Filter shipments based on current filters
   const filteredShipments = useMemo(() => {
     return shipments.filter(shipment => {
-      // Search filter - matches any text field
+      // Search filter - matches shipping ID, mission ID, and delivery ID
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        const searchableFields = [
-          shipment.shipmentId,
-          shipment.origin,
-          shipment.destination,
-          shipment.eta,
-          shipment.status,
-          shipment.freightForwarder,
-          shipment.currentLocation,
-          shipment.modeOfTransport,
-          shipment.packagingType,
-          shipment.alarms?.toString(),
-          shipment.rcas,
-        ];
         
-        const matchesSearch = searchableFields.some(field => 
-          field?.toLowerCase().includes(searchTerm)
-        );
+        // Check shipping ID
+        const matchesShipmentId = shipment.shipmentId?.toLowerCase().includes(searchTerm);
+        
+        // Check mission IDs and delivery IDs from logger data
+        const matchesLoggerData = shipment.loggerData?.some((logger: any) => {
+          const matchesMissionId = logger.loggerId?.toLowerCase().includes(searchTerm);
+          const matchesDeliveryId = logger.deliveryId?.toLowerCase().includes(searchTerm);
+          return matchesMissionId || matchesDeliveryId;
+        });
+        
+        const matchesSearch = matchesShipmentId || matchesLoggerData;
         
         if (!matchesSearch) return false;
       }
@@ -105,7 +99,6 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       if (filters.status && shipment.status?.toLowerCase() !== filters.status.toLowerCase()) return false;
       if (filters.freightForwarder && shipment.freightForwarder?.toLowerCase() !== filters.freightForwarder.toLowerCase()) return false;
       if (filters.modeOfTransport && shipment.modeOfTransport?.toLowerCase() !== filters.modeOfTransport.toLowerCase()) return false;
-      if (filters.packagingType && shipment.packagingType?.toLowerCase() !== filters.packagingType.toLowerCase()) return false;
       
       // Alarms filter (Yes/No based on totalAlarms > 0)
       if (filters.alarms) {

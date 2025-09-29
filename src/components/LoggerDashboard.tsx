@@ -110,7 +110,9 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                     </div>
                     <div className="milestone-content">
                       <div className="milestone-header">
-                        <h4 className="milestone-title">{milestone.location}</h4>
+                        <h4 className="milestone-title">
+                          {milestone.type === 'origin' ? milestone.location : milestone.location}
+                        </h4>
                         <span className={`milestone-status ${milestone.status.toLowerCase()}`}>
                           {milestone.status}
                         </span>
@@ -120,6 +122,23 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                           <span className="info-label">Event:</span>
                           <span className="info-value">{milestone.milestoneName}</span>
                         </div>
+                        {milestone.type === 'origin' && shipment && (
+                          <>
+                            <div className="milestone-info">
+                              <span className="info-label">Origin:</span>
+                              <span className="info-value">{milestone.location}</span>
+                            </div>
+                            <div className="milestone-info">
+                              <span className="info-label">Destination:</span>
+                              <span className="info-value">
+                                {(() => {
+                                  const destinationMilestone = shipment.milestones?.find(m => m.type === 'destination');
+                                  return destinationMilestone ? destinationMilestone.location : 'N/A';
+                                })()}
+                              </span>
+                            </div>
+                          </>
+                        )}
                         <div className="milestone-info">
                           <span className="info-label">Ground Handler:</span>
                           <span className="info-value">{milestone.groundHandler}</span>

@@ -85,17 +85,7 @@ export const AlarmsComponent: React.FC<AlarmsComponentProps> = ({ alarms }) => {
                   <div className="excursion-details">
                     <div className="excursion-detail-row">
                       <div className="excursion-detail">
-                        <span><strong>Peak Value:</strong> {alarm.excursion.highest}</span>
-                      </div>
-                    </div>
-                    <div className="excursion-detail-row">
-                      <div className="excursion-detail">
                         <span><strong>Start Time:</strong> {formatTimestamp(alarm.excursion.startTime)}</span>
-                      </div>
-                    </div>
-                    <div className="excursion-detail-row">
-                      <div className="excursion-detail">
-                        <span><strong>End Time:</strong> {formatTimestamp(alarm.excursion.endTime)}</span>
                       </div>
                     </div>
                     <div className="excursion-detail-row">

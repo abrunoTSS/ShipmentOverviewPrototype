@@ -13,7 +13,6 @@ export interface FilterState {
   status: string;
   freightForwarder: string;
   modeOfTransport: string;
-  packagingType: string;
   alarms: string;
   alarmType: string;
   rcas: string;
@@ -68,7 +67,6 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
       status: '',
       freightForwarder: '',
       modeOfTransport: '',
-      packagingType: '',
       alarms: '',
       alarmType: '',
       rcas: '',
@@ -109,7 +107,6 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
           case 'status': label = `Status: ${value}`; break;
           case 'freightForwarder': label = `Forwarder: ${value}`; break;
           case 'modeOfTransport': label = `Transport: ${value}`; break;
-          case 'packagingType': label = `Packaging: ${value}`; break;
           case 'alarms': label = `Alarms: ${value}`; break;
           case 'alarmType': label = `Alarm Type: ${value}`; break;
           case 'rcas': label = `RCA: ${value}`; break;
@@ -127,7 +124,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
   }, [filters]);
 
   const renderSelect = (key: keyof FilterState, label: string, options: string[]) => (
-    <div className="filter-select-container">
+    <div className="filter-group">
       <label>{label}</label>
       <select
         value={filters[key] as string}
@@ -143,7 +140,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
   );
 
   const renderAlarmTypeSelect = () => (
-    <div className="filter-select-container">
+    <div className="filter-group">
       <label>Alarm Type</label>
       <select
         value={filters.alarmType}
@@ -165,7 +162,6 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
   const uniqueStatuses = useMemo(() => getUniqueValues(shipments, 'status'), [shipments]);
   const uniqueForwarders = useMemo(() => getUniqueValues(shipments, 'freightForwarder'), [shipments]);
   const uniqueTransportModes = useMemo(() => getUniqueValues(shipments, 'modeOfTransport'), [shipments]);
-  const uniquePackagingTypes = useMemo(() => getUniqueValues(shipments, 'packagingType'), [shipments]);
   const uniqueRCAStatuses = useMemo(() => getUniqueValues(shipments, 'rcas'), [shipments]);
 
   // Get unique alarm types from all loggers across all shipments
@@ -199,7 +195,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
             <Search className="search-icon" size={20} />
             <input
               type="text"
-              placeholder="Search shipments..."
+              placeholder="Search shipments, missions, or delivery IDs..."
               className="search-input"
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
@@ -225,7 +221,6 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
               {renderSelect('status', 'Status', uniqueStatuses)}
               {renderSelect('freightForwarder', 'Freight Forwarder', uniqueForwarders)}
               {renderSelect('modeOfTransport', 'Transport', uniqueTransportModes)}
-              {renderSelect('packagingType', 'Packaging', uniquePackagingTypes)}
               {renderSelect('alarms', 'Alarms', ['Yes', 'No'])}
               {renderAlarmTypeSelect()}
               {renderSelect('rcas', 'RCA', uniqueRCAStatuses)}
@@ -233,7 +228,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
               {renderSelect('missionStarted', 'Mission Started', ['Yes', 'No'])}
               {renderSelect('missionEnded', 'Mission Ended', ['Yes', 'No'])}
             </div>
-            <div className="date-range-filter">
+            <div className="filter-group date-range-group">
               <label>Shipment Date Range</label>
               <div className="date-pickers">
                 <DatePicker

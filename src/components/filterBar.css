@@ -52,6 +52,11 @@
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+.search-input::placeholder {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
 .search-input:focus {
   outline: none;
   border-color: #3b82f6;
@@ -119,19 +124,31 @@
   border: 1px solid #d1d5db;
   border-radius: 6px;
   background-color: #fff;
-  font-size: 1rem;
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.filter-select::placeholder {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
 }
 
 /* Date Range Filter */
-.date-range-filter {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
+.date-range-group {
+  grid-column: span 2; /* Take up 2 columns in the grid */
 }
 
-.date-range-filter label {
+.date-range-group label {
+  margin-bottom: 0.25rem;
+  font-size: 0.875rem;
   font-weight: 500;
+  color: #374151;
 }
 
 .date-pickers {
@@ -144,6 +161,19 @@
   padding: 0.5rem 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 6px;
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.date-input::placeholder {
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.date-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
 }
 
 /* Active Filter Pills */
@@ -226,4 +256,9 @@
 
 .alarm-type-select {
   margin-bottom: 8px;
+}
+
+.alarm-type-select::placeholder {
+  color: #9ca3af;
+  font-size: 0.875rem;
 }
