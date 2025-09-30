@@ -1,0 +1,339 @@
+/* Logger Table Styles */
+
+/* Column headers - allow wrapping to two lines with consistent font size */
+.column-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: left;
+  line-height: 1.3;
+  white-space: normal;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  max-height: 3rem;
+  padding: 4px;
+}
+
+/* Mission ID header - narrower column with two-line text */
+.mission-id-header {
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+}
+
+/* Serial Number header - narrow column with two-line text */
+.serial-number-header {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+}
+
+/* Logger Type header - narrow column with two-line text */
+.logger-type-header {
+  width: 70px;
+  min-width: 70px;
+  max-width: 70px;
+}
+
+/* Temperature Profile header - narrow column with two-line text */
+.temp-profile-header {
+  width: 90px;
+  min-width: 90px;
+  max-width: 90px;
+}
+
+/* Mission date headers - wider columns for longer text */
+.mission-date-header {
+  width: 140px;
+  min-width: 140px;
+}
+
+/* Table cell content - allow wrapping to two lines, truncate with ellipsis if exceeds */
+.table-cell-content {
+  font-size: 0.75rem;
+  line-height: 1.3;
+  white-space: normal;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+  max-height: 3rem;
+  cursor: default;
+  text-align: left;
+  padding: 2px;
+}
+
+/* Mission error styling */
+.mission-error {
+  color: #dc2626; /* Red color for error state */
+}
+
+.mission-error-content {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+}
+
+.mission-error-text {
+  font-weight: 500;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.alarm-icon.default {
+  color: #dc2626; /* Red color for error icon */
+  flex-shrink: 0;
+}
+
+/* Visibility column header styling */
+.visibility-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px;
+}
+
+.visibility-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #374151;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.master-checkbox {
+  cursor: pointer;
+  transform: scale(1.1);
+  margin: 0;
+}
+
+/* Visibility cell styling */
+.visibility-cell {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 4px;
+}
+
+.logger-visibility-checkbox {
+  cursor: pointer;
+  transform: scale(1.1);
+  margin: 0;
+}
+
+/* Nested table wrapper */
+.nested-table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* Nested table styling */
+.nested-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.65rem;
+}
+
+.nested-table th {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  padding: 8px 6px;
+  text-align: left;
+  vertical-align: middle;
+  min-width: 80px;
+}
+
+.nested-table td {
+  border: 1px solid #e5e7eb;
+  padding: 8px 6px;
+  text-align: left;
+  vertical-align: middle;
+  min-width: 80px;
+}
+
+/* Specific column widths */
+.nested-table th:nth-child(2), /* Mission ID column */
+.nested-table td:nth-child(2) {
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
+}
+
+.nested-table th:nth-child(3), /* Serial Number column */
+.nested-table td:nth-child(3) {
+  width: 60px;
+  min-width: 60px;
+  max-width: 60px;
+}
+
+.nested-table th:nth-child(5), /* Logger Type column */
+.nested-table td:nth-child(5) {
+  width: 70px;
+  min-width: 70px;
+  max-width: 70px;
+}
+
+.nested-table th:nth-child(8), /* Temperature Profile column */
+.nested-table td:nth-child(8) {
+  width: 90px;
+  min-width: 90px;
+  max-width: 90px;
+}
+
+.nested-table th:nth-child(11), /* Expand column */
+.nested-table td:nth-child(11) {
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+}
+
+.nested-table th:nth-child(6), /* Mission Started column */
+.nested-table td:nth-child(6),
+.nested-table th:nth-child(7), /* Mission Ended column */
+.nested-table td:nth-child(7) {
+  width: 140px;
+  min-width: 140px;
+}
+
+.nested-table td:nth-child(7) {
+  width: 140px;
+  min-width: 140px;
+}
+
+/* Expand column styling */
+.logger-expand-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 8px;
+}
+
+.report-view-text {
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+  white-space: normal;
+  flex: 1;
+}
+
+.expand-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.expand-button:hover {
+  background-color: #f3f4f6;
+}
+
+.expand-icon {
+  color: #6b7280;
+  transition: transform 0.2s;
+}
+
+.expand-icon.expanded {
+  transform: rotate(0deg);
+}
+
+/* Footer styling */
+.logger-table-footer {
+  border-top: 1px solid #e5e7eb;
+}
+
+.footer-cell {
+  padding: 12px 16px;
+  text-align: right;
+  background-color: #f9fafb;
+}
+
+.view-more-details-button {
+  background: none;
+  border: none;
+  color: #3b82f6;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 20px 12px;
+  margin-right: 50px;
+  border-radius: 6px;
+  transition: all 0.2s;
+  float: right;
+}
+
+.view-more-details-button:hover {
+  background-color: #eff6ff;
+  color: #2563eb;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .nested-table th,
+  .nested-table td {
+    min-width: 60px;
+    padding: 6px 4px;
+  }
+  
+  .visibility-header {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .visibility-label {
+    text-align: center;
+  }
+}
+
+/* Alarm icons styling */
+.alarm-icons-container {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.alarm-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+}
+
+.alarm-icon {
+  color: #666;
+}
+
+.alarm-icon.humidity {
+  color: #3b82f6; /* Blue for humidity */
+}
+
+.alarm-icon.light {
+  color: #f59e0b; /* Amber for light */
+}
+
+.alarm-icon.pressure {
+  color: #8b5cf6; /* Purple for pressure */
+}
+
+.alarm-icon.shock {
+  color: #ef4444; /* Red for shock */
+}
+
+.alarm-icon.temperature {
+  color: #f97316; /* Orange for temperature */
+}
+
+.alarm-icon.tilt {
+  color: #10b981; /* Green for tilt */
+}
+
+.alarm-icon.default {
+  color: #6b7280; /* Gray for default/unknown */
+}

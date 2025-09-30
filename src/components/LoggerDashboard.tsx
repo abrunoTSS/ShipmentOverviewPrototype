@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
-import { X } from 'lucide-react';
-import type { Shipment, Logger, ExcursionMilestone } from '../types';
+import React, { useState, useMemo } from 'react';
+import { X, Plane, Truck, Ship } from 'lucide-react';
+import type { Shipment, Logger } from '../types';
+import { matchExcursionsToMilestones } from '../utils/excursionMatcher';
+import { ExcursionsComponent } from './ExcursionsComponent';
+import { AlarmsComponent } from './AlarmsComponent';
 import './loggerDashboard.css';
+import './ExcursionsComponent.css';
 
 interface LoggerDashboardProps {
   shipment: Shipment | null;
@@ -13,56 +17,35 @@ interface LoggerDashboardProps {
 const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  if (!isOpen || !shipment || !logger) {
+  // Match excursions to milestones
+  const milestonesWithExcursions = useMemo(() => {
+    if (!shipment) return [];
+    const result = matchExcursionsToMilestones(shipment);
+    console.log('Shipment:', shipment.shipmentId);
+    console.log('Milestones with excursions:', result);
+    console.log('Logger data:', shipment.loggerData);
+    return result;
+  }, [shipment]);
+
+
+  if (!isOpen || !shipment) {
     return null;
   }
 
-  // Render excursion milestone for alarm events
-  const renderMilestone = (milestone: ExcursionMilestone, index: number) => {
-    console.log('Milestone:', milestone.location, 'Has excursion:', !!milestone.excursion, milestone.excursion);
-    return (
-    <div className="milestone-item" key={index}>
-      <div className={`milestone-dot ${milestone.excursion ? 'alert' : 'pending'} ${milestone.status.toLowerCase()}`} />
-      <div className="milestone-content">
-        <p className="milestone-location">{milestone.location}</p>
-        {/* For SH014 and SH015, don't show the grey boxes with extra details */}
-        {!(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
-          <div className="milestone-extra-details">
-            {/* Only show arrival time if it exists and is not n/a */}
-            {milestone.arrivalTime && milestone.arrivalTime !== 'n/a' && (
-              <p><strong>Arrival Time:</strong> {new Date(milestone.arrivalTime).toLocaleString()}</p>
-            )}
-            {/* Only show departed time if it exists */}
-            {milestone.departedTime && (
-              <p><strong>Departed Time:</strong> {new Date(milestone.departedTime).toLocaleString()}</p>
-            )}
-            {/* Only show status if it's not Alert */}
-            {milestone.status && milestone.status !== 'Alert' && (
-              <p><strong>Status:</strong> {milestone.status}</p>
-            )}
-            {/* Only show transport if transportMode and vehicleNumber exist and are not empty */}
-            {milestone.transportMode && milestone.vehicleNumber && milestone.transportMode !== '' && milestone.vehicleNumber !== '' && (
-              <p><strong>Transport:</strong> {milestone.transportMode} ({milestone.vehicleNumber})</p>
-            )}
-            {/* Only show weather if it exists and is not empty */}
-            {milestone.weatherConditions && milestone.weatherConditions !== '' && (
-              <p><strong>Weather:</strong> {milestone.weatherConditions}</p>
-            )}
-          </div>
-        )}
-        {milestone.excursion && (
-          <div className="excursion-details">
-            <p><strong>Temperature Event:</strong></p>
-            <p>Highest: {milestone.excursion.highest}</p>
-            <p>Lowest: {milestone.excursion.lowest}</p>
-            <p>Average: {milestone.excursion.average}</p>
-            <p>Duration: {milestone.excursion.duration}</p>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+  // Function to get transport icon based on transport mode
+  const getTransportIcon = (transportMode: string) => {
+    const mode = transportMode.toLowerCase();
+    if (mode.includes('air') || mode.includes('flight')) {
+      return <Plane size={16} />;
+    } else if (mode.includes('road') || mode.includes('truck')) {
+      return <Truck size={16} />;
+    } else if (mode.includes('sea') || mode.includes('ship') || mode.includes('ocean') || mode.includes('ferry')) {
+      return <Ship size={16} />;
+    }
+    // Default fallback - use a generic dot for unknown transport modes
+    return <div className="milestone-dot-fallback"></div>;
   };
+
 
   return (
     <>
@@ -87,6 +70,14 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 <span className="info-label">Destination</span>
                 <span className="info-value">{shipment.destination}</span>
               </div>
+              <div className="info-item">
+                <span className="info-label">Distance</span>
+                <span className="info-value">{shipment.distance ? `${shipment.distance} km` : 'N/A'}</span>
+              </div>
+              <div className="info-item">
+                <span className="info-label">CO₂ Emissions</span>
+                <span className="info-value">{shipment.co2Emissions ? `${shipment.co2Emissions} kg` : 'N/A'}</span>
+              </div>
               {/* Only show status for shipments without error messages */}
               {shipment.shipmentId !== "SH014" && shipment.shipmentId !== "SH015" && (
                 <div className="info-item">
@@ -97,108 +88,152 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
   
             </div>
 
+          </div>
+
+          {/* Shipping Milestones Section */}
+          <div className="dashboard-section">
+            <h3 className="section-title">Shipping Milestones</h3>
+            
             {/* Error message for shipments with missing milestone data */}
             {(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
-              <div className="milestone-error" style={{ marginTop: '15px', width: '100%' }}>
+              <div className="milestone-error" style={{ marginBottom: '15px', width: '100%' }}>
                 <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the shipment ID is correct.</p>
               </div>
             )}
             
-            {/* Shipment Current Milestone Timeline - Only for In Transit shipments with milestone data */}
-            {shipment.status === 'In Transit' && 
-             !(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && 
-             shipment.shipmentCurrentMilestone && 
-             shipment.shipmentCurrentMilestone.length > 0 && (
-              <div className="shipment-milestone-container">
-                <h4 className="milestone-subtitle">Current Lane</h4>
-                <div className="milestone-timeline">
-                  {shipment.shipmentCurrentMilestone.map((milestone, index) => (
-                    <div className="milestone-item" key={index}>
-                      <div className={`milestone-dot ${milestone.status === 'Current' ? 'completed' : 
-                                                       milestone.status === 'Completed' ? 'pending' : 'pending'}`} />
-                      <div className="milestone-content">
-                        <p className="milestone-location">{milestone.location}</p>
-                        <div className="milestone-status-badge">
-                          <span className={`status-indicator ${milestone.status.toLowerCase()}`}>{milestone.status}</span>
+            {milestonesWithExcursions && milestonesWithExcursions.length > 0 && (
+              <>
+                {milestonesWithExcursions.map((milestone, index) => (
+                  <div key={index} className="milestone-item">
+                    <div className={`milestone-icon ${milestone.status.toLowerCase()}`}>
+                      {milestone.transportMode ? getTransportIcon(milestone.transportMode) : <div className="milestone-dot-fallback"></div>}
+                    </div>
+                    <div className="milestone-content">
+                      <div className="milestone-header">
+                        <h4 className="milestone-title">
+                          {milestone.type === 'origin' ? milestone.location : milestone.location}
+                        </h4>
+                        <span className={`milestone-status ${milestone.status.toLowerCase()}`}>
+                          {milestone.status}
+                        </span>
+                      </div>
+                      <div className="milestone-details">
+                        <div className="milestone-info">
+                          <span className="info-label">Event:</span>
+                          <span className="info-value">{milestone.milestoneName}</span>
                         </div>
+                        {milestone.type === 'origin' && shipment && (
+                          <>
+                            <div className="milestone-info">
+                              <span className="info-label">Origin:</span>
+                              <span className="info-value">{milestone.location}</span>
+                            </div>
+                            <div className="milestone-info">
+                              <span className="info-label">Destination:</span>
+                              <span className="info-value">
+                                {(() => {
+                                  const destinationMilestone = shipment.milestones?.find(m => m.type === 'destination');
+                                  return destinationMilestone ? destinationMilestone.location : 'N/A';
+                                })()}
+                              </span>
+                            </div>
+                          </>
+                        )}
+                        <div className="milestone-info">
+                          <span className="info-label">Ground Handler:</span>
+                          <span className="info-value">{milestone.groundHandler}</span>
+                        </div>
+                        {milestone.transportMode && (
+                          <div className="milestone-info">
+                            <span className="info-label">Transport:</span>
+                            <span className="info-value">{milestone.transportMode}</span>
+                          </div>
+                        )}
+                        {milestone.vehicleNumber && (
+                          <div className="milestone-info">
+                            <span className="info-label">Vehicle:</span>
+                            <span className="info-value">{milestone.vehicleNumber}</span>
+                          </div>
+                        )}
+                        {milestone.status === 'Pending' && milestone.eta && (
+                          <div className="milestone-info">
+                            <span className="info-label">ETA:</span>
+                            <span className="info-value">
+                              {new Date(milestone.eta).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Pending' && milestone.etd && (
+                          <div className="milestone-info">
+                            <span className="info-label">ETD:</span>
+                            <span className="info-value">
+                              {new Date(milestone.etd).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Current' && milestone.arrivalTime && (
+                          <div className="milestone-info">
+                            <span className="info-label">Arrived:</span>
+                            <span className="info-value">
+                              {new Date(milestone.arrivalTime).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Current' && milestone.etd && (
+                          <div className="milestone-info">
+                            <span className="info-label">ETD:</span>
+                            <span className="info-value">
+                              {new Date(milestone.etd).toLocaleString()} UTC
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Completed' && (milestone.arrived || milestone.arrivalTime) && (
+                          <div className="milestone-info">
+                            <span className="info-label">Arrived:</span>
+                            <span className="info-value">
+                              {(() => {
+                                const arrivedAt = milestone.arrived ?? milestone.arrivalTime;
+                                return arrivedAt ? `${new Date(arrivedAt).toLocaleString()} UTC` : 'N/A';
+                              })()}
+                            </span>
+                          </div>
+                        )}
+                        {milestone.status === 'Completed' && (milestone.departed || milestone.departedTime) && (
+                          <div className="milestone-info">
+                            <span className="info-label">Departed:</span>
+                            <span className="info-value">
+                              {(() => {
+                                const departedAt = milestone.departed ?? milestone.departedTime;
+                                return departedAt ? `${new Date(departedAt).toLocaleString()} UTC` : 'N/A';
+                              })()}
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Add Excursions Component for temperature excursions only */}
+                        {milestone.excursions && milestone.excursions.filter(exc => exc.alarmType.toLowerCase() === 'temperature').length > 0 && (
+                          <div className="milestone-excursions">
+                            <ExcursionsComponent excursions={milestone.excursions.filter(exc => exc.alarmType.toLowerCase() === 'temperature')} />
+                          </div>
+                        )}
+                        
+                        {/* Add Alarms Component for non-temperature alarms */}
+                        {milestone.excursions && milestone.excursions.filter(exc => exc.alarmType.toLowerCase() !== 'temperature').length > 0 && (
+                          <div className="milestone-alarms">
+                            <AlarmsComponent alarms={milestone.excursions.filter(exc => exc.alarmType.toLowerCase() !== 'temperature')} />
+                          </div>
+                        )}
+                        
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
+                  </div>
+                ))}
+              </>
             )}
           </div>
 
-          <div className="dashboard-section">
-            <h3 className="section-title">Logger Details</h3>
-            <div className="info-grid">
-              <div className="info-item">
-                <span className="info-label">Logger ID</span>
-                <span className="info-value">{logger.loggerId}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Logger Type</span>
-                <span className="info-value">{logger.loggerType}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Calibration Date</span>
-                <span className="info-value">{logger.calibrationDate || '2025-05-06 07:00'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Expiry Date</span>
-                <span className="info-value">{logger.expiryDate || '2028-05-06 07:00'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Sample Rate</span>
-                <span className="info-value">{logger.sampleRate || '10 minute'}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Start Delay</span>
-                <span className="info-value">{logger.startDelay || '0 minute'}</span>
-              </div>
-              {logger.temperature && logger.temperature !== 'n/a' && logger.loggerType !== 'Web Logger 2' && (
-                <div className="info-item">
-                  <span className="info-label">Temperature</span>
-                  <span className="info-value">{logger.temperature}</span>
-                </div>
-              )}
-              {logger.lastSeen && (
-                <div className="info-item">
-                  <span className="info-label">Last Seen</span>
-                  <span className="info-value">
-                    {(() => {
-                      try {
-                        const date = new Date(logger.lastSeen);
-                        return date.toString() !== 'Invalid Date' ? date.toLocaleString() : 'n/a';
-                      } catch {
-                        return 'n/a';
-                      }
-                    })()}
-                  </span>
-                </div>
-              )}
-            </div>
-          </div>
 
-          {logger.productDetails && (
-            <>
-
-              <div className="dashboard-section">
-                <h3 className="section-title">Product Temperature Profile</h3>
-                <div className="info-grid">
-                  <div className="info-item">
-                    <span className="info-label">Low Threshold</span>
-                    <span className="info-value">{logger.productDetails.lowThreshold}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">High Threshold</span>
-                    <span className="info-value">{logger.productDetails.highThreshold}</span>
-                  </div>
-                </div>
-              </div>
-            </>
-          )}
-          {Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
+          {logger && Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
             <div className="dashboard-section">
               <h3 className="section-title">Alarms</h3>
               <div className="tabs">
@@ -214,15 +249,25 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
               </div>
 
               <div className="milestone-timeline">
-                {logger.alarms[activeTab]?.excursionMilestones.map(renderMilestone)}
-                
-                {/* Display graph for excursions with graph data */}
-
+                {logger.alarms[activeTab]?.excursion && (
+                  <div className="excursion-details">
+                    <h4>Excursion Details</h4>
+                    <p><strong>Type:</strong> {logger.alarms[activeTab].excursion.type}</p>
+                    <p><strong>Highest:</strong> {logger.alarms[activeTab].excursion.highest}</p>
+                    <p><strong>Start Time:</strong> {logger.alarms[activeTab].excursion.startTime}</p>
+                    <p><strong>End Time:</strong> {logger.alarms[activeTab].excursion.endTime}</p>
+                    <p><strong>Duration:</strong> {logger.alarms[activeTab].excursion.duration}</p>
+                    {logger.alarms[activeTab].excursion.temperatureProfile && (
+                      <p><strong>Temperature Profile:</strong> {logger.alarms[activeTab].excursion.temperatureProfile}</p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}
 
-          {logger.rootCauseAnalysisStatusDetails && (
+
+          {logger && logger.rootCauseAnalysisStatusDetails && (
             <div className="dashboard-section">
               <h3 className="section-title">Root Cause Analysis</h3>
               <div className="rca-status">

@@ -11,6 +11,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import { LoggerTable } from './LoggerTable';
 import { FilterBar, type FilterState } from './FilterBar';
+import TimeSeriesGraph from './TimeSeriesGraph';
 
 interface ShipmentTableProps {
   shipments: Shipment[];
@@ -19,9 +20,10 @@ interface ShipmentTableProps {
   onLoggerClick: (shipment: Shipment, logger: Logger) => void;
   selectedLoggerId: string | null;
   selectedShipmentId: string | null;
+  onViewShipmentDetails?: (shipment: Shipment) => void;
 }
 
-export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, selectedLoggerId, selectedShipmentId }: ShipmentTableProps) {
+export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClick, selectedLoggerId, selectedShipmentId, onViewShipmentDetails }: ShipmentTableProps) {
   const [filters, setFilters] = useState<FilterState>({
     search: '',
     origin: '',
@@ -29,37 +31,64 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     status: '',
     freightForwarder: '',
     modeOfTransport: '',
-    packagingType: '',
     alarms: '',
+    alarmType: '',
     rcas: '',
     milestoneData: '',
+    missionStarted: '',
+    missionEnded: '',
     startDate: null,
     endDate: null,
   });
 
+  // State for managing logger visibility in graphs
+  const [visibleLoggers, setVisibleLoggers] = useState<Map<string, Set<string>>>(new Map());
+
+  const handleLoggerVisibilityChange = (shipmentId: string, loggerId: string, visible: boolean) => {
+    setVisibleLoggers(prev => {
+      const newMap = new Map(prev);
+      const shipmentLoggers = newMap.get(shipmentId) || new Set();
+      
+      if (visible) {
+        shipmentLoggers.add(loggerId);
+      } else {
+        shipmentLoggers.delete(loggerId);
+      }
+      
+      newMap.set(shipmentId, shipmentLoggers);
+      return newMap;
+    });
+  };
+
+  // Initialize visible loggers for expanded shipment
+  const getVisibleLoggersForShipment = (shipmentId: string, loggers: Logger[]) => {
+    if (!visibleLoggers.has(shipmentId)) {
+      // Initialize with all loggers visible by default
+      const allLoggerIds = new Set(loggers.map(logger => logger.loggerId));
+      setVisibleLoggers(prev => new Map(prev).set(shipmentId, allLoggerIds));
+      return allLoggerIds;
+    }
+    return visibleLoggers.get(shipmentId) || new Set();
+  };
+
   // Filter shipments based on current filters
   const filteredShipments = useMemo(() => {
     return shipments.filter(shipment => {
-      // Search filter - matches any text field
+      // Search filter - matches shipping ID, mission ID, and delivery ID
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
-        const searchableFields = [
-          shipment.shipmentId,
-          shipment.origin,
-          shipment.destination,
-          shipment.eta,
-          shipment.status,
-          shipment.freightForwarder,
-          shipment.currentLocation,
-          shipment.modeOfTransport,
-          shipment.packagingType,
-          shipment.alarms?.toString(),
-          shipment.rcas,
-        ];
         
-        const matchesSearch = searchableFields.some(field => 
-          field?.toLowerCase().includes(searchTerm)
-        );
+        // Check shipping ID
+        const matchesShipmentId = shipment.shipmentId?.toLowerCase().includes(searchTerm);
+        
+        // Check mission IDs and delivery IDs from logger data
+        const matchesLoggerData = shipment.loggerData?.some((logger: any) => {
+          const matchesMissionId = logger.loggerId?.toLowerCase().includes(searchTerm);
+          const matchesDeliveryId = logger.deliveryId?.toLowerCase().includes(searchTerm);
+          return matchesMissionId || matchesDeliveryId;
+        });
+        
+        const matchesSearch = matchesShipmentId || matchesLoggerData;
         
         if (!matchesSearch) return false;
       }
@@ -70,13 +99,28 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       if (filters.status && shipment.status?.toLowerCase() !== filters.status.toLowerCase()) return false;
       if (filters.freightForwarder && shipment.freightForwarder?.toLowerCase() !== filters.freightForwarder.toLowerCase()) return false;
       if (filters.modeOfTransport && shipment.modeOfTransport?.toLowerCase() !== filters.modeOfTransport.toLowerCase()) return false;
-      if (filters.packagingType && shipment.packagingType?.toLowerCase() !== filters.packagingType.toLowerCase()) return false;
       
       // Alarms filter (Yes/No based on totalAlarms > 0)
       if (filters.alarms) {
         const hasAlarms = (shipment.alarms || 0) > 0;
         if (filters.alarms === 'Yes' && !hasAlarms) return false;
         if (filters.alarms === 'No' && hasAlarms) return false;
+      }
+      
+      // Alarm Type filter - check if any logger has the selected alarm type
+      if (filters.alarmType) {
+        try {
+          const hasAlarmType = shipment.loggerData && Array.isArray(shipment.loggerData) && 
+            shipment.loggerData.some((logger: any) => {
+              if (!logger || !logger.alarmTypes) return false;
+              if (!Array.isArray(logger.alarmTypes)) return false;
+              return logger.alarmTypes.includes(filters.alarmType);
+            });
+          if (!hasAlarmType) return false;
+        } catch (error) {
+          console.error('Error filtering by alarm type:', error, shipment);
+          return false;
+        }
       }
       
       // Root Cause Analysis filter (case-insensitive)
@@ -89,15 +133,41 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         if (filters.milestoneData === 'No' && hasMilestoneData) return false;
       }
 
-      // Date range filter
+      // Mission Started filter (Yes/No based on whether loggers have mission started)
+      if (filters.missionStarted) {
+        const allLoggersStarted = shipment.loggerData?.every(logger => 
+          logger.missionStarted && logger.missionStarted !== 'n/a'
+        ) || false;
+        const hasNotStartedLoggers = shipment.loggerData?.some(logger => 
+          !logger.missionStarted || logger.missionStarted === 'n/a'
+        ) || false;
+        
+        if (filters.missionStarted === 'Yes' && !allLoggersStarted) return false;
+        if (filters.missionStarted === 'No' && !hasNotStartedLoggers) return false;
+      }
+      
+      // Mission Ended filter (Yes/No based on whether loggers have mission ended)
+      if (filters.missionEnded) {
+        const allLoggersEnded = shipment.loggerData?.every(logger => 
+          logger.missionEnded && logger.missionEnded !== 'n/a'
+        ) || false;
+        const hasNotEndedLoggers = shipment.loggerData?.some(logger => 
+          !logger.missionEnded || logger.missionEnded === 'n/a'
+        ) || false;
+        
+        if (filters.missionEnded === 'Yes' && !allLoggersEnded) return false;
+        if (filters.missionEnded === 'No' && !hasNotEndedLoggers) return false;
+      }
+
+      // Date range filter - using mission started date instead of lastSeen
       if (filters.startDate && filters.endDate) {
-        const mostRecentLastSeen = shipment.loggerData?.reduce((latest, logger) => {
-          if (!logger.lastSeen) return latest;
-          const loggerDate = new Date(logger.lastSeen);
+        const mostRecentMissionStarted = shipment.loggerData?.reduce((latest, logger) => {
+          if (!logger.missionStarted) return latest;
+          const loggerDate = new Date(logger.missionStarted);
           return latest && latest > loggerDate ? latest : loggerDate;
         }, null as Date | null);
 
-        if (!mostRecentLastSeen) return false; // Filter out if no valid date
+        if (!mostRecentMissionStarted) return false; // Filter out if no valid date
 
         const startDate = new Date(filters.startDate);
         startDate.setHours(0, 0, 0, 0);
@@ -105,7 +175,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         const endDate = new Date(filters.endDate);
         endDate.setHours(23, 59, 59, 999);
 
-        if (mostRecentLastSeen < startDate || mostRecentLastSeen > endDate) {
+        if (mostRecentMissionStarted < startDate || mostRecentMissionStarted > endDate) {
           return false;
         }
       }
@@ -135,21 +205,6 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       accessorKey: 'destination',
     },
     {
-      id: 'eta',
-      header: 'ETA',
-      accessorKey: 'eta',
-      cell: ({ getValue }) => {
-        const eta = getValue() as string | null;
-        // Check if eta is a valid date string or a special value like "Unavailable"
-        if (!eta) return 'n/a';
-        if (eta === 'Unavailable') return 'Unavailable';
-        
-        // Try to parse as date, but handle invalid dates gracefully
-        const date = new Date(eta);
-        return isNaN(date.getTime()) ? eta : date.toLocaleDateString();
-      },
-    },
-    {
       id: 'status',
       header: 'Status',
       accessorKey: 'status',
@@ -160,13 +215,8 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     },
     {
       id: 'freightForwarder',
-      header: 'FF',
+      header: 'Freight Forwarder',
       accessorKey: 'freightForwarder',
-    },
-    {
-      id: 'currentLocation',
-      header: 'Current Location',
-      accessorKey: 'currentLocation',
     },
     {
       id: 'modeOfTransport',
@@ -175,30 +225,24 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     },
     {
       id: 'packagingType',
-      header: 'Packaging Type',
+      header: 'Packaging Solution',
       accessorKey: 'packagingType',
     },
     {
-      id: 'loggers',
-      header: 'Loggers',
-      cell: ({ row }) => (
-        <span className="logger-count">
-          {row.original.loggerData?.length || 0}
-        </span>
-      ),
-    },
-    {
       id: 'alarms',
-      header: 'Total Alarms',
-      accessorKey: 'alarms',
-      cell: ({ getValue }) => {
-        const alarms = getValue() as number | null;
-        return alarms && alarms > 0 ? alarms.toString() : '0';
+      header: 'Loggers Alarmed',
+      cell: ({ row }) => {
+        const loggers = row.original.loggerData || [];
+        const totalLoggers = loggers.length;
+        const loggersWithAlarms = loggers.filter(logger => {
+          return logger.alarms && logger.alarms.length > 0;
+        }).length;
+        return `${loggersWithAlarms}/${totalLoggers} loggers`;
       },
     },
     {
       id: 'rcas',
-      header: 'RCAS',
+      header: 'Evaluation',
       accessorKey: 'rcas',
       cell: ({ getValue }) => {
         const rcas = getValue() as string | null;
@@ -271,10 +315,29 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                 ))}
               </tr>
               
-              {/* Nested Logger Table */}
+              {/* Graph Section - always render when expanded; TimeSeriesGraph will show a fallback message if no data */}
+              {expandedRow === row.original.shipmentId && row.original.loggerData && (
+                <tr className="graph-nested-row">
+                  <td colSpan={columns.length} className="graph-nested-container">
+                    <TimeSeriesGraph 
+                      loggers={row.original.loggerData.filter(logger => {
+                        const visibleLoggersSet = getVisibleLoggersForShipment(row.original.shipmentId, row.original.loggerData);
+                        // Do not filter out loggers without time series here; allow graph to decide and show fallback
+                        return visibleLoggersSet.has(logger.loggerId);
+                      })}
+                      shipment={row.original}
+                      showHumidity={true}
+                      height={400}
+                      className="shipment-graph"
+                    />
+                  </td>
+                </tr>
+              )}
+              
+              {/* Logger Table as nested table */}
               {expandedRow === row.original.shipmentId && (
-                <tr className="nested-row">
-                  <td colSpan={columns.length} className="nested-table-container">
+                <tr className="logger-nested-row">
+                  <td colSpan={columns.length} className="logger-nested-container">
                     <LoggerTable
                       loggers={row.original.loggerData.map(logger => ({
                         ...logger,
@@ -283,6 +346,12 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                       }))}
                       onLoggerClick={(logger) => onLoggerClick(row.original, logger)}
                       selectedLoggerId={selectedLoggerId}
+                      visibleLoggers={getVisibleLoggersForShipment(row.original.shipmentId, row.original.loggerData)}
+                      onLoggerVisibilityChange={(loggerId, visible) => 
+                        handleLoggerVisibilityChange(row.original.shipmentId, loggerId, visible)
+                      }
+                      shipment={row.original}
+                      onViewShipmentDetails={onViewShipmentDetails}
                     />
                   </td>
                 </tr>

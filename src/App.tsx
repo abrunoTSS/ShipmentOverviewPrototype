@@ -22,6 +22,14 @@ function App() {
     setIsDashboardOpen(true);
   };
 
+  const handleViewShipmentDetails = (shipment: Shipment) => {
+    console.log('handleViewShipmentDetails called with shipment:', shipment.shipmentId);
+    console.log('Setting isDashboardOpen to true');
+    setSelectedShipment(shipment);
+    setSelectedLogger(null); // No specific logger selected, just shipment details
+    setIsDashboardOpen(true);
+  };
+
   const closeDashboard = () => {
     setIsDashboardOpen(false);
     setSelectedLogger(null);
@@ -39,6 +47,7 @@ function App() {
           onLoggerClick={handleLoggerClick}
           selectedLoggerId={selectedLogger?.loggerId || null}
           selectedShipmentId={selectedShipmentId}
+          onViewShipmentDetails={handleViewShipmentDetails}
         />
       </div>
 

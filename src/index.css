@@ -85,8 +85,9 @@ body {
   font-weight: normal;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   white-space: normal;
-  word-wrap: break-word;
-  word-break: break-all;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  word-break: normal;
   line-height: 1.4;
   overflow: hidden;
   hyphens: auto;
@@ -117,7 +118,7 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  vertical-align: middle;
+  vertical-align: top;
   white-space: normal;
   word-wrap: break-word;
   line-height: 1.2;
@@ -144,8 +145,9 @@ body {
   font-weight: normal;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
   white-space: normal;
-  word-wrap: break-word;
-  word-break: break-all;
+  word-wrap: normal;
+  overflow-wrap: normal;
+  word-break: normal;
   line-height: 1.4;
   min-height: 60px;
   text-align: left;
@@ -405,11 +407,122 @@ body {
   border-radius: 4px;
 }
 
+/* Nested row styles */
+.nested-row {
+  background: #f8fafc;
+}
 
+.nested-content-container {
+  padding: 0;
+  border: none;
+  background: transparent;
+}
 
 .expanded-content {
+  background: white;
+  margin: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+/* Graph nested row styles */
+.graph-nested-row {
+  background: transparent;
+}
+
+.graph-nested-container {
+  padding: 16px;
+  border: none;
+  background: transparent;
+}
+
+/* Logger nested table styles */
+/* Nested table container styling */
+.logger-nested-row {
+  background: transparent;
+}
+
+.logger-nested-container {
   padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.nested-table-wrapper {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.nested-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nested-table thead {
+  background: #f8fafc;
+}
+
+.nested-table th {
+  padding: 8px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: #64748b;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+}
+
+.nested-table th:last-child {
+  border-right: none;
+}
+
+.nested-table td {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  border-right: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.nested-table td:last-child {
+  border-right: none;
+}
+
+.nested-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.nested-table tbody tr:hover {
   background-color: #f8fafc;
+}
+
+/* Graph section styling in expanded rows */
+.graph-section {
+  margin-bottom: 32px;
+}
+
+.graph-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 24px 0;
+  text-align: center;
+}
+
+.logger-table-section {
+  margin-top: 16px;
+}
+
+.shipment-graph {
+  margin: 0;
 }
 
 .logger-details {
@@ -701,7 +814,7 @@ body {
   color: #d69e2e;
 }
 
-.status-delivered {
+.status-departed {
   background-color: #f0fff4;
   color: #38a169;
 }

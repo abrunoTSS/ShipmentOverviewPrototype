@@ -1,0 +1,163 @@
+.time-series-graph {
+  width: 100%;
+  background: white;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.graph-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding: 8px 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  gap: 16px;
+}
+
+.zoom-out-btn {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.zoom-out-btn:hover {
+  background-color: #2563eb;
+}
+
+.graph-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.shipment-id {
+  font-size: 14px;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.no-data-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+  font-size: 16px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+/* Recharts customization */
+.recharts-legend-wrapper {
+  padding-top: 20px !important;
+}
+
+.recharts-legend-item {
+  margin-right: 20px !important;
+}
+
+.recharts-tooltip-wrapper {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.recharts-default-tooltip {
+  background: white !important;
+  border: none !important;
+  padding: 12px !important;
+}
+
+.recharts-tooltip-label {
+  font-weight: 600 !important;
+  color: #374151 !important;
+  margin-bottom: 8px !important;
+}
+
+.recharts-tooltip-item {
+  color: #6b7280 !important;
+  font-size: 14px !important;
+}
+
+/* Reference area styling */
+.recharts-reference-area-rect {
+  fill: #3b82f6;
+  fill-opacity: 0.1;
+}
+
+/* Data toggles styling */
+.data-toggles {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.temperature-toggle,
+.humidity-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.temperature-toggle label,
+.humidity-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  user-select: none;
+}
+
+.temperature-toggle input[type="checkbox"],
+.humidity-toggle input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #3b82f6;
+}
+
+/* Custom tooltip styling */
+.custom-tooltip {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  padding: 12px 16px;
+  font-size: 14px;
+  max-width: 300px;
+  z-index: 1000;
+  position: relative;
+}
+
+.tooltip-timestamp {
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tooltip-logger-line {
+  color: #6b7280;
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+}

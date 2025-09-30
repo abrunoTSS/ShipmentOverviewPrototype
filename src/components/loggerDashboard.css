@@ -48,6 +48,11 @@
   padding: 15px;
 }
 
+/* Alarms section styling - uses same CSS as excursions component */
+.milestone-alarms {
+  margin-top: 12px;
+}
+
 .shipment-report-link {
   display: block;
   background-color: #e9ecef;
@@ -127,8 +132,9 @@
 }
 
 .info-value {
-    color: #212529;
-    font-weight: 500;
+    color: #424445;
+    font-size: 12px;
+    padding-left: 5px;
 }
 
 .tabs {
@@ -182,14 +188,93 @@
     border: 2px solid #adb5bd;
 }
 
+.milestone-icon {
+    position: absolute;
+    left: -16px;
+    top: -4px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid #adb5bd;
+}
+
+.milestone-dot-fallback {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #adb5bd;
+}
+
 .milestone-dot.completed { border-color: #28a745; background-color: #28a745; }
 .milestone-dot.alert { border-color: #dc3545; background-color: #dc3545; }
 .milestone-dot.in-transit { border-color: #007bff; background-color: #007bff; }
 .milestone-dot.warning { border-color: #ffc107; background-color: #ffc107; }
 .milestone-dot.pending { border-color: #adb5bd; background-color: #fff; }
 
+.milestone-icon.completed { border-color: #28a745; color: #28a745; }
+.milestone-icon.alert { border-color: #dc3545; color: #dc3545; }
+.milestone-icon.in-transit { border-color: #007bff; color: #007bff; }
+.milestone-icon.current { border-color: #007bff; color: #007bff; }
+.milestone-icon.warning { border-color: #ffc107; color: #ffc107; }
+.milestone-icon.pending { border-color: #adb5bd; color: #adb5bd; }
+
 .milestone-content {
     padding-left: 20px;
+}
+
+.milestone-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.milestone-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #212529;
+    margin: 0;
+}
+
+.milestone-status {
+    background: #6c757d;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.milestone-status.completed {
+    background: #28a745;
+}
+
+.milestone-status.current {
+    background: #007bff;
+}
+
+.milestone-status.pending {
+    background: #6c757d;
+}
+
+.milestone-status.alert {
+    background: #dc3545;
+}
+
+.milestone-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.milestone-info {
+    display: flex;
+    align-items: baseline;
 }
 
 .milestone-type {
@@ -386,10 +471,10 @@
 
 /* Default styles for all table cells */
 .main-table td {
-  white-space: nowrap; /* Prevent text from wrapping */
-  overflow: hidden; /* Hide overflow */
-  text-overflow: ellipsis; /* Add '...' for long text */
-  max-width: 200px;
+  white-space: normal; /* Allow wrapping */
+  word-wrap: normal;
+  overflow-wrap: normal;
+  word-break: normal;
 }
 
 /* Default state for main shipment rows */

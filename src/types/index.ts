@@ -36,31 +36,49 @@ export interface ExcursionGraphData {
 }
 
 export interface Excursion {
+  id: number;
   highest: string;
-  lowest: string;
-  average: string;
-  startTime?: string;
+  lowest?: string;
+  average?: string;
+  startTime: string;
+  endTime: string;
   duration: string;
-
+  type: string;
+  temperatureProfile?: string;
 }
 
 export interface ExcursionMilestone {
-  type?: string;
+  type: string;
   location: string;
-  arrivalTime?: string;
+  arrivalTime: string;
   departedTime?: string;
   status: string;
-  transportMode?: string;
-  vehicleNumber?: string;
-  weatherConditions?: string;
-  excursion?: Excursion | null;
+  transportMode: string;
+  vehicleNumber: string;
+  weatherConditions: string;
+  temperature?: number;
+  excursion?: {
+    highest: string;
+    lowest: string;
+    average: string;
+    startTime: string;
+    duration: string;
+  };
 }
+
+export interface LoggerTimeSeriesData {
+  timestamp: string;
+  temperature: number; // °C
+  humidity?: number; // % (only for Sentinel/Sentry loggers)
+}
+
+export type AlarmType = 'Humidity' | 'Light' | 'Pressure' | 'Shock' | 'Temperature' | 'Tilt';
 
 export interface Alarm {
   alarmId: number;
-  alarmType: string;
+  alarmType: AlarmType;
   errorMessage?: string;
-  excursionMilestones: ExcursionMilestone[];
+  excursion: Excursion;
 }
 
 export interface ProductDetails {
@@ -76,34 +94,46 @@ export interface Milestone {
   type: string;
   location: string;
   status: string;
+  milestoneName: string;
+  groundHandler: string;
   arrivalTime?: string;
   departedTime?: string;
   transportMode?: string;
   vehicleNumber?: string;
   weatherConditions?: string;
   excursion?: any;
+  eta?: string; // For pending milestones
+  etd?: string; // For pending and current milestones
+  arrived?: string; // For completed milestones
+  departed?: string; // For completed milestones
 }
 
 export interface Logger {
   loggerId: string;
   loggerType: LoggerType;
-  loggerStarted: string;
-  loggerEnded: string;
-  temperature?: string;
-  alarms: Alarm[] | number; // Can be a count or a detailed array
-  rootCauseAnalysis: string | null;
+  missionStarted: string; // Renamed from loggerStarted
+  missionEnded: string; // Renamed from loggerEnded
+  deliveryId: string; // New column
+  tempProfile: string; // New column
+  serialNumber: number; // New column
+  alarms: Alarm[]; // Array of detailed alarm objects
+  alarmTypes?: AlarmType[]; // Array of alarm types for this logger
+  evaluation: string | null; // Renamed from rootCauseAnalysis
   rootCauseAnalysisStatusDetails: RootCauseAnalysisStatusDetails | null;
   events?: any[];
-  lastSeen?: string;
   productDetails?: ProductDetails;
   excursionMilestones?: Milestone[];
   calibrationDate?: string;
   expiryDate?: string;
   sampleRate?: string;
   startDelay?: string;
+  temperature?: string; // Current temperature reading
+  lastSeen?: string; // Last communication timestamp
   // Added for logger end date display logic
   shipmentStatus?: string;
   shipmentEta?: string;
+  // Time-series data for temperature and humidity readings
+  timeSeriesData?: LoggerTimeSeriesData[];
 }
 
 export interface Shipment {
@@ -118,16 +148,12 @@ export interface Shipment {
   currentLocation?: string;
   modeOfTransport: string;
   packagingType: string;
-  shipmentCurrentMilestone?: shipmentCurrentMilestone[];
+  milestones?: Milestone[];
   alarms: number;
   totalAlarms?: number;
   events: number | null;
   rcas: string;
   loggerData: Logger[];
-}
-
-export interface shipmentCurrentMilestone {
-  type: string;
-  location: string;
-  status: string;
+  distance: number; // Distance in kilometers
+  co2Emissions: number; // CO2 emissions in kg
 }
