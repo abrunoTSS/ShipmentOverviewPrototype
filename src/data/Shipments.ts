@@ -1,4 +1,71 @@
-import type { Shipment, LoggerTimeSeriesData } from '../types';
+import type { Shipment, LoggerTimeSeriesData, AlarmCondition, CumulativeAlarm } from '../types';
+
+// Enhanced alarm profiles for different temperature profiles
+const alarmProfiles = {
+  Frozen: {
+    // Instantaneous / consecutive breach alarms
+    temperatureAlarms: [
+      { condition: 'above', temperature: -15, durationMinutes: 3 },
+      { condition: 'above', temperature: 0, durationMinutes: 1 },
+      { condition: 'below', temperature: -25, durationMinutes: 1 }
+    ] as AlarmCondition[],
+    // MKT-based alarms (non-standard to use "below", but added per request)
+    mktAlarms: [
+      { condition: 'above', temperature: -15, durationMinutes: 0, severity: 'warning' },
+      { condition: 'above', temperature: -10, durationMinutes: 0, severity: 'critical' },
+      { condition: 'below', temperature: -25, durationMinutes: 0, severity: 'warning' },
+      { condition: 'below', temperature: -30, durationMinutes: 0, severity: 'critical' }
+    ] as AlarmCondition[],
+    // Cumulative exposure alarms
+    cumulativeAlarms: [
+      { condition: 'above', temperature: -15, totalDurationMinutes: 60, severity: 'warning' },
+      { condition: 'above', temperature: 0, totalDurationMinutes: 10, severity: 'critical' },
+      { condition: 'below', temperature: -25, totalDurationMinutes: 30, severity: 'warning' },
+      { condition: 'below', temperature: -30, totalDurationMinutes: 10, severity: 'critical' }
+    ] as CumulativeAlarm[]
+  },
+
+  ColdChain: {
+    temperatureAlarms: [
+      { condition: 'above', temperature: 8, durationMinutes: 30 },
+      { condition: 'above', temperature: 10, durationMinutes: 15 },
+      { condition: 'below', temperature: 2, durationMinutes: 30 },
+      { condition: 'below', temperature: 0, durationMinutes: 10 }
+    ] as AlarmCondition[],
+    mktAlarms: [
+      { condition: 'above', temperature: 8, durationMinutes: 0, severity: 'warning' },
+      { condition: 'above', temperature: 10, durationMinutes: 0, severity: 'critical' },
+      { condition: 'below', temperature: 2, durationMinutes: 0, severity: 'warning' },
+      { condition: 'below', temperature: 0, durationMinutes: 0, severity: 'critical' }
+    ] as AlarmCondition[],
+    cumulativeAlarms: [
+      { condition: 'above', temperature: 8, totalDurationMinutes: 120, severity: 'warning' },
+      { condition: 'above', temperature: 10, totalDurationMinutes: 30, severity: 'critical' },
+      { condition: 'below', temperature: 2, totalDurationMinutes: 60, severity: 'warning' },
+      { condition: 'below', temperature: 0, totalDurationMinutes: 10, severity: 'critical' }
+    ] as CumulativeAlarm[]
+  },
+
+  CRT: {
+    temperatureAlarms: [
+      { condition: 'above', temperature: 30, durationMinutes: 60 },
+      { condition: 'above', temperature: 40, durationMinutes: 15 },
+      { condition: 'below', temperature: 15, durationMinutes: 60 }
+    ] as AlarmCondition[],
+    mktAlarms: [
+      { condition: 'above', temperature: 25, durationMinutes: 0, severity: 'warning' },
+      { condition: 'above', temperature: 30, durationMinutes: 0, severity: 'critical' },
+      { condition: 'below', temperature: 15, durationMinutes: 0, severity: 'warning' },
+      { condition: 'below', temperature: 5, durationMinutes: 0, severity: 'critical' }
+    ] as AlarmCondition[],
+    cumulativeAlarms: [
+      { condition: 'above', temperature: 30, totalDurationMinutes: 240, severity: 'warning' },
+      { condition: 'above', temperature: 40, totalDurationMinutes: 60, severity: 'critical' },
+      { condition: 'below', temperature: 15, totalDurationMinutes: 240, severity: 'warning' },
+      { condition: 'below', temperature: 5, totalDurationMinutes: 60, severity: 'critical' }
+    ] as CumulativeAlarm[]
+  }
+} as const;
 
 // Helper function to generate time-series data with validation
 function generateTimeSeriesData(
@@ -214,8 +281,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Stockholm",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T08:00:00 CET",
-        departed: "2025-09-22T10:00:00 CET",
+        arrived: "2025-09-22T08:00:00+02:00",
+        departed: "2025-09-22T10:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -225,8 +292,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Copenhagen",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T14:30:00 CET",
-        departed: "2025-09-22T15:30:00 CET",
+        arrived: "2025-09-22T14:30:00+02:00",
+        departed: "2025-09-22T15:30:00+02:00",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -236,8 +303,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Hamburg",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T18:45:00 CET",
-        departed: "2025-09-22T22:30:00 CET",
+        arrived: "2025-09-22T18:45:00+02:00",
+        departed: "2025-09-22T22:30:00+02:00",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -247,7 +314,7 @@ export const shipments: Shipment[] = [
         status: "Current",
         milestoneName: "In Transit",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T22:30:00 CET",
+        arrived: "2025-09-22T22:30:00+02:00",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -257,8 +324,8 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Arrival in Berlin",
         groundHandler: "Geodis",
-        eta: "2025-09-23T08:00:00 CET",
-        etd: "2025-09-23T10:00:00 CET",
+        eta: "2025-09-23T08:00:00+02:00",
+        etd: "2025-09-23T10:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "T1234",
       }
@@ -281,11 +348,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "webLogger-II", "In Transit", 5, 42),
         productDetails: {
-          prodfilename: "Insulin-3",
-          producttype: "CRT",
+          profileName: "Insulin-3",
+          productType: "CRT",
           temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "30 °C",
+          lowThreshold: "15 °C",
+          temperatureAlarms: alarmProfiles.CRT.temperatureAlarms,
+          mktAlarms: alarmProfiles.CRT.mktAlarms,
+          cumulativeAlarms: alarmProfiles.CRT.cumulativeAlarms
         }
       }
     ]
@@ -314,8 +384,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Macclesfield",
         groundHandler: "Geodis",
-        arrived: "2025-09-21T06:00:00 GMT",
-        departed: "2025-09-21T08:00:00 GMT",
+        arrived: "2025-09-21T06:00:00+00:00",
+        departed: "2025-09-21T08:00:00+00:00",
         transportMode: "Road",
         vehicleNumber: "T2456",
       },
@@ -325,8 +395,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Heathrow",
         groundHandler: "British Airways",
-        arrived: "2025-09-21T10:30:00 GMT",
-        departed: "2025-09-21T14:15:00 GMT",
+        arrived: "2025-09-21T10:30:00+00:00",
+        departed: "2025-09-21T14:15:00+00:00",
         transportMode: "Air",
         vehicleNumber: "F8901",
       },
@@ -336,8 +406,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Amsterdam Schiphol",
         groundHandler: "KLM",
-        arrived: "2025-09-21T16:45:00 CET",
-        departed: "2025-09-21T18:45:00 CET",
+        arrived: "2025-09-21T16:45:00+02:00",
+        departed: "2025-09-21T18:45:00+02:00",
         transportMode: "Air",
         vehicleNumber: "F3456",
       },
@@ -349,7 +419,7 @@ export const shipments: Shipment[] = [
         groundHandler: "KLM",
         transportMode: "Air",
         vehicleNumber: "F3456",
-        eta: "2025-09-21T18:45:00 CET"
+        eta: "2025-09-21T18:45:00+02:00"
       },
       {
         type: "milestone",
@@ -357,8 +427,8 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Transit through Dubai",
         groundHandler: "Emirates",
-        eta: "2025-09-22T02:30:00 GST",
-        etd: "2025-09-22T06:15:00 GST",
+        eta: "2025-09-22T02:30:00+04:00",
+        etd: "2025-09-22T06:15:00+04:00",
         transportMode: "Air",
         vehicleNumber: "F7890",
       },
@@ -368,7 +438,7 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Arrival at Narita Airport",
         groundHandler: "Japan Airlines",
-        eta: "2025-09-22T14:30:00 JST",
+        eta: "2025-09-22T14:30:00+09:00",
         transportMode: "Air",
         vehicleNumber: "F1122",
       }
@@ -411,11 +481,14 @@ export const shipments: Shipment[] = [
         evaluation: "Not Started",
         rootCauseAnalysisStatusDetails: null,
         productDetails: {
-          prodfilename: "Insulin-2",
-          producttype: "CRT",
+          profileName: "Insulin-2",
+          productType: "CRT",
           temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "30 °C",
+          lowThreshold: "15 °C",
+          temperatureAlarms: alarmProfiles.CRT.temperatureAlarms,
+          mktAlarms: alarmProfiles.CRT.mktAlarms,
+          cumulativeAlarms: alarmProfiles.CRT.cumulativeAlarms
         }
       },
       {
@@ -454,11 +527,14 @@ export const shipments: Shipment[] = [
           }
         ]),
         productDetails: {
-          prodfilename: "Insulin-2",
-          producttype: "CRT",
+          profileName: "Insulin-2",
+          productType: "CRT",
           temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "30 °C",
+          lowThreshold: "15 °C",
+          temperatureAlarms: alarmProfiles.CRT.temperatureAlarms,
+          mktAlarms: alarmProfiles.CRT.mktAlarms,
+          cumulativeAlarms: alarmProfiles.CRT.cumulativeAlarms
         }
       }
     ]
@@ -487,8 +563,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Macclesfield",
         groundHandler: "DHL",
-        arrivalTime: "2025-07-10T06:00:00 GMT",
-        departedTime: "2025-07-10T08:00:00 GMT",
+        arrivalTime: "2025-07-10T06:00:00+00:00",
+        departedTime: "2025-07-10T08:00:00+00:00",
         transportMode: "Road",
         vehicleNumber: "T3456",
       },
@@ -498,8 +574,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Heathrow",
         groundHandler: "British Airways",
-        arrivalTime: "2025-07-10T10:30:00 GMT",
-        departedTime: "2025-07-10T14:15:00 GMT",
+        arrivalTime: "2025-07-10T10:30:00+00:00",
+        departedTime: "2025-07-10T14:15:00+00:00",
         transportMode: "Air",
         vehicleNumber: "F4567",
       },
@@ -509,8 +585,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Dubai",
         groundHandler: "Emirates",
-        arrivalTime: "2025-07-10T22:45:00 GST",
-        departedTime: "2025-07-11T02:30:00 GST",
+        arrivalTime: "2025-07-10T22:45:00+04:00",
+        departedTime: "2025-07-11T02:30:00+04:00",
         transportMode: "Air",
         vehicleNumber: "F8901",
       },
@@ -520,7 +596,7 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Arrival at Narita Airport",
         groundHandler: "Japan Airlines",
-        arrivalTime: "2025-07-20T08:00:00 JST",
+        arrivalTime: "2025-07-20T08:00:00+09:00",
         transportMode: "Air",
         vehicleNumber: "F2345",
       }
@@ -580,11 +656,14 @@ export const shipments: Shipment[] = [
           }
         ]),
         productDetails: {
-          prodfilename: "Insulin-2",
-          producttype: "CRT",
+          profileName: "Insulin-2",
+          productType: "CRT",
           temperatureProfile: "profile",
           highThreshold: "12 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -638,11 +717,14 @@ export const shipments: Shipment[] = [
           }
         ]),
         productDetails: {
-          prodfilename: "Insulin-2",
-          producttype: "CRT",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "8 °C",
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       }
     ]
@@ -680,11 +762,14 @@ export const shipments: Shipment[] = [
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         productDetails: {
-          prodfilename: "Vaccine-X",
-          producttype: "cold chain",
+          profileName: "Vaccine-X",
+          productType: "ColdChain",
           temperatureProfile: "profile",
-          highThreshold: "10 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "8 °C",
+          lowThreshold: "2 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -700,11 +785,14 @@ export const shipments: Shipment[] = [
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         productDetails: {
-          prodfilename: "Vaccine-X",
-          producttype: "cold chain",
+          profileName: "Vaccine-X",
+          productType: "CRT",
           temperatureProfile: "profile",
-          highThreshold: "10 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "30 °C",
+          lowThreshold: "15 °C",
+          temperatureAlarms: alarmProfiles.CRT.temperatureAlarms,
+          mktAlarms: alarmProfiles.CRT.mktAlarms,
+          cumulativeAlarms: alarmProfiles.CRT.cumulativeAlarms
         }
       }
     ]
@@ -734,8 +822,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from London",
         groundHandler: "DHL",
-        arrived: "2025-09-18T06:00:00Z",
-        departed: "2025-09-18T08:00:00Z",
+        arrived: "2025-09-18T06:00:00+00:00",
+        departed: "2025-09-18T08:00:00+00:00",
         transportMode: "Road",
         vehicleNumber: "DHL-T789",
       },
@@ -745,8 +833,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Channel Crossing",
         groundHandler: "DHL",
-        arrived: "2025-09-18T12:30:00Z",
-        departed: "2025-09-18T14:00:00Z",
+        arrived: "2025-09-18T12:30:00+02:00",
+        departed: "2025-09-18T14:00:00+02:00",
         transportMode: "Ferry",
         vehicleNumber: "Ferry-CH01",
       },
@@ -756,8 +844,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Arrival in Paris",
         groundHandler: "DHL",
-        arrived: "2025-09-18T18:00:00Z",
-        departed: "2025-09-20T02:00:00Z",
+        arrived: "2025-09-18T18:00:00+02:00",
+        departed: "2025-09-20T02:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "DHL-T789",
       }
@@ -777,11 +865,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 45),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15 °C",
-          lowThreshold: "-25 °C"
+          lowThreshold: "-25 °C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -798,11 +889,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 50),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15 °C",
-          lowThreshold: "-25 °C"
+          lowThreshold: "-25 °C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -819,11 +913,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 42),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15 °C",
-          lowThreshold: "-25 °C"
+          lowThreshold: "-25 °C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -840,11 +937,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 48),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C"
+          lowThreshold: "-25°C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -861,11 +961,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 46),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C"
+          lowThreshold: "-25°C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -882,11 +985,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 44),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C"
+          lowThreshold: "-25°C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -903,11 +1009,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 47),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C"
+          lowThreshold: "-25°C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -924,11 +1033,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 49),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C"
+          lowThreshold: "-25°C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -973,11 +1085,14 @@ export const shipments: Shipment[] = [
           -20,
         ),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "Frozen",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C"
+          lowThreshold: "-25°C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       },
       {
@@ -1022,11 +1137,14 @@ export const shipments: Shipment[] = [
           -20,
         ),
         productDetails: {
-          prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          profileName: "Vaccine-Y",
+          productType: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15 °C",
-          lowThreshold: "-25 °C"
+          lowThreshold: "-25 °C",
+          temperatureAlarms: alarmProfiles.Frozen.temperatureAlarms,
+          mktAlarms: alarmProfiles.Frozen.mktAlarms,
+          cumulativeAlarms: alarmProfiles.Frozen.cumulativeAlarms
         }
       }
     ]
@@ -1056,8 +1174,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Amsterdam",
         groundHandler: "Geodis",
-        arrived: "2025-09-24T07:00:00Z",
-        departed: "2025-09-24T09:00:00Z",
+        arrived: "2025-09-24T07:00:00+02:00",
+        departed: "2025-09-24T09:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "FX-T456",
       },
@@ -1067,8 +1185,8 @@ export const shipments: Shipment[] = [
         status: "Current",
         milestoneName: "Transit through Rotterdam",
         groundHandler: "Geodis",
-        arrivalTime: "2025-09-24T12:00:00Z",
-        etd: "2025-09-24T15:00:00Z",
+        arrivalTime: "2025-09-24T12:00:00+02:00",
+        etd: "2025-09-24T15:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "FX-T456",
       },
@@ -1078,8 +1196,8 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Arrival in Brussels",
         groundHandler: "Geodis",
-        eta: "2025-09-25T08:00:00Z",
-        etd: "2025-09-25T10:00:00Z",
+        eta: "2025-09-25T08:00:00+02:00",
+        etd: "2025-09-25T10:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "FX-T456",
       }
@@ -1099,11 +1217,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 45),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1120,11 +1241,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 50),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1141,11 +1265,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 6, 42),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1162,11 +1289,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 48),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1183,11 +1313,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 46),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1204,11 +1337,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 6, 44),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1225,11 +1361,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 47),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1246,11 +1385,14 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 49),
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1275,11 +1417,14 @@ export const shipments: Shipment[] = [
         },
         timeSeriesData: [], // No data - mission not started
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       },
       {
@@ -1304,11 +1449,14 @@ export const shipments: Shipment[] = [
         },
         timeSeriesData: [], // No data - mission not started
         productDetails: {
-          prodfilename: "Insulin-Z",
-          producttype: "cold chain",
+          profileName: "Insulin-Z",
+          productType: "ColdChain",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          lowThreshold: "8 °C",
+          temperatureAlarms: alarmProfiles.ColdChain.temperatureAlarms,
+          mktAlarms: alarmProfiles.ColdChain.mktAlarms,
+          cumulativeAlarms: alarmProfiles.ColdChain.cumulativeAlarms
         }
       }
     ]

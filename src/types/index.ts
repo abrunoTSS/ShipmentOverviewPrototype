@@ -80,13 +80,29 @@ export interface Alarm {
   excursion: Excursion;
 }
 
+export interface AlarmCondition {
+  condition: 'above' | 'below';
+  temperature: number; // °C (for MKT, this is the MKT limit)
+  durationMinutes: number; // 0 for MKT checks
+  severity?: 'warning' | 'critical';
+}
+
+export interface CumulativeAlarm {
+  condition: 'above' | 'below';
+  temperature: number;        // °C
+  totalDurationMinutes: number; // cumulative exposure time
+  severity?: 'warning' | 'critical';
+}
+
 export interface ProductDetails {
-  prodfilename: string;
-  producttype: string;
+  profileName: string;
+  productType: 'Frozen' | 'ColdChain' | 'CRT';
   temperatureProfile: string;
   highThreshold: string;
   lowThreshold: string;
- 
+  temperatureAlarms: AlarmCondition[];
+  mktAlarms: AlarmCondition[];        // now includes 'below'
+  cumulativeAlarms: CumulativeAlarm[]; // now includes 'below'
 }
 
 export interface Milestone {

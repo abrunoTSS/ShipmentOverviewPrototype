@@ -67,7 +67,7 @@ export const ExcursionsComponent: React.FC<ExcursionsComponentProps> = ({ excurs
             <div key={alarmType} className="excursion-type-group">
               <div className="excursion-type-header">
                 {getExcursionIcon(alarmType)}
-                <h4>{alarmType} Excursions ({typeExcursions.length})</h4>
+                <h4>{alarmType} Alarms ({typeExcursions.length})</h4>
               </div>
               {typeExcursions.map((excursion, index) => (
                 <div key={`${excursion.loggerId}-${index}`} className="excursion-item">

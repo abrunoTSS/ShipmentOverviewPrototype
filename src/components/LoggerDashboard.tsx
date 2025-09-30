@@ -7,6 +7,38 @@ import { AlarmsComponent } from './AlarmsComponent';
 import './loggerDashboard.css';
 import './ExcursionsComponent.css';
 
+// Helper function to extract timezone name from ISO date string
+const getTimezoneFromDateString = (dateString: string): string => {
+  if (!dateString || !dateString.includes('+')) return 'UTC';
+  
+  const parts = dateString.split('+');
+  if (parts.length < 2) return 'UTC';
+  
+  const offset = parts[1];
+  switch (offset) {
+    case '00:00': return 'GMT';
+    case '02:00': return 'CET';
+    case '04:00': return 'GST';
+    case '09:00': return 'JST';
+    default: return 'UTC';
+  }
+};
+
+// Helper function to format date with proper timezone
+const formatDateWithTimezone = (dateString: string): string => {
+  try {
+    if (!dateString) return 'N/A';
+    
+    const date = new Date(dateString);
+    if (date.toString() === 'Invalid Date') return 'Invalid Date';
+    
+    const timezoneName = getTimezoneFromDateString(dateString);
+    return `${date.toLocaleString()} ${timezoneName}`;
+  } catch (error) {
+    return 'Invalid Date';
+  }
+};
+
 interface LoggerDashboardProps {
   shipment: Shipment | null;
   logger: Logger | null;
@@ -159,7 +191,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                           <div className="milestone-info">
                             <span className="info-label">ETA:</span>
                             <span className="info-value">
-                              {new Date(milestone.eta).toLocaleString()} UTC
+                              {formatDateWithTimezone(milestone.eta)}
                             </span>
                           </div>
                         )}
@@ -167,7 +199,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                           <div className="milestone-info">
                             <span className="info-label">ETD:</span>
                             <span className="info-value">
-                              {new Date(milestone.etd).toLocaleString()} UTC
+                              {formatDateWithTimezone(milestone.etd)}
                             </span>
                           </div>
                         )}
@@ -175,7 +207,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                           <div className="milestone-info">
                             <span className="info-label">Arrived:</span>
                             <span className="info-value">
-                              {new Date(milestone.arrivalTime).toLocaleString()} UTC
+                              {formatDateWithTimezone(milestone.arrivalTime)}
                             </span>
                           </div>
                         )}
@@ -183,7 +215,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                           <div className="milestone-info">
                             <span className="info-label">ETD:</span>
                             <span className="info-value">
-                              {new Date(milestone.etd).toLocaleString()} UTC
+                              {formatDateWithTimezone(milestone.etd)}
                             </span>
                           </div>
                         )}
@@ -193,7 +225,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             <span className="info-value">
                               {(() => {
                                 const arrivedAt = milestone.arrived ?? milestone.arrivalTime;
-                                return arrivedAt ? `${new Date(arrivedAt).toLocaleString()} UTC` : 'N/A';
+                                return arrivedAt ? formatDateWithTimezone(arrivedAt) : 'N/A';
                               })()}
                             </span>
                           </div>
@@ -204,7 +236,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             <span className="info-value">
                               {(() => {
                                 const departedAt = milestone.departed ?? milestone.departedTime;
-                                return departedAt ? `${new Date(departedAt).toLocaleString()} UTC` : 'N/A';
+                                return departedAt ? formatDateWithTimezone(departedAt) : 'N/A';
                               })()}
                             </span>
                           </div>
