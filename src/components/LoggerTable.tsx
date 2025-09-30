@@ -100,47 +100,24 @@ export function LoggerTable({
       id: 'loggerId',
       header: () => (
         <div className="column-header mission-id-header">
-          <div>Mission</div>
-          <div>ID</div>
+          <div>UNIT S/N</div>
+          <div>(SERIAL NUMBER)</div>
         </div>
       ),
       accessorKey: 'loggerId',
       cell: ({ getValue, row }) => {
-        const value = getValue() as string;
+        const loggerId = getValue() as string;
+        const serialNumber = row.original.serialNumber as number | null;
+        const displayValue = serialNumber ? `${loggerId} (${serialNumber})` : loggerId;
         const cellId = `${row.original.loggerId}-loggerId`;
         return (
           <div 
             className="table-cell-content"
             onMouseEnter={() => setHoveredCell(cellId)}
             onMouseLeave={() => setHoveredCell(null)}
-            title={hoveredCell === cellId ? value : undefined}
+            title={hoveredCell === cellId ? displayValue : undefined}
           >
-            {value}
-          </div>
-        );
-      },
-    },
-    {
-      id: 'serialNumber',
-      header: () => (
-        <div className="column-header serial-number-header">
-          <div>Serial</div>
-          <div>Number</div>
-        </div>
-      ),
-      accessorKey: 'serialNumber',
-      cell: ({ getValue, row }) => {
-        const serialNumber = getValue() as number | null;
-        const value = serialNumber ? serialNumber.toString() : 'n/a';
-        const cellId = `${row.original.loggerId}-serialNumber`;
-        return (
-          <div 
-            className="table-cell-content"
-            onMouseEnter={() => setHoveredCell(cellId)}
-            onMouseLeave={() => setHoveredCell(null)}
-            title={hoveredCell === cellId ? value : undefined}
-          >
-            {value}
+            {displayValue}
           </div>
         );
       },
@@ -303,33 +280,6 @@ export function LoggerTable({
         }
         
         const cellId = `${row.original.loggerId}-missionEnded`;
-        return (
-          <div 
-            className="table-cell-content"
-            onMouseEnter={() => setHoveredCell(cellId)}
-            onMouseLeave={() => setHoveredCell(null)}
-            title={hoveredCell === cellId ? value : undefined}
-          >
-            {value}
-          </div>
-        );
-      },
-    },
-    {
-      id: 'tempProfile',
-      header: () => (
-        <div className="column-header temp-profile-header">
-          <div>Temp</div>
-          <div>Profile</div>
-        </div>
-      ),
-      cell: ({ row }) => {
-        const productDetails = row.original.productDetails;
-        let value = 'n/a';
-        if (productDetails?.lowThreshold && productDetails?.highThreshold) {
-          value = `${productDetails.lowThreshold} - ${productDetails.highThreshold}`;
-        }
-        const cellId = `${row.original.loggerId}-tempProfile`;
         return (
           <div 
             className="table-cell-content"

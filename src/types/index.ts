@@ -28,7 +28,7 @@ export type RootCauseAnalysisStatusDetails = {
   reason?: string;
 };
 
-export type LoggerType = 'sentry' | 'sentinel' | 'web logger 2' | 'Sentry' | 'Sentinel' | 'Web Logger 2';
+export type LoggerType = 'Sentinel-100L-100L' | 'Sentinel-100L' | 'webLogger-II' | 'Sentinel-100L-100L' | 'Sentinel-100L' | 'webLogger-II';
 
 export interface ExcursionGraphData {
   time: string;
@@ -69,7 +69,7 @@ export interface ExcursionMilestone {
 export interface LoggerTimeSeriesData {
   timestamp: string;
   temperature: number; // °C
-  humidity?: number; // % (only for Sentinel/Sentry loggers)
+  humidity?: number; // % (only for Sentinel-100L/Sentinel-100L-100L loggers)
 }
 
 export type AlarmType = 'Humidity' | 'Light' | 'Pressure' | 'Shock' | 'Temperature' | 'Tilt';
@@ -152,7 +152,8 @@ export interface Shipment {
   alarms: number;
   totalAlarms?: number;
   events: number | null;
-  rcas: string;
+  evaluation: string;
+  profileType: string;
   loggerData: Logger[];
   distance: number; // Distance in kilometers
   co2Emissions: number; // CO2 emissions in kg

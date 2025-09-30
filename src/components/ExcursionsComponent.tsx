@@ -73,7 +73,7 @@ export const ExcursionsComponent: React.FC<ExcursionsComponentProps> = ({ excurs
                 <div key={`${excursion.loggerId}-${index}`} className="excursion-item">
                   <div className="excursion-header">
                     <div className="excursion-logger">
-                      <strong>Mission ID:</strong> {excursion.loggerId}
+                      <strong>Unit S/N:</strong> {excursion.loggerId}
                     </div>
                   </div>
                   <div className="excursion-details">

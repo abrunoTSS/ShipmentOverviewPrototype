@@ -15,7 +15,7 @@ export interface FilterState {
   modeOfTransport: string;
   alarms: string;
   alarmType: string;
-  rcas: string;
+  evaluation: string;
   milestoneData: string;
   missionStarted: string;
   missionEnded: string;
@@ -69,7 +69,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
       modeOfTransport: '',
       alarms: '',
       alarmType: '',
-      rcas: '',
+      evaluation: '',
       milestoneData: '',
       missionStarted: '',
       missionEnded: '',
@@ -109,7 +109,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
           case 'modeOfTransport': label = `Transport: ${value}`; break;
           case 'alarms': label = `Alarms: ${value}`; break;
           case 'alarmType': label = `Alarm Type: ${value}`; break;
-          case 'rcas': label = `RCA: ${value}`; break;
+          case 'evaluation': label = `RCA: ${value}`; break;
           case 'milestoneData': label = `Milestone Data: ${value}`; break;
           case 'missionStarted': label = `Mission Started: ${value}`; break;
           case 'missionEnded': label = `Mission Ended: ${value}`; break;
@@ -162,7 +162,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
   const uniqueStatuses = useMemo(() => getUniqueValues(shipments, 'status'), [shipments]);
   const uniqueForwarders = useMemo(() => getUniqueValues(shipments, 'freightForwarder'), [shipments]);
   const uniqueTransportModes = useMemo(() => getUniqueValues(shipments, 'modeOfTransport'), [shipments]);
-  const uniqueRCAStatuses = useMemo(() => getUniqueValues(shipments, 'rcas'), [shipments]);
+  const uniqueRCAStatuses = useMemo(() => getUniqueValues(shipments, 'evaluation'), [shipments]);
 
   // Get unique alarm types from all loggers across all shipments
   const uniqueAlarmTypes = useMemo(() => {
@@ -223,7 +223,7 @@ export const FilterBar = ({ shipments, filters, onFiltersChange }: FilterBarProp
               {renderSelect('modeOfTransport', 'Transport', uniqueTransportModes)}
               {renderSelect('alarms', 'Alarms', ['Yes', 'No'])}
               {renderAlarmTypeSelect()}
-              {renderSelect('rcas', 'RCA', uniqueRCAStatuses)}
+              {renderSelect('evaluation', 'RCA', uniqueRCAStatuses)}
               {renderSelect('milestoneData', 'Milestone Data', ['Yes', 'No'])}
               {renderSelect('missionStarted', 'Mission Started', ['Yes', 'No'])}
               {renderSelect('missionEnded', 'Mission Ended', ['Yes', 'No'])}

@@ -15,11 +15,11 @@
   padding: 4px;
 }
 
-/* Mission ID header - narrower column with two-line text */
+/* UNIT S/N (SERIAL NUMBER) header - wider combined column */
 .mission-id-header {
-  width: 80px;
-  min-width: 80px;
-  max-width: 80px;
+  width: 180px;
+  min-width: 180px;
+  max-width: 240px;
 }
 
 /* Serial Number header - narrow column with two-line text */
@@ -154,53 +154,82 @@
   min-width: 80px;
 }
 
-/* Specific column widths */
-.nested-table th:nth-child(2), /* Mission ID column */
-.nested-table td:nth-child(2) {
-  width: 80px;
-  min-width: 80px;
-  max-width: 80px;
-}
+/* Specific column widths (match current column order) */
+/* 1: Visibility, 2: UNIT S/N (SERIAL NUMBER), 3: Delivery ID, 4: Logger Type,
+   5: Mission Started, 6: Mission Ended, 7: Temp Profile, 8: Alarm Type,
+   9: Evaluation, 10: Expand */
 
-.nested-table th:nth-child(3), /* Serial Number column */
-.nested-table td:nth-child(3) {
-  width: 60px;
-  min-width: 60px;
-  max-width: 60px;
-}
-
-.nested-table th:nth-child(5), /* Logger Type column */
-.nested-table td:nth-child(5) {
-  width: 70px;
-  min-width: 70px;
-  max-width: 70px;
-}
-
-.nested-table th:nth-child(8), /* Temperature Profile column */
-.nested-table td:nth-child(8) {
+/* Visibility */
+.nested-table th:nth-child(1),
+.nested-table td:nth-child(1) {
   width: 90px;
-  min-width: 90px;
-  max-width: 90px;
+  min-width: 80px;
+  max-width: 110px;
 }
 
-.nested-table th:nth-child(11), /* Expand column */
-.nested-table td:nth-child(11) {
+/* Combined UNIT S/N (SERIAL NUMBER) */
+.nested-table th:nth-child(2),
+.nested-table td:nth-child(2) {
+  width: 180px;
+  min-width: 180px;
+  max-width: 240px;
+}
+
+/* Delivery ID */
+.nested-table th:nth-child(3),
+.nested-table td:nth-child(3) {
+  width: 120px;
+  min-width: 110px;
+  max-width: 160px;
+}
+
+/* Logger Type */
+.nested-table th:nth-child(4),
+.nested-table td:nth-child(4) {
+  width: 110px;
+  min-width: 100px;
+  max-width: 160px;
+}
+
+/* Mission Started & Mission Ended */
+.nested-table th:nth-child(5),
+.nested-table td:nth-child(5),
+.nested-table th:nth-child(6),
+.nested-table td:nth-child(6) {
+  width: 160px;
+  min-width: 150px;
+}
+
+/* Temp Profile */
+.nested-table th:nth-child(7),
+.nested-table td:nth-child(7) {
+  width: 120px;
+  min-width: 110px;
+  max-width: 160px;
+}
+
+/* Alarm Type */
+.nested-table th:nth-child(8),
+.nested-table td:nth-child(8) {
+  width: 120px;
+  min-width: 110px;
+  max-width: 160px;
+}
+
+/* Evaluation */
+.nested-table th:nth-child(9),
+.nested-table td:nth-child(9) {
+  width: 120px;
+  min-width: 110px;
+  max-width: 160px;
+}
+
+/* Expand column */
+.nested-table th:nth-child(10),
+.nested-table td:nth-child(10) {
   width: 120px;
   min-width: 120px;
-  max-width: 120px;
-}
-
-.nested-table th:nth-child(6), /* Mission Started column */
-.nested-table td:nth-child(6),
-.nested-table th:nth-child(7), /* Mission Ended column */
-.nested-table td:nth-child(7) {
-  width: 140px;
-  min-width: 140px;
-}
-
-.nested-table td:nth-child(7) {
-  width: 140px;
-  min-width: 140px;
+  max-width: 140px;
 }
 
 /* Expand column styling */

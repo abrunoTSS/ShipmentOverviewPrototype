@@ -79,7 +79,7 @@ export const AlarmsComponent: React.FC<AlarmsComponentProps> = ({ alarms }) => {
                 <div key={`${alarm.loggerId}-${index}`} className="excursion-item">
                   <div className="excursion-header">
                     <div className="excursion-logger">
-                      <strong>Mission ID:</strong> {alarm.loggerId}
+                      <strong>Unit S/N:</strong> {alarm.loggerId}
                     </div>
                   </div>
                   <div className="excursion-details">

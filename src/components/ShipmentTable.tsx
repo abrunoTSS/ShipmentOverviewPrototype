@@ -33,7 +33,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     modeOfTransport: '',
     alarms: '',
     alarmType: '',
-    rcas: '',
+    evaluation: '',
     milestoneData: '',
     missionStarted: '',
     missionEnded: '',
@@ -124,7 +124,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       }
       
       // Root Cause Analysis filter (case-insensitive)
-      if (filters.rcas && shipment.rcas?.toLowerCase() !== filters.rcas.toLowerCase()) return false;
+      if (filters.evaluation && shipment.evaluation?.toLowerCase() !== filters.evaluation.toLowerCase()) return false;
       
       // Milestone Data filter (SH014 is the only shipment without milestone data)
       if (filters.milestoneData) {
@@ -241,12 +241,12 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       },
     },
     {
-      id: 'rcas',
+      id: 'evaluation',
       header: 'Evaluation',
-      accessorKey: 'rcas',
+      accessorKey: 'evaluation',
       cell: ({ getValue }) => {
-        const rcas = getValue() as string | null;
-        return rcas || 'n/a';
+        const evaluation = getValue() as string | null;
+        return evaluation || 'n/a';
       },
     },
     {

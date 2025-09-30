@@ -11,8 +11,8 @@ function generateTimeSeriesData(
 ): LoggerTimeSeriesData[] {
   const data: LoggerTimeSeriesData[] = [];
   
-  // Web loggers should only have temperature data if shipment is departed
-  if (loggerType.includes('Web Logger') && shipmentStatus !== 'Delivered') {
+  // webLogger-IIs should only have temperature data if shipment is departed
+  if (loggerType.includes('webLogger-II') && shipmentStatus !== 'Delivered') {
     return [];
   }
   
@@ -33,8 +33,8 @@ function generateTimeSeriesData(
       temperature: Math.round((baseTemp + tempVariation) * 10) / 10,
     };
     
-    // Add humidity data only for Sentinel and Sentry loggers (exclude web loggers)
-    if ((loggerType.includes('Sentinel') || loggerType.includes('Sentry')) && !loggerType.includes('Web Logger')) {
+    // Add humidity data only for Sentinel-100L and Sentinel-100L-100L loggers (exclude webLogger-IIs)
+    if ((loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L')) && !loggerType.includes('webLogger-II')) {
       dataPoint.humidity = Math.round((baseHumidity + humidityVariation) * 10) / 10;
     }
     
@@ -77,7 +77,7 @@ function generateTempDataWithSustainedHigh(
       temperature: Math.round(temperature * 10) / 10,
     };
 
-    if ((loggerType.includes('Sentinel') || loggerType.includes('Sentry')) && !loggerType.includes('Web Logger')) {
+    if ((loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L-100L')) && !loggerType.includes('webLogger-II')) {
       dataPoint.humidity = Math.round(humidity * 10) / 10;
     }
 
@@ -153,7 +153,7 @@ function generateTempDataWithAlarmSpikes(
       temperature: Math.round(temperature * 10) / 10,
     };
     
-    if (loggerType.includes('Sentinel') || loggerType.includes('Sentry')) {
+    if (loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L-100L')) {
       dataPoint.humidity = Math.round(humidity * 10) / 10;
     }
     
@@ -202,7 +202,7 @@ function generateTempDataWithMissionEndIssue(
       temperature: Math.round(temperature * 10) / 10,
     };
     
-    if (loggerType.includes('Sentinel') || loggerType.includes('Sentry')) {
+    if (loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L-100L')) {
       dataPoint.humidity = Math.round(humidity * 10) / 10;
     }
     
@@ -221,6 +221,7 @@ export const shipments: Shipment[] = [
     eta: "2025-07-20",
     status: "In Transit",
     loggers: 5,
+    profileType: "Cold Chain",
     freightForwarder: "Geodis",
     currentLocation: "53°34'31.15N, 10°05'5.22E",
     modeOfTransport: "Road",
@@ -238,7 +239,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-22T10:00:00Z",
         transportMode: "Road",
         vehicleNumber: "T1234",
-        weatherConditions: "Clear, 15°C"
       },
       {
         type: "milestone",
@@ -250,7 +250,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-22T15:30:00Z",
         transportMode: "Road",
         vehicleNumber: "T1234",
-        weatherConditions: "Partly cloudy, 12°C"
       },
       {
         type: "milestone",
@@ -262,7 +261,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-22T22:30:00Z",
         transportMode: "Road",
         vehicleNumber: "T1234",
-        weatherConditions: "Overcast, 10°C"
       },
       {
         type: "milestone",
@@ -284,29 +282,28 @@ export const shipments: Shipment[] = [
         etd: "2025-09-23T10:00:00Z",
         transportMode: "Road",
         vehicleNumber: "T1234",
-        weatherConditions: "Expected: Light rain, 8°C"
       }
     ],
-    rcas: "n/a",
+    evaluation: "n/a",
     distance: 522,
     co2Emissions: 32.36,
     loggerData: [
       {
         loggerId: "LG-1001",
-        loggerType: "Web Logger 2",
+        loggerType: "webLogger-II",
         missionStarted: "2025-09-22T08:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-001",
-        tempProfile: "controlled room temperature",
+        tempProfile: "CRT",
         serialNumber: 1,
         alarms: [],
         alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Web Logger 2", "In Transit", 5, 42),
+        timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "webLogger-II", "In Transit", 5, 42),
         productDetails: {
           prodfilename: "Insulin-3",
-          producttype: "controlled room temperature",
+          producttype: "CRT",
           temperatureProfile: "profile",
           highThreshold: "12 °C",
           lowThreshold: "2 °C"
@@ -325,9 +322,10 @@ export const shipments: Shipment[] = [
     currentLocation: "53°34'31.15N, 10°05'5.22E",
     modeOfTransport: "Air",
     packagingType: "Insulated Box",
+    profileType: "Frozen",
     alarms: 9,
     events: 4,
-    rcas: "Not Started",
+    evaluation: "Not Started",
     distance: 9560,
     co2Emissions: 2437.8,
     milestones: [
@@ -341,7 +339,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-21T08:00:00Z",
         transportMode: "Road",
         vehicleNumber: "T2456",
-        weatherConditions: "Foggy, 8°C"
       },
       {
         type: "milestone",
@@ -353,7 +350,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-21T14:15:00Z",
         transportMode: "Air",
         vehicleNumber: "F8901",
-        weatherConditions: "Overcast, 11°C"
       },
       {
         type: "milestone",
@@ -365,7 +361,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-21T18:45:00Z",
         transportMode: "Air",
         vehicleNumber: "F3456",
-        weatherConditions: "Light rain, 9°C"
       },
       {
         type: "milestone",
@@ -387,7 +382,6 @@ export const shipments: Shipment[] = [
         etd: "2025-09-22T06:15:00Z",
         transportMode: "Air",
         vehicleNumber: "F7890",
-        weatherConditions: "Expected: Clear, 28°C"
       },
       {
         type: "destination",
@@ -398,19 +392,18 @@ export const shipments: Shipment[] = [
         eta: "2025-09-22T14:30:00Z",
         transportMode: "Air",
         vehicleNumber: "F1122",
-        weatherConditions: "Expected: Partly cloudy, 18°C"
       }
     ],
     loggerData: [
       {
-        loggerId: "SENTRY-1002",
-        loggerType: "Sentry",
+        loggerId: "Sentinel-100L-100L-1002",
+        loggerType: "Sentinel-100L-100L",
         missionStarted: "2025-09-22T08:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-002",
-        tempProfile: "controlled room temperature",
+        tempProfile: "CRT",
         serialNumber: 2,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, "Sentry", 6, 50, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, "Sentinel-100L-100L", 6, 50, [
           {
             startTime: "2025-09-22 10:00",
             endTime: "2025-09-22 12:45",
@@ -453,19 +446,19 @@ export const shipments: Shipment[] = [
         rootCauseAnalysisStatusDetails: null,
         productDetails: {
           prodfilename: "Insulin-2",
-          producttype: "controlled room temperature",
+          producttype: "CRT",
           temperatureProfile: "profile",
           highThreshold: "12 °C",
           lowThreshold: "2 °C"
         }
       },
       {
-        loggerId: "SENTRY-1003",
-        loggerType: "Sentry",
+        loggerId: "Sentinel-100L-100L-1003",
+        loggerType: "Sentinel-100L-100L",
         missionStarted: "2025-09-22T08:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-003",
-        tempProfile: "controlled room temperature",
+        tempProfile: "CRT",
         serialNumber: 3,
         alarmTypes: ["Temperature", "Shock", "Tilt", "Pressure", "Light"],
         // Original had 2 Temperature alarms and no Shock alarm -> collapse Temps and add a placeholder Shock alarm
@@ -535,7 +528,7 @@ export const shipments: Shipment[] = [
         ],
         evaluation: "Not Started",
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, "Sentinel", 6, 45, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, "Sentinel-100L", 6, 45, [
           {
             startTime: "2025-09-22 14:00",
             endTime: "2025-09-22 16:45",
@@ -544,7 +537,7 @@ export const shipments: Shipment[] = [
         ]),
         productDetails: {
           prodfilename: "Insulin-2",
-          producttype: "controlled room temperature",
+          producttype: "CRT",
           temperatureProfile: "profile",
           highThreshold: "12 °C",
           lowThreshold: "2 °C"
@@ -552,153 +545,6 @@ export const shipments: Shipment[] = [
       }
     ]
   },
-
-  {
-    shipmentId: "SH003",
-    origin: "Stockholm, Sweden",
-    destination: "Berlin, Germany",
-    eta: "2025-07-10T08:00:00Z",
-    status: "Delivered",
-    loggers: 2,
-    freightForwarder: "DHL",
-    currentLocation: "n/a",
-    modeOfTransport: "Air",
-    packagingType: "Insulated Box",
-    alarms: 2,
-    events: 0,
-    rcas: "n/a",
-    distance: 522,
-    co2Emissions: 133.11,
-    milestones: [
-      {
-        type: "origin",
-        location: "Stockholm, Sweden",
-        status: "Completed",
-        milestoneName: "Departure from Stockholm Arlanda Hub",
-        groundHandler: "DHL",
-        arrivalTime: "2025-07-10T08:00:00Z",
-        departedTime: "2025-07-10T11:30:00Z",
-        transportMode: "Road",
-        vehicleNumber: "SH12345",
-        weatherConditions: "Clear, 18°C"
-      },
-      {
-        type: "milestone",
-        location: "Frankfurt, Germany",
-        status: "Completed",
-        milestoneName: "Wait Frankfurt Hub",
-        groundHandler: "DHL",
-        arrivalTime: "2025-07-10T13:15:00Z",
-        departedTime: "2025-07-11T08:45:00Z",
-        transportMode: "Road",
-        vehicleNumber: "SH12345",
-        weatherConditions: "Partly cloudy, 22°C"
-      },
-      {
-        type: "destination",
-        location: "Berlin, Germany",
-        status: "Completed",
-        milestoneName: "Arrival at Berlin Brandenburg",
-        groundHandler: "DHL",
-        arrivalTime: "2025-07-11T17:00:00Z",
-        transportMode: "Road",
-        vehicleNumber: "SH12345",
-        weatherConditions: "Sunny, 24°C"
-      }
-    ],
-    loggerData: [
-      {
-        loggerId: "LG-1001",
-        loggerType: "Web Logger 2",
-        deliveryId: "DL-1001",
-        tempProfile: "controlled room temperature",
-        serialNumber: 1,
-        missionStarted: "2025-07-10T08:00:00Z",
-        missionEnded: "2025-07-11T18:00:00Z",
-        alarms: [
-          {
-            alarmId: 1,
-            alarmType: "Temperature",
-            excursion: {
-              id: 1,
-              highest: "25.2°C",
-              startTime: "2025-07-11 09:30",
-              endTime: "2025-07-11 10:15",
-              duration: "45 min",
-              type: "Temperature",
-              temperatureProfile: "High Threshold Alarm"
-            }
-          },
-        ],
-        alarmTypes: ["Temperature"],
-        evaluation: null,
-        rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-11T18:00:00Z", "Web Logger 2", 6, 45, [
-          {
-            startTime: "2025-07-11 09:30",
-            endTime: "2025-07-11 10:15",
-            peakTemp: 25.2
-          },
-          {
-            startTime: "2025-07-11 14:20",
-            endTime: "2025-07-11 14:40",
-            peakTemp: 15.8
-          }
-        ]),
-        productDetails: {
-          prodfilename: "Insulin-3",
-          producttype: "controlled room temperature",
-          temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
-        }
-      },
-      {
-        loggerId: "LG-1002",
-        loggerType: "Web Logger 2",
-        deliveryId: "DL-1002",
-        tempProfile: "controlled room temperature",
-        serialNumber: 2,
-        missionStarted: "2025-07-10T08:00:00Z",
-        missionEnded: "2025-07-11T18:00:00Z",
-        alarms: [
-          {
-            alarmId: 1,
-            alarmType: "Temperature",
-            excursion: {
-              id: 1,
-              highest: "25.0°C",
-              startTime: "2025-07-10 10:30",
-              endTime: "2025-07-11 18:00",
-              duration: "1d 7h 30m",
-              type: "Temperature",
-              temperatureProfile: "High Threshold Alarm"
-            }
-          }
-        ],
-        alarmTypes: ["Temperature"],
-        evaluation: null,
-        rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithSustainedHigh(
-          "2025-07-10T08:00:00Z",
-          "2025-07-11T18:00:00Z",
-          "Web Logger 2",
-          6,
-          45,
-          "2025-07-10T10:30:00Z",
-          25
-        ),
-        productDetails: {
-          prodfilename: "Insulin-3",
-          producttype: "controlled room temperature",
-          temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
-        }
-      }
-    ]
-  },
-
   {
     shipmentId: "SH004",
     origin: "Macclesfield, UK",
@@ -710,9 +556,10 @@ export const shipments: Shipment[] = [
     currentLocation: "n/a",
     modeOfTransport: "Air",
     packagingType: "Insulated Box",
+    profileType: "CRT",
     alarms: 4,
     events: 4,
-    rcas: "Not Started",
+    evaluation: "Not Started",
     distance: 9560,
     co2Emissions: 2437.8,
     milestones: [
@@ -726,7 +573,6 @@ export const shipments: Shipment[] = [
         departedTime: "2025-07-10T08:00:00Z",
         transportMode: "Road",
         vehicleNumber: "T3456",
-        weatherConditions: "Overcast, 12°C"
       },
       {
         type: "milestone",
@@ -738,7 +584,6 @@ export const shipments: Shipment[] = [
         departedTime: "2025-07-10T14:15:00Z",
         transportMode: "Air",
         vehicleNumber: "F4567",
-        weatherConditions: "Light rain, 14°C"
       },
       {
         type: "milestone",
@@ -750,7 +595,6 @@ export const shipments: Shipment[] = [
         departedTime: "2025-07-11T02:30:00Z",
         transportMode: "Air",
         vehicleNumber: "F8901",
-        weatherConditions: "Clear, 32°C"
       },
       {
         type: "destination",
@@ -761,15 +605,14 @@ export const shipments: Shipment[] = [
         arrivalTime: "2025-07-20T08:00:00Z",
         transportMode: "Air",
         vehicleNumber: "F2345",
-        weatherConditions: "Humid, 26°C"
       }
     ],
     loggerData: [
       {
         loggerId: "WL-1004A",
-        loggerType: "Web Logger 2",
+        loggerType: "webLogger-II",
         deliveryId: "DL-1004A",
-        tempProfile: "controlled room temperature",
+        tempProfile: "CRT",
         serialNumber: 1,
         missionStarted: "2025-07-10T08:00:00Z",
         missionEnded: "2025-07-20T08:00:00Z",
@@ -806,7 +649,7 @@ export const shipments: Shipment[] = [
         ],
         evaluation: "Not Started",
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "Web Logger 2", 6, 45, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "webLogger-II", 6, 45, [
           {
             startTime: "2025-07-15 09:00",
             endTime: "2025-07-15 10:15",
@@ -820,7 +663,7 @@ export const shipments: Shipment[] = [
         ]),
         productDetails: {
           prodfilename: "Insulin-2",
-          producttype: "controlled room temperature",
+          producttype: "CRT",
           temperatureProfile: "profile",
           highThreshold: "12 °C",
           lowThreshold: "2 °C"
@@ -828,9 +671,9 @@ export const shipments: Shipment[] = [
       },
       {
         loggerId: "WL-1004B",
-        loggerType: "Web Logger 2",
+        loggerType: "webLogger-II",
         deliveryId: "DL-1004B",
-        tempProfile: "controlled room temperature",
+        tempProfile: "CRT",
         serialNumber: 2,
         missionStarted: "2025-07-10T08:00:00Z",
         missionEnded: "2025-07-20T08:00:00Z",
@@ -864,7 +707,7 @@ export const shipments: Shipment[] = [
         ],
         evaluation: "Not Started",
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "Web Logger 2", 8, 50, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "webLogger-II", 8, 50, [
           {
             startTime: "2025-07-15 09:00",
             endTime: "2025-07-15 10:15",
@@ -878,7 +721,7 @@ export const shipments: Shipment[] = [
         ]),
         productDetails: {
           prodfilename: "Insulin-2",
-          producttype: "controlled room temperature",
+          producttype: "CRT",
           temperatureProfile: "profile",
           highThreshold: "12 °C",
           lowThreshold: "2 °C"
@@ -886,205 +729,6 @@ export const shipments: Shipment[] = [
       }
     ]
   },
-
-  {
-    shipmentId: "SH006",
-    origin: "Macclesfield, UK",
-    destination: "Tokyo, Japan",
-    eta: "2025-06-20",
-    status: "Delivered",
-    freightForwarder: "DHL",
-    currentLocation: "n/a",
-    modeOfTransport: "Air",
-    packagingType: "Insulated Box",
-    alarms: 4,
-    totalAlarms: 4,
-    events: 4,
-    rcas: "In Progress",
-    distance: 9560,
-    co2Emissions: 2437.8,
-    milestones: [
-      {
-        type: "origin",
-        location: "Macclesfield, UK",
-        status: "Completed",
-        milestoneName: "Departure from Macclesfield",
-        groundHandler: "DHL",
-        arrivalTime: "2025-06-10T06:00:00Z",
-        departedTime: "2025-06-10T08:00:00Z",
-        transportMode: "Road",
-        vehicleNumber: "T7890",
-        weatherConditions: "Rainy, 10°C"
-      },
-      {
-        type: "milestone",
-        location: "Heathrow Airport, UK",
-        status: "Completed",
-        milestoneName: "Departure from Heathrow",
-        groundHandler: "British Airways",
-        arrivalTime: "2025-06-10T10:30:00Z",
-        departedTime: "2025-06-10T14:15:00Z",
-        transportMode: "Air",
-        vehicleNumber: "F5678",
-        weatherConditions: "Cloudy, 13°C"
-      },
-      {
-        type: "milestone",
-        location: "Amsterdam, Netherlands",
-        status: "Completed",
-        milestoneName: "Transit through Amsterdam Schiphol",
-        groundHandler: "KLM",
-        arrivalTime: "2025-06-10T16:45:00Z",
-        departedTime: "2025-06-10T19:30:00Z",
-        transportMode: "Air",
-        vehicleNumber: "F9012",
-        weatherConditions: "Light rain, 15°C"
-      },
-      {
-        type: "destination",
-        location: "Tokyo, Japan",
-        status: "Completed",
-        milestoneName: "Arrival at Narita Airport",
-        groundHandler: "Japan Airlines",
-        arrivalTime: "2025-06-20T08:00:00Z",
-        transportMode: "Air",
-        vehicleNumber: "F3456",
-        weatherConditions: "Overcast, 22°C"
-      }
-    ],
-    loggerData: [
-      {
-        loggerId: "WL-1006A",
-        loggerType: "Web Logger 2",
-        deliveryId: "DL-1004",
-        tempProfile: "controlled room temperature",
-        serialNumber: 1,
-        missionStarted: "2025-06-10T08:00:00Z",
-        missionEnded: "2025-06-20T08:00:00Z",
-        alarms: [
-          {
-            alarmId: 1,
-            alarmType: "Temperature",
-            excursion: {
-              id: 1,
-              highest: "25°C",
-              // #1 excursion was during Heathrow transfer on 2025-06-15 09:00-10:15
-              startTime: "2025-06-15 09:00",
-              endTime: "2025-06-15 10:15",
-              duration: "1h 15m",
-              type: "Temperature",
-              temperatureProfile: "High Threshold Alarm"
-            }
-          },
-          {
-            alarmId: 2,
-            alarmType: "Temperature",
-            excursion: {
-              id: 2,
-              highest: "25°C",
-              // #2 excursion found in Amsterdam lane on 2025-06-17 09:30 with departedTime 11:00
-              startTime: "2025-06-17 09:30",
-              endTime: "2025-06-17 11:00",
-              duration: "1h 30m",
-              type: "Temperature",
-              temperatureProfile: "High Threshold Alarm"
-            }
-          }
-        ],
-        evaluation: "Pending",
-        rootCauseAnalysisStatusDetails: {
-          status: "Pending",
-          details: "Investigating temperature excursion at Amsterdam Airport. Initial findings suggest packaging failure during loading.",
-          UTCDateStarted: "2025-06-17",
-          evaluatedBy: "John Smith",
-          type: "Temperature Excursion",
-          evaluationType: "Standard Investigation",
-          primaryRootCause: "Pending Investigation",
-          secondaryRootCause: "Suspected Packaging Failure",
-          reason: "Temperature excursion detected during loading at Amsterdam Airport"
-        },
-        lastSeen: "2025-06-17 10:00",
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-06-10T08:00:00Z", "2025-06-20T08:00:00Z", "Web Logger 2", 6, 45, [
-          {
-            startTime: "2025-06-15 09:00",
-            endTime: "2025-06-15 10:15",
-            peakTemp: 25
-          },
-          {
-            startTime: "2025-06-17 09:30",
-            endTime: "2025-06-17 11:00",
-            peakTemp: 25
-          }
-        ]),
-        productDetails: {
-          prodfilename: "Insulin-2",
-          producttype: "controlled room temperature",
-          temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
-        }
-      },
-      {
-        loggerId: "WL-1006B",
-        loggerType: "Web Logger 2",
-        deliveryId: "DL-1005",
-        tempProfile: "controlled room temperature",
-        serialNumber: 2,
-        missionStarted: "2025-06-10T08:00:00Z",
-        missionEnded: "2025-06-20T08:00:00Z",
-        alarms: [
-          {
-            alarmId: 1,
-            alarmType: "Temperature",
-            excursion: {
-              id: 1,
-              highest: "25°C",
-              startTime: "2025-06-15 09:00",
-              endTime: "2025-06-15 10:15",
-              duration: "1h 15m",
-              type: "Temperature",
-              temperatureProfile: "High Threshold Alarm"
-            }
-          },
-          {
-            alarmId: 2,
-            alarmType: "Temperature",
-            excursion: {
-              id: 2,
-              highest: "25°C",
-              startTime: "2025-06-17 09:30",
-              endTime: "2025-06-17 11:00",
-              duration: "1h 30m",
-              type: "Temperature",
-              temperatureProfile: "High Threshold Alarm"
-            }
-          }
-        ],
-        evaluation: "Completed",
-        rootCauseAnalysisStatusDetails: {
-          status: "Completed",
-          details: "Temperature excursion caused by exposure to direct sunlight during loading at Heathrow Airport. Packaging integrity was compromised.",
-          UTCDateStarted: "2025-06-15",
-          evaluatedBy: "Sarah Johnson",
-          type: "Temperature Excursion",
-          evaluationType: "Comprehensive Analysis",
-          primaryRootCause: "Direct Sunlight Exposure",
-          secondaryRootCause: "Packaging Integrity Failure",
-          reason: "Extended tarmac wait time during peak summer temperatures combined with inadequate packaging for extreme conditions"
-        },
-        lastSeen: "2025-06-17 10:00",
-        timeSeriesData: generateTimeSeriesData("2025-06-10T08:00:00Z", "2025-06-20T08:00:00Z", "Web Logger 2", "Delivered", 8, 50),
-        productDetails: {
-          prodfilename: "Insulin-2",
-          producttype: "controlled room temperature",
-          temperatureProfile: "profile",
-          highThreshold: "12 °C",
-          lowThreshold: "2 °C"
-        }
-      }
-    ]
-  },
-
   {
     shipmentId: "SH014",
     origin: "Paris, France",
@@ -1096,23 +740,24 @@ export const shipments: Shipment[] = [
     currentLocation: "Unavailable",
     modeOfTransport: "Road",
     packagingType: "Unavailable",
+    profileType: "Cold Chain",
     alarms: 1,
     totalAlarms: 1,
     events: 0,
-    rcas: "Not Started",
+    evaluation: "Not Started",
     distance: 0,
     co2Emissions: 0,
     milestones: [],
     loggerData: [
       {
         loggerId: "WB-1014C",
-        loggerType: "Web Logger 2",
+        loggerType: "webLogger-II",
         deliveryId: "DL-1006",
-        tempProfile: "controlled room temperature",
+        tempProfile: "CRT",
         serialNumber: 3,
         missionStarted: "2025-09-22T08:00:00Z",
         missionEnded: "n/a",
-        timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Web Logger 2", "In Transit", 5, 40),
+        timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "webLogger-II", "In Transit", 5, 40),
         alarms: [],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
@@ -1126,78 +771,16 @@ export const shipments: Shipment[] = [
       },
       {
         loggerId: "WB-1014B",
-        loggerType: "Web Logger 2",
+        loggerType: "webLogger-II",
         deliveryId: "DL-1007",
-        tempProfile: "controlled room temperature",
+        tempProfile: "CRT",
         serialNumber: 2,
         missionStarted: "2025-09-22T08:00:00Z",
         missionEnded: "n/a",
-        timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "Web Logger 2", "In Transit", 5, 38),
+        timeSeriesData: generateTimeSeriesData("2025-09-22T08:00:00Z", null, "webLogger-II", "In Transit", 5, 38),
         alarms: [],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        productDetails: {
-          prodfilename: "Vaccine-X",
-          producttype: "cold chain",
-          temperatureProfile: "profile",
-          highThreshold: "10 °C",
-          lowThreshold: "2 °C"
-        }
-      }
-    ]
-  },
-
-  {
-    shipmentId: "SH015",
-    origin: "Paris, France",
-    destination: "Madrid, Spain",
-    eta: "2025-07-13",
-    status: "Delivered",
-    loggers: 2,
-    freightForwarder: "DHL",
-    currentLocation: "n/a",
-    modeOfTransport: "Road",
-    packagingType: "n/a",
-    alarms: 1,
-    totalAlarms: 0,
-    events: 0,
-    rcas: "Not Started",
-    distance: 0,
-    co2Emissions: 0,
-    milestones: [],
-    loggerData: [
-      {
-        loggerId: "WB-1015A",
-        loggerType: "Web Logger 2",
-        deliveryId: "DL-1008",
-        tempProfile: "controlled room temperature",
-        serialNumber: 1,
-        missionStarted: "2025-07-10T08:00:00Z",
-        missionEnded: "2025-07-13T08:00:00Z",
-        alarms: [],
-        evaluation: null,
-        rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-13T08:00:00Z", "Web Logger 2", "Delivered", 4, 40),
-        productDetails: {
-          prodfilename: "Vaccine-X",
-          producttype: "cold chain",
-          temperatureProfile: "profile",
-          highThreshold: "10 °C",
-          lowThreshold: "2 °C"
-        }
-      },
-      {
-        loggerId: "WB-1015B",
-        loggerType: "Web Logger 2",
-        deliveryId: "DL-1009",
-        tempProfile: "controlled room temperature",
-        serialNumber: 2,
-        missionStarted: "2025-07-10T08:00:00Z",
-        missionEnded: "2025-07-13T08:00:00Z",
-        alarms: [],
-        evaluation: null,
-        rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-07-10T08:00:00Z", "2025-07-13T08:00:00Z", "Web Logger 2", "Delivered", 4, 40),
         productDetails: {
           prodfilename: "Vaccine-X",
           producttype: "cold chain",
@@ -1218,11 +801,12 @@ export const shipments: Shipment[] = [
     loggers: 10,
     freightForwarder: "DHL",
     currentLocation: "Paris, France",
+    profileType: "Frozen",
     modeOfTransport: "Road",
     packagingType: "Insulated Container",
     alarms: 4,
     events: 8,
-    rcas: "In Progress",
+    evaluation: "In Progress",
     distance: 344,
     co2Emissions: 87.7,
     milestones: [
@@ -1236,7 +820,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-18T08:00:00Z",
         transportMode: "Road",
         vehicleNumber: "DHL-T789",
-        weatherConditions: "Clear, 18°C"
       },
       {
         type: "milestone",
@@ -1248,7 +831,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-18T14:00:00Z",
         transportMode: "Ferry",
         vehicleNumber: "Ferry-CH01",
-        weatherConditions: "Partly cloudy, 16°C"
       },
       {
         type: "destination",
@@ -1260,65 +842,64 @@ export const shipments: Shipment[] = [
         departed: "2025-09-18T20:00:00Z",
         transportMode: "Road",
         vehicleNumber: "DHL-T789",
-        weatherConditions: "Clear, 20°C"
       }
     ],
     loggerData: [
       {
-        loggerId: "SENTINEL-2001",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2001",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-01",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2001,
         alarms: [],
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 5, 45),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 5, 45),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
           lowThreshold: "2 °C"
         }
       },
       {
-        loggerId: "SENTINEL-2002",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2002",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-02",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2002,
         alarms: [],
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 4, 50),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 4, 50),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "8 °C",
           lowThreshold: "2 °C"
         }
       },
       {
-        loggerId: "SENTINEL-2003",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2003",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-03",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2003,
         alarms: [],
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 6, 42),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 6, 42),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "cold chain",
@@ -1328,29 +909,29 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-2004",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2004",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-04",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2004,
         alarms: [],
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 5, 48),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 5, 48),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15°C",
+          lowThreshold: "-25°C",
         }
       },
       {
-        loggerId: "SENTINEL-2005",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2005",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-05",
@@ -1360,18 +941,18 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 4, 46),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 4, 46),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15°C",
+          lowThreshold: "-25°C",
         }
       },
       {
-        loggerId: "SENTINEL-2006",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2006",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-06",
@@ -1381,18 +962,18 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 6, 44),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 6, 44),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15°C",
+          lowThreshold: "-25°C",
         }
       },
       {
-        loggerId: "SENTINEL-2007",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2007",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-07",
@@ -1402,18 +983,18 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 5, 47),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 5, 47),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15°C",
+          lowThreshold: "-25°C",
         }
       },
       {
-        loggerId: "SENTINEL-2008",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2008",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "2025-09-18T20:00:00Z",
         deliveryId: "DLV-016-08",
@@ -1423,18 +1004,18 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", "Delivered", 4, 49),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 4, 49),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15°C",
+          lowThreshold: "-25°C",
         }
       },
       {
-        loggerId: "SENTINEL-2009",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2009",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-016-09",
@@ -1467,18 +1048,18 @@ export const shipments: Shipment[] = [
           primaryRootCause: "Logger not stopped after delivery",
           reason: "Operational error - mission end procedure not followed"
         },
-        timeSeriesData: generateTempDataWithMissionEndIssue("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", 5),
+        timeSeriesData: generateTempDataWithMissionEndIssue("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", 5),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15°C",
+          lowThreshold: "-25°C",
         }
       },
       {
-        loggerId: "SENTINEL-2010",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-2010",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-016-10",
@@ -1511,7 +1092,7 @@ export const shipments: Shipment[] = [
           primaryRootCause: "Logger not stopped after delivery",
           reason: "Operational error - mission end procedure not followed"
         },
-        timeSeriesData: generateTempDataWithMissionEndIssue("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel", 4),
+        timeSeriesData: generateTempDataWithMissionEndIssue("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", 4),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "cold chain",
@@ -1529,6 +1110,7 @@ export const shipments: Shipment[] = [
     eta: "2025-09-25",
     etd: "2025-09-24",
     status: "In Transit",
+    profileType: "Cold Chain",
     loggers: 10,
     freightForwarder: "Geodis",
     currentLocation: "Rotterdam, Netherlands",
@@ -1536,7 +1118,7 @@ export const shipments: Shipment[] = [
     packagingType: "Insulated Box",
     alarms: 0,
     events: 2,
-    rcas: "Not Started",
+    evaluation: "Not Started",
     distance: 174,
     co2Emissions: 44.3,
     milestones: [
@@ -1550,7 +1132,6 @@ export const shipments: Shipment[] = [
         departed: "2025-09-24T09:00:00Z",
         transportMode: "Road",
         vehicleNumber: "FX-T456",
-        weatherConditions: "Clear, 16°C"
       },
       {
         type: "milestone",
@@ -1562,7 +1143,6 @@ export const shipments: Shipment[] = [
         etd: "2025-09-24T15:00:00Z",
         transportMode: "Road",
         vehicleNumber: "FX-T456",
-        weatherConditions: "Partly cloudy, 14°C"
       },
       {
         type: "destination",
@@ -1574,13 +1154,12 @@ export const shipments: Shipment[] = [
         etd: "2025-09-25T10:00:00Z",
         transportMode: "Road",
         vehicleNumber: "FX-T456",
-        weatherConditions: "Expected: Light rain, 12°C"
       }
     ],
     loggerData: [
       {
-        loggerId: "SENTINEL-3001",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3001",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-01",
@@ -1590,7 +1169,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 5, 45),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 45),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1600,8 +1179,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3002",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3002",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-02",
@@ -1611,7 +1190,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 4, 50),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 50),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1621,8 +1200,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3003",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3003",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-03",
@@ -1632,7 +1211,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 6, 42),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 6, 42),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1642,8 +1221,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3004",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3004",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-04",
@@ -1653,7 +1232,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 5, 48),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 48),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1663,8 +1242,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3005",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3005",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-05",
@@ -1674,7 +1253,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 4, 46),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 46),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1684,8 +1263,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3006",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3006",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-06",
@@ -1695,7 +1274,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 6, 44),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 6, 44),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1705,8 +1284,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3007",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3007",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-07",
@@ -1716,7 +1295,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 5, 47),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 47),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1726,8 +1305,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3008",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3008",
+        loggerType: "Sentinel-100L",
         missionStarted: "2025-09-24T07:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-017-08",
@@ -1737,7 +1316,7 @@ export const shipments: Shipment[] = [
         alarmTypes: ["Temperature", "Humidity"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel", "In Transit", 4, 49),
+        timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 49),
         productDetails: {
           prodfilename: "Insulin-Z",
           producttype: "cold chain",
@@ -1747,8 +1326,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3009",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3009",
+        loggerType: "Sentinel-100L",
         missionStarted: "n/a",
         missionEnded: "n/a",
         deliveryId: "DLV-017-09",
@@ -1776,8 +1355,8 @@ export const shipments: Shipment[] = [
         }
       },
       {
-        loggerId: "SENTINEL-3010",
-        loggerType: "Sentinel",
+        loggerId: "Sentinel-100L-3010",
+        loggerType: "Sentinel-100L",
         missionStarted: "n/a",
         missionEnded: "n/a",
         deliveryId: "DLV-017-10",
