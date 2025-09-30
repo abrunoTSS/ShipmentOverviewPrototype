@@ -40,7 +40,7 @@
 .search-icon {
   position: absolute;
   left: 10px;
-  color: #9ca3af;
+  color: #312e51;
 }
 
 .search-input {
@@ -59,8 +59,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+  border-color: #99CC00;
 }
 
 /* Filter Toggle Button */
@@ -69,8 +68,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #f3f4f6;
-  border: 1px solid #d1d5db;
+  background-color: #99CC00;
+  border: 1px solid #99CC00;
+  color: white;
   border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
@@ -78,17 +78,21 @@
 }
 
 .filter-toggle-btn:hover {
-  background-color: #e5e7eb;
+  border: 1px solid #99CC00;
+  background-color: white;
+  color: #99CC00;
 }
 
 .download-btn {
-  background-color: #e2f0ff;
-  border-color: #90cdf4;
+  background-color: #706CAD;
+  border-color: #706CAD;
   margin-left: 8px;
 }
 
 .download-btn:hover {
-  background-color: #bfdbfe;
+  border: 1px solid #706CAD;
+  background-color: white;
+  color: #706CAD;
 }
 
 /* Collapsible Filter Section */

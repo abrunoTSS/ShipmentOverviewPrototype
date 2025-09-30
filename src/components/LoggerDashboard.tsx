@@ -59,7 +59,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
             <h3 className="section-title">Shipment Details</h3>
             <div className="info-grid">
               <div className="info-item">
-                <span className="info-label">Shipment ID</span>
+                <span className="info-label">Shipping Number</span>
                 <span className="info-value">{shipment.shipmentId}</span>
               </div>
               <div className="info-item">
@@ -97,7 +97,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
             {/* Error message for shipments with missing milestone data */}
             {(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
               <div className="milestone-error" style={{ marginBottom: '15px', width: '100%' }}>
-                <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the shipment ID is correct.</p>
+                <p className="error-message">Unable to get milestone data from {shipment.freightForwarder}. Please check if the Shipping Number is correct.</p>
               </div>
             )}
             

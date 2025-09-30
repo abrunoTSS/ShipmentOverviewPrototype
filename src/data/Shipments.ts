@@ -7,7 +7,7 @@ function generateTimeSeriesData(
   loggerType: string,
   shipmentStatus: string,
   baseTemp: number = 6, 
-  baseHumidity: number = 45
+  _baseHumidity: number = 45
 ): LoggerTimeSeriesData[] {
   const data: LoggerTimeSeriesData[] = [];
   
@@ -26,17 +26,11 @@ function generateTimeSeriesData(
   while (current <= end) {
     // Add some realistic variation
     const tempVariation = (Math.random() - 0.5) * 4; // ±2°C variation
-    const humidityVariation = (Math.random() - 0.5) * 20; // ±10% variation
     
     const dataPoint: LoggerTimeSeriesData = {
       timestamp: current.toISOString(),
       temperature: Math.round((baseTemp + tempVariation) * 10) / 10,
     };
-    
-    // Add humidity data only for Sentinel-100L and Sentinel-100L-100L loggers (exclude webLogger-IIs)
-    if ((loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L')) && !loggerType.includes('webLogger-II')) {
-      dataPoint.humidity = Math.round((baseHumidity + humidityVariation) * 10) / 10;
-    }
     
     data.push(dataPoint);
     current = new Date(current.getTime() + intervalMs);
@@ -51,7 +45,7 @@ function generateTempDataWithSustainedHigh(
   endDate: string | null,
   loggerType: string,
   baseTemp: number = 6,
-  baseHumidity: number = 45,
+  _baseHumidity: number = 45,
   sustainStartISO: string,
   sustainTemp: number = 25
 ): LoggerTimeSeriesData[] {
@@ -65,7 +59,6 @@ function generateTempDataWithSustainedHigh(
 
   while (current <= end) {
     let temperature = baseTemp + (Math.random() - 0.5) * 2;
-    let humidity = baseHumidity + (Math.random() - 0.5) * 10;
 
     if (current >= sustainStart) {
       // Hold around sustainTemp with small jitter
@@ -76,10 +69,6 @@ function generateTempDataWithSustainedHigh(
       timestamp: current.toISOString(),
       temperature: Math.round(temperature * 10) / 10,
     };
-
-    if ((loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L-100L')) && !loggerType.includes('webLogger-II')) {
-      dataPoint.humidity = Math.round(humidity * 10) / 10;
-    }
 
     data.push(dataPoint);
     current = new Date(current.getTime() + intervalMs);
@@ -94,7 +83,7 @@ function generateTempDataWithAlarmSpikes(
   endDate: string | null,
   loggerType: string,
   baseTemp: number = 6,
-  baseHumidity: number = 45,
+  _baseHumidity: number = 45,
   alarmSpikes: Array<{
     startTime: string;
     endTime: string;
@@ -117,14 +106,14 @@ function generateTempDataWithAlarmSpikes(
   
   while (current <= end) {
     let temperature = baseTemp;
-    let humidity = baseHumidity;
+    // humidity removed
     
     // Add normal variation
     const tempVariation = (Math.random() - 0.5) * 4; // ±2°C variation
-    const humidityVariation = (Math.random() - 0.5) * 20; // ±10% variation
+    // humidity removed
     
     temperature = baseTemp + tempVariation;
-    humidity = baseHumidity + humidityVariation;
+    
     
     // Check if current time falls within any alarm period
     alarmPeriods.forEach(period => {
@@ -153,10 +142,6 @@ function generateTempDataWithAlarmSpikes(
       temperature: Math.round(temperature * 10) / 10,
     };
     
-    if (loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L-100L')) {
-      dataPoint.humidity = Math.round(humidity * 10) / 10;
-    }
-    
     data.push(dataPoint);
     current = new Date(current.getTime() + intervalMs);
   }
@@ -181,30 +166,24 @@ function generateTempDataWithMissionEndIssue(
   
   while (current <= extendedEnd) {
     let temperature = baseTemp;
-    let humidity = 45;
     
     // Normal temperature until mission should have ended
     if (current <= normalEnd) {
       const tempVariation = (Math.random() - 0.5) * 4; // ±2°C variation
       temperature = baseTemp + tempVariation;
-      const humidityVariation = (Math.random() - 0.5) * 20; // ±10% variation
-      humidity = 45 + humidityVariation;
+      // humidity removed
     } else {
       // Temperature rises after mission should have ended (mission not stopped)
       const hoursAfterEnd = (current.getTime() - normalEnd.getTime()) / (60 * 60 * 1000);
       const tempIncrease = Math.min(hoursAfterEnd * 0.9, 22); // Gradual increase up to 28°C
       temperature = baseTemp + tempIncrease + (Math.random() - 0.5) * 2;
-      humidity = 45 + (Math.random() - 0.5) * 30; // More variation in humidity
+      // humidity removed
     }
     
     const dataPoint: LoggerTimeSeriesData = {
       timestamp: current.toISOString(),
       temperature: Math.round(temperature * 10) / 10,
     };
-    
-    if (loggerType.includes('Sentinel-100L') || loggerType.includes('Sentinel-100L-100L')) {
-      dataPoint.humidity = Math.round(humidity * 10) / 10;
-    }
     
     data.push(dataPoint);
     current = new Date(current.getTime() + intervalMs);
@@ -235,8 +214,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Stockholm",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T08:00:00Z",
-        departed: "2025-09-22T10:00:00Z",
+        arrived: "2025-09-22T08:00:00 CET",
+        departed: "2025-09-22T10:00:00 CET",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -246,8 +225,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Copenhagen",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T14:30:00Z",
-        departed: "2025-09-22T15:30:00Z",
+        arrived: "2025-09-22T14:30:00 CET",
+        departed: "2025-09-22T15:30:00 CET",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -257,8 +236,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Hamburg",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T18:45:00Z",
-        departed: "2025-09-22T22:30:00Z",
+        arrived: "2025-09-22T18:45:00 CET",
+        departed: "2025-09-22T22:30:00 CET",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -268,7 +247,7 @@ export const shipments: Shipment[] = [
         status: "Current",
         milestoneName: "In Transit",
         groundHandler: "Geodis",
-        arrived: "2025-09-22T22:30:00Z",
+        arrived: "2025-09-22T22:30:00 CET",
         transportMode: "Road",
         vehicleNumber: "T1234",
       },
@@ -278,8 +257,8 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Arrival in Berlin",
         groundHandler: "Geodis",
-        eta: "2025-09-23T08:00:00Z",
-        etd: "2025-09-23T10:00:00Z",
+        eta: "2025-09-23T08:00:00 CET",
+        etd: "2025-09-23T10:00:00 CET",
         transportMode: "Road",
         vehicleNumber: "T1234",
       }
@@ -323,7 +302,7 @@ export const shipments: Shipment[] = [
     modeOfTransport: "Air",
     packagingType: "Insulated Box",
     profileType: "Frozen",
-    alarms: 9,
+    alarms: 2,
     events: 4,
     evaluation: "Not Started",
     distance: 9560,
@@ -335,8 +314,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Macclesfield",
         groundHandler: "Geodis",
-        arrived: "2025-09-21T06:00:00Z",
-        departed: "2025-09-21T08:00:00Z",
+        arrived: "2025-09-21T06:00:00 GMT",
+        departed: "2025-09-21T08:00:00 GMT",
         transportMode: "Road",
         vehicleNumber: "T2456",
       },
@@ -346,8 +325,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Heathrow",
         groundHandler: "British Airways",
-        arrived: "2025-09-21T10:30:00Z",
-        departed: "2025-09-21T14:15:00Z",
+        arrived: "2025-09-21T10:30:00 GMT",
+        departed: "2025-09-21T14:15:00 GMT",
         transportMode: "Air",
         vehicleNumber: "F8901",
       },
@@ -357,8 +336,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Amsterdam Schiphol",
         groundHandler: "KLM",
-        arrived: "2025-09-21T16:45:00Z",
-        departed: "2025-09-21T18:45:00Z",
+        arrived: "2025-09-21T16:45:00 CET",
+        departed: "2025-09-21T18:45:00 CET",
         transportMode: "Air",
         vehicleNumber: "F3456",
       },
@@ -370,7 +349,7 @@ export const shipments: Shipment[] = [
         groundHandler: "KLM",
         transportMode: "Air",
         vehicleNumber: "F3456",
-        eta: "2025-09-21T18:45:00Z"
+        eta: "2025-09-21T18:45:00 CET"
       },
       {
         type: "milestone",
@@ -378,8 +357,8 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Transit through Dubai",
         groundHandler: "Emirates",
-        eta: "2025-09-22T02:30:00Z",
-        etd: "2025-09-22T06:15:00Z",
+        eta: "2025-09-22T02:30:00 GST",
+        etd: "2025-09-22T06:15:00 GST",
         transportMode: "Air",
         vehicleNumber: "F7890",
       },
@@ -389,7 +368,7 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Arrival at Narita Airport",
         groundHandler: "Japan Airlines",
-        eta: "2025-09-22T14:30:00Z",
+        eta: "2025-09-22T14:30:00 JST",
         transportMode: "Air",
         vehicleNumber: "F1122",
       }
@@ -401,7 +380,7 @@ export const shipments: Shipment[] = [
         missionStarted: "2025-09-22T08:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-002",
-        tempProfile: "CRT",
+        tempProfile: "Frozen",
         serialNumber: 2,
         timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, "Sentinel-100L-100L", 6, 50, [
           {
@@ -410,7 +389,7 @@ export const shipments: Shipment[] = [
             peakTemp: 25
           }
         ]),
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         // Transformed alarms: collapsed duplicate Temperature alarms into a single Temperature alarm.
         // NOTE: excursion timestamps are in July 2025 while shipment milestones are in Sept 2025 — flagged.
         alarms: [
@@ -426,19 +405,6 @@ export const shipments: Shipment[] = [
               duration: "2d 1h 45m",
               type: "Temperature",
               temperatureProfile: "High Threshold Alarm"
-            }
-          },
-          {
-            alarmId: 2,
-            alarmType: "Humidity",
-            excursion: {
-              id: 2,
-              highest: "70%",
-              // original single Humidity excursion was 2025-07-17 09:30 to 2025-07-17 10:45
-              startTime: "2025-09-22 10:00",
-              endTime: "2025-09-22 12:45",
-              duration: "1h 15m",
-              type: "Humidity"
             }
           }
         ],
@@ -458,9 +424,9 @@ export const shipments: Shipment[] = [
         missionStarted: "2025-09-22T08:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-003",
-        tempProfile: "CRT",
+        tempProfile: "Frozen",
         serialNumber: 3,
-        alarmTypes: ["Temperature", "Shock", "Tilt", "Pressure", "Light"],
+        alarmTypes: ["Temperature"],
         // Original had 2 Temperature alarms and no Shock alarm -> collapse Temps and add a placeholder Shock alarm
         alarms: [
           {
@@ -475,54 +441,6 @@ export const shipments: Shipment[] = [
               duration: "2d 1h 45m",
               type: "Temperature",
               temperatureProfile: "High Threshold Alarm",
-            }
-          },
-          {
-            alarmId: 2,
-            alarmType: "Shock",
-            excursion: {
-              id: 2,
-              type: "Shock",
-              highest: "N/A",
-              startTime: "2025-09-21T16:45:00Z",
-              endTime: "2025-09-21T16:45:00Z",
-              duration: "N/A"
-            }
-          },
-          {
-            alarmId: 3,
-            alarmType: "Tilt",
-            excursion: {
-              id: 3,
-              highest: "45°",
-              startTime: "2025-09-21 14:15",
-              endTime: "2025-09-21 14:18",
-              duration: "3 min",
-              type: "Tilt",
-            }
-          },
-          {
-            alarmId: 4,
-            alarmType: "Pressure",
-            excursion: {
-              id: 4,
-              highest: "1.2 bar",
-              startTime: "2025-09-22 06:45",
-              endTime: "2025-09-22 07:30",
-              duration: "45 min",
-              type: "Pressure",
-            }
-          },
-          {
-            alarmId: 5,
-            alarmType: "Light",
-            excursion: {
-              id: 5,
-              highest: "850 lux",
-              startTime: "2025-09-22 12:00",
-              endTime: "2025-09-22 12:25",
-              duration: "25 min",
-              type: "Light",
             }
           }
         ],
@@ -557,7 +475,7 @@ export const shipments: Shipment[] = [
     modeOfTransport: "Air",
     packagingType: "Insulated Box",
     profileType: "CRT",
-    alarms: 4,
+    alarms: 2,
     events: 4,
     evaluation: "Not Started",
     distance: 9560,
@@ -569,8 +487,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Macclesfield",
         groundHandler: "DHL",
-        arrivalTime: "2025-07-10T06:00:00Z",
-        departedTime: "2025-07-10T08:00:00Z",
+        arrivalTime: "2025-07-10T06:00:00 GMT",
+        departedTime: "2025-07-10T08:00:00 GMT",
         transportMode: "Road",
         vehicleNumber: "T3456",
       },
@@ -580,8 +498,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Departure from Heathrow",
         groundHandler: "British Airways",
-        arrivalTime: "2025-07-10T10:30:00Z",
-        departedTime: "2025-07-10T14:15:00Z",
+        arrivalTime: "2025-07-10T10:30:00 GMT",
+        departedTime: "2025-07-10T14:15:00 GMT",
         transportMode: "Air",
         vehicleNumber: "F4567",
       },
@@ -591,8 +509,8 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Transit through Dubai",
         groundHandler: "Emirates",
-        arrivalTime: "2025-07-10T22:45:00Z",
-        departedTime: "2025-07-11T02:30:00Z",
+        arrivalTime: "2025-07-10T22:45:00 GST",
+        departedTime: "2025-07-11T02:30:00 GST",
         transportMode: "Air",
         vehicleNumber: "F8901",
       },
@@ -602,7 +520,7 @@ export const shipments: Shipment[] = [
         status: "Completed",
         milestoneName: "Arrival at Narita Airport",
         groundHandler: "Japan Airlines",
-        arrivalTime: "2025-07-20T08:00:00Z",
+        arrivalTime: "2025-07-20T08:00:00 JST",
         transportMode: "Air",
         vehicleNumber: "F2345",
       }
@@ -741,8 +659,8 @@ export const shipments: Shipment[] = [
     modeOfTransport: "Road",
     packagingType: "Unavailable",
     profileType: "Cold Chain",
-    alarms: 1,
-    totalAlarms: 1,
+    alarms: 0,
+    totalAlarms: 0,
     events: 0,
     evaluation: "Not Started",
     distance: 0,
@@ -804,7 +722,7 @@ export const shipments: Shipment[] = [
     profileType: "Frozen",
     modeOfTransport: "Road",
     packagingType: "Insulated Container",
-    alarms: 4,
+    alarms: 2,
     events: 8,
     evaluation: "In Progress",
     distance: 344,
@@ -839,7 +757,7 @@ export const shipments: Shipment[] = [
         milestoneName: "Arrival in Paris",
         groundHandler: "DHL",
         arrived: "2025-09-18T18:00:00Z",
-        departed: "2025-09-18T20:00:00Z",
+        departed: "2025-09-20T02:00:00Z",
         transportMode: "Road",
         vehicleNumber: "DHL-T789",
       }
@@ -849,168 +767,168 @@ export const shipments: Shipment[] = [
         loggerId: "Sentinel-100L-2001",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-01",
         tempProfile: "Frozen",
         serialNumber: 2001,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 5, 45),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 45),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15 °C",
+          lowThreshold: "-25 °C"
         }
       },
       {
         loggerId: "Sentinel-100L-2002",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-02",
         tempProfile: "Frozen",
         serialNumber: 2002,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 4, 50),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 50),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15 °C",
+          lowThreshold: "-25 °C"
         }
       },
       {
         loggerId: "Sentinel-100L-2003",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-03",
         tempProfile: "Frozen",
         serialNumber: 2003,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 6, 42),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 42),
         productDetails: {
           prodfilename: "Vaccine-Y",
-          producttype: "cold chain",
+          producttype: "Frozen",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15 °C",
+          lowThreshold: "-25 °C"
         }
       },
       {
         loggerId: "Sentinel-100L-2004",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-04",
         tempProfile: "Frozen",
         serialNumber: 2004,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 5, 48),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 48),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C",
+          lowThreshold: "-25°C"
         }
       },
       {
         loggerId: "Sentinel-100L-2005",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-05",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2005,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 4, 46),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 46),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C",
+          lowThreshold: "-25°C"
         }
       },
       {
         loggerId: "Sentinel-100L-2006",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-06",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2006,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 6, 44),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 44),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C",
+          lowThreshold: "-25°C"
         }
       },
       {
         loggerId: "Sentinel-100L-2007",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-07",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2007,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 5, 47),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 47),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C",
+          lowThreshold: "-25°C"
         }
       },
       {
         loggerId: "Sentinel-100L-2008",
         loggerType: "Sentinel-100L",
         missionStarted: "2025-09-18T06:00:00Z",
-        missionEnded: "2025-09-18T20:00:00Z",
+        missionEnded: "2025-09-20T02:00:00Z",
         deliveryId: "DLV-016-08",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2008,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", "Delivered", 4, 49),
+        timeSeriesData: generateTimeSeriesData("2025-09-18T06:00:00Z", "2025-09-20T02:00:00Z", "Sentinel-100L", "Delivered", -20, 49),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C",
+          lowThreshold: "-25°C"
         }
       },
       {
@@ -1019,7 +937,7 @@ export const shipments: Shipment[] = [
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-016-09",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2009,
         alarms: [
           {
@@ -1037,7 +955,7 @@ export const shipments: Shipment[] = [
             }
           }
         ],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: "Under Investigation",
         rootCauseAnalysisStatusDetails: {
           status: "In Progress",
@@ -1048,13 +966,18 @@ export const shipments: Shipment[] = [
           primaryRootCause: "Logger not stopped after delivery",
           reason: "Operational error - mission end procedure not followed"
         },
-        timeSeriesData: generateTempDataWithMissionEndIssue("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", 5),
+        timeSeriesData: generateTempDataWithMissionEndIssue(
+          "2025-09-18T06:00:00Z",
+          "2025-09-20T02:00:00Z",
+          "Sentinel-100L",
+          -20,
+        ),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "Frozen",
           temperatureProfile: "profile",
           highThreshold: "-15°C",
-          lowThreshold: "-25°C",
+          lowThreshold: "-25°C"
         }
       },
       {
@@ -1063,7 +986,7 @@ export const shipments: Shipment[] = [
         missionStarted: "2025-09-18T06:00:00Z",
         missionEnded: "n/a",
         deliveryId: "DLV-016-10",
-        tempProfile: "cold chain",
+        tempProfile: "Frozen",
         serialNumber: 2010,
         alarms: [
           {
@@ -1081,7 +1004,7 @@ export const shipments: Shipment[] = [
             }
           }
         ],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: "Under Investigation",
         rootCauseAnalysisStatusDetails: {
           status: "In Progress",
@@ -1092,13 +1015,18 @@ export const shipments: Shipment[] = [
           primaryRootCause: "Logger not stopped after delivery",
           reason: "Operational error - mission end procedure not followed"
         },
-        timeSeriesData: generateTempDataWithMissionEndIssue("2025-09-18T06:00:00Z", "2025-09-18T20:00:00Z", "Sentinel-100L", 4),
+        timeSeriesData: generateTempDataWithMissionEndIssue(
+          "2025-09-18T06:00:00Z",
+          "2025-09-20T02:00:00Z",
+          "Sentinel-100L",
+          -20,
+        ),
         productDetails: {
           prodfilename: "Vaccine-Y",
           producttype: "cold chain",
           temperatureProfile: "profile",
-          highThreshold: "8 °C",
-          lowThreshold: "2 °C"
+          highThreshold: "-15 °C",
+          lowThreshold: "-25 °C"
         }
       }
     ]
@@ -1166,7 +1094,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3001,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 45),
@@ -1187,7 +1115,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3002,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 50),
@@ -1208,7 +1136,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3003,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 6, 42),
@@ -1229,7 +1157,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3004,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 48),
@@ -1250,7 +1178,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3005,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 46),
@@ -1271,7 +1199,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3006,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 6, 44),
@@ -1292,7 +1220,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3007,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 5, 47),
@@ -1313,7 +1241,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3008,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: null,
         timeSeriesData: generateTimeSeriesData("2025-09-24T07:00:00Z", null, "Sentinel-100L", "In Transit", 4, 49),
@@ -1334,7 +1262,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3009,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: {
           status: "Not Started",
@@ -1363,7 +1291,7 @@ export const shipments: Shipment[] = [
         tempProfile: "cold chain",
         serialNumber: 3010,
         alarms: [],
-        alarmTypes: ["Temperature", "Humidity"],
+        alarmTypes: ["Temperature"],
         evaluation: null,
         rootCauseAnalysisStatusDetails: {
           status: "Not Started",

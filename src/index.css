@@ -12,6 +12,11 @@ body {
   color: #333;
 }
 
+/* Global checkbox styling */
+input[type="checkbox"] {
+  accent-color: #99CC00;
+}
+
 /* App container */
 .app-container {
   min-height: 100vh;
@@ -120,7 +125,8 @@ body {
   letter-spacing: 0.05em;
   vertical-align: top;
   white-space: normal;
-  word-wrap: break-word;
+  word-break: keep-all;
+  overflow-wrap: normal;
   line-height: 1.2;
 }
 
@@ -155,20 +161,16 @@ body {
 }
 
 /* Column width specifications */
-.main-table th:nth-child(1), .main-table td:nth-child(1) { width: 80px; } /* Shipment ID */
-.main-table th:nth-child(2), .main-table td:nth-child(2) { width: 100px; } /* Origin */
-.main-table th:nth-child(3), .main-table td:nth-child(3) { width: 100px; } /* Destination */
-.main-table th:nth-child(4), .main-table td:nth-child(4) { width: 80px; } /* ETA */
-.main-table th:nth-child(5), .main-table td:nth-child(5) { width: 80px; } /* Status */
-.main-table th:nth-child(6), .main-table td:nth-child(6) { width: 60px; } /* FF */
-.main-table th:nth-child(7), .main-table td:nth-child(7) { width: 120px; } /* Current Location */
-.main-table th:nth-child(8), .main-table td:nth-child(8) { width: 80px; } /* Mode of Transport */
-.main-table th:nth-child(9), .main-table td:nth-child(9) { width: 90px; } /* Packaging Type */
-.main-table th:nth-child(10), .main-table td:nth-child(10) { width: 80px; } /* Loggers */
-.main-table th:nth-child(11), .main-table td:nth-child(11) { width: 70px; } /* Total Alarms */
-.main-table th:nth-child(12), .main-table td:nth-child(12) { width: 60px; } /* RCAS */
-.main-table th:nth-child(13), .main-table td:nth-child(13) { width: 120px; } /* Last Seen */
-.main-table th:nth-child(14), .main-table td:nth-child(14) { width: 30px; } /* Expand icon */
+.main-table th:nth-child(1), .main-table td:nth-child(1) { width: 40px;  } /* Shipping Number */
+.main-table th:nth-child(2), .main-table td:nth-child(2) { width: 150px; } /* Origin */
+.main-table th:nth-child(3), .main-table td:nth-child(3) { width: 160px; } /* Destination */
+.main-table th:nth-child(4), .main-table td:nth-child(4) { width: 160px; } /* Status */
+.main-table th:nth-child(5), .main-table td:nth-child(5) { width: 120px; } /* FF */
+.main-table th:nth-child(6), .main-table td:nth-child(6) { width: 100px; } /* Mode of Transport */
+.main-table th:nth-child(7), .main-table td:nth-child(7) { width: 150px; } /* Packaging Type */
+.main-table th:nth-child(8), .main-table td:nth-child(8) { width: 150px; } /* Total Alarms */
+.main-table th:nth-child(9), .main-table td:nth-child(9) { width: 150px; } /* RCAS */
+.main-table th:nth-child(10), .main-table td:nth-child(10) { width: 150px; } /* Expand icon */
 
 /* Ensure all table headers and cells are left-aligned */
 .table th,

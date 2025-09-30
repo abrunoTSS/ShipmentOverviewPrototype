@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -32,7 +32,7 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
     freightForwarder: '',
     modeOfTransport: '',
     alarms: '',
-    alarmType: '',
+    profileType: '',
     evaluation: '',
     milestoneData: '',
     missionStarted: '',
@@ -43,6 +43,9 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
 
   // State for managing logger visibility in graphs
   const [visibleLoggers, setVisibleLoggers] = useState<Map<string, Set<string>>>(new Map());
+
+  // Selection state for shipments (checkboxes)
+  const [selectedShipments, setSelectedShipments] = useState<Set<string>>(new Set());
 
   const handleLoggerVisibilityChange = (shipmentId: string, loggerId: string, visible: boolean) => {
     setVisibleLoggers(prev => {
@@ -74,14 +77,14 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
   // Filter shipments based on current filters
   const filteredShipments = useMemo(() => {
     return shipments.filter(shipment => {
-      // Search filter - matches shipping ID, mission ID, and delivery ID
+      // Search filter - matches Shipping Number, mission ID, and Delivery Number
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
         
-        // Check shipping ID
+        // Check Shipping Number
         const matchesShipmentId = shipment.shipmentId?.toLowerCase().includes(searchTerm);
         
-        // Check mission IDs and delivery IDs from logger data
+        // Check mission IDs and Delivery Numbers from logger data
         const matchesLoggerData = shipment.loggerData?.some((logger: any) => {
           const matchesMissionId = logger.loggerId?.toLowerCase().includes(searchTerm);
           const matchesDeliveryId = logger.deliveryId?.toLowerCase().includes(searchTerm);
@@ -107,20 +110,12 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
         if (filters.alarms === 'No' && hasAlarms) return false;
       }
       
-      // Alarm Type filter - check if any logger has the selected alarm type
-      if (filters.alarmType) {
-        try {
-          const hasAlarmType = shipment.loggerData && Array.isArray(shipment.loggerData) && 
-            shipment.loggerData.some((logger: any) => {
-              if (!logger || !logger.alarmTypes) return false;
-              if (!Array.isArray(logger.alarmTypes)) return false;
-              return logger.alarmTypes.includes(filters.alarmType);
-            });
-          if (!hasAlarmType) return false;
-        } catch (error) {
-          console.error('Error filtering by alarm type:', error, shipment);
-          return false;
-        }
+      // Profile Type filter
+      if (filters.profileType) {
+        if (!shipment.profileType) return false;
+        const profile = shipment.profileType.toLowerCase();
+        const selected = filters.profileType.toLowerCase();
+        if (profile !== selected) return false;
       }
       
       // Root Cause Analysis filter (case-insensitive)
@@ -183,10 +178,71 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
       return true;
     });
   }, [shipments, filters]);
+
+  // Master checkbox derived state for filtered rows
+  const allVisibleSelected = filteredShipments.length > 0 && filteredShipments.every(s => selectedShipments.has(s.shipmentId));
+  const someVisibleSelected = filteredShipments.some(s => selectedShipments.has(s.shipmentId)) && !allVisibleSelected;
+  const headerCheckboxRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (headerCheckboxRef.current) {
+      headerCheckboxRef.current.indeterminate = someVisibleSelected;
+    }
+  }, [someVisibleSelected, filteredShipments.length]);
+
+  const toggleSelectAllVisible = (checked: boolean) => {
+    setSelectedShipments(prev => {
+      const next = new Set(prev);
+      if (checked) {
+        filteredShipments.forEach(s => next.add(s.shipmentId));
+      } else {
+        filteredShipments.forEach(s => next.delete(s.shipmentId));
+      }
+      return next;
+    });
+  };
+
+  const toggleSelectOne = (shipmentId: string, checked: boolean) => {
+    setSelectedShipments(prev => {
+      const next = new Set(prev);
+      if (checked) next.add(shipmentId); else next.delete(shipmentId);
+      return next;
+    });
+  };
   const columns: ColumnDef<Shipment>[] = [
     {
+      id: 'select',
+      header: () => (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <input
+            type="checkbox"
+            ref={headerCheckboxRef}
+            checked={allVisibleSelected}
+            onChange={(e) => toggleSelectAllVisible(e.target.checked)}
+            style={{ accentColor: '#99CC00', cursor: 'pointer' }}
+            aria-label="Select all shipments"
+          />
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <input
+            type="checkbox"
+            checked={selectedShipments.has(row.original.shipmentId)}
+            onChange={(e) => {
+              e.stopPropagation();
+              toggleSelectOne(row.original.shipmentId, e.target.checked);
+            }}
+            onClick={(e) => e.stopPropagation()}
+            style={{ accentColor: '#99CC00', cursor: 'pointer' }}
+            aria-label={`Select shipment ${row.original.shipmentId}`}
+          />
+        </div>
+      )    
+    },
+    {
       id: 'shipmentId',
-      header: 'Shipment ID',
+      header: 'Shipping Number',
       accessorKey: 'shipmentId',
       cell: ({ row }) => (
         <div className="company-info">
@@ -326,7 +382,6 @@ export function ShipmentTable({ shipments, expandedRow, onRowClick, onLoggerClic
                         return visibleLoggersSet.has(logger.loggerId);
                       })}
                       shipment={row.original}
-                      showHumidity={true}
                       height={400}
                       className="shipment-graph"
                     />

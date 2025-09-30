@@ -126,7 +126,7 @@ export function LoggerTable({
       id: 'deliveryId',
       header: () => (
         <div className="column-header">
-          Delivery ID
+          Delivery Number
         </div>
       ),
       accessorKey: 'deliveryId',
@@ -425,11 +425,11 @@ export function LoggerTable({
                 <button 
                   className="view-more-details-button"
                   onClick={() => {
-                    console.log('View More Shipping Details clicked for shipment:', shipment.shipmentId);
                     onViewShipmentDetails(shipment);
                   }}
                 >
-                  → View More Shipping Details
+                  <span>View More Shipping Details</span>
+                  <ChevronRight size={16} className="view-more-chevron" />
                 </button>
               </td>
             </tr>

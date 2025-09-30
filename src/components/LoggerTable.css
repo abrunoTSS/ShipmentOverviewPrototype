@@ -4,7 +4,7 @@
 .column-header {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #374151;
+  color: #312e51;
   text-align: left;
   line-height: 1.3;
   white-space: normal;
@@ -99,7 +99,7 @@
 .visibility-label {
   font-size: 0.65rem;
   font-weight: 600;
-  color: #374151;
+  color: #312e51;
   text-align: left;
   line-height: 1.2;
 }
@@ -108,6 +108,7 @@
   cursor: pointer;
   transform: scale(1.1);
   margin: 0;
+  accent-color: #99CC00;
 }
 
 /* Visibility cell styling */
@@ -122,6 +123,7 @@
   cursor: pointer;
   transform: scale(1.1);
   margin: 0;
+  accent-color: #99CC00;
 }
 
 /* Nested table wrapper */
@@ -155,7 +157,7 @@
 }
 
 /* Specific column widths (match current column order) */
-/* 1: Visibility, 2: UNIT S/N (SERIAL NUMBER), 3: Delivery ID, 4: Logger Type,
+/* 1: Visibility, 2: UNIT S/N (SERIAL NUMBER), 3: Delivery Number, 4: Logger Type,
    5: Mission Started, 6: Mission Ended, 7: Temp Profile, 8: Alarm Type,
    9: Evaluation, 10: Expand */
 
@@ -175,7 +177,7 @@
   max-width: 240px;
 }
 
-/* Delivery ID */
+/* Delivery Number */
 .nested-table th:nth-child(3),
 .nested-table td:nth-child(3) {
   width: 120px;
@@ -266,7 +268,7 @@
 }
 
 .expand-icon {
-  color: #6b7280;
+  color: #312e51;
   transition: transform 0.2s;
 }
 
@@ -288,20 +290,26 @@
 .view-more-details-button {
   background: none;
   border: none;
-  color: #3b82f6;
+  color: #312e51;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  padding: 20px 12px;
-  margin-right: 50px;
+  padding: 12px 8px;
+  margin-right: 20px;
   border-radius: 6px;
   transition: all 0.2s;
   float: right;
+  margin: 10px;
+}
+
+/* Spacing for the chevron icon */
+.view-more-details-button .view-more-chevron {
+  vertical-align: middle;
 }
 
 .view-more-details-button:hover {
-  background-color: #eff6ff;
-  color: #2563eb;
+  background-color: none;
+  color: #706CAD;
 }
 
 /* Responsive adjustments */

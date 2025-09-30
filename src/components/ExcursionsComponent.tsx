@@ -54,7 +54,7 @@ export const ExcursionsComponent: React.FC<ExcursionsComponentProps> = ({ excurs
       <div className="excursions-header" onClick={toggleExpanded}>
         <div className="excursions-title">
           <AlertTriangle size={16} className="excursion-icon" />
-          <span>Excursions ({excursions.length})</span>
+          <span>Alarms ({excursions.length})</span>
         </div>
         <div className={`excursions-arrow ${isExpanded ? 'expanded' : ''}`}>
           <ChevronDown size={16} />

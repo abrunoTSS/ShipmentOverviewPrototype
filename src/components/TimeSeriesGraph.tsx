@@ -13,11 +13,11 @@ import {
 } from 'recharts';
 import type { Logger } from '../types';
 import './timeSeriesGraph.css';
+import './filterBar.css';
 
 interface TimeSeriesGraphProps {
   loggers: Logger[];
   shipment?: any;
-  showHumidity?: boolean;
   height?: number;
   className?: string;
 }
@@ -30,18 +30,14 @@ interface GraphState {
   refAreaRight: string;
   top: string | number;
   bottom: string | number;
-  top2: string | number;
-  bottom2: string | number;
 }
 
 const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({ 
   loggers, 
   shipment, 
-  showHumidity = true, 
   height = 400, 
   className = '' 
 }) => {
-  const [humidityVisible, setHumidityVisible] = useState(showHumidity);
   const [temperatureVisible, setTemperatureVisible] = useState(true);
   // Get threshold values from loggers
   const thresholds = React.useMemo(() => {
@@ -92,9 +88,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
           
           const entry = dataMap.get(key);
           entry[`${logger.loggerId}_temp`] = point.temperature;
-          if (point.humidity !== undefined) {
-            entry[`${logger.loggerId}_humidity`] = point.humidity;
-          }
         });
       }
     });
@@ -106,23 +99,19 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
   const yAxisRanges = React.useMemo(() => {
     if (combinedData.length === 0) {
       return {
-        temperature: { min: -10, max: 60 },
-        humidity: { min: 0, max: 100 }
+        temperature: { min: -10, max: 60 }
       };
     }
 
-    // Get all temperature and humidity values
+    // Get all temperature values
     const tempValues: number[] = [];
-    const humidityValues: number[] = [];
 
     combinedData.forEach(dataPoint => {
       Object.keys(dataPoint).forEach(key => {
         if (key.endsWith('_temp') && dataPoint[key] != null) {
           tempValues.push(dataPoint[key]);
         }
-        if (key.endsWith('_humidity') && dataPoint[key] != null) {
-          humidityValues.push(dataPoint[key]);
-        }
+        // humidity removed
       });
     });
 
@@ -144,19 +133,8 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
     tempMin = Math.floor(tempMin - tempPadding);
     tempMax = Math.ceil(tempMax + tempPadding);
 
-    // Calculate humidity range
-    let humidityMin = humidityValues.length > 0 ? Math.min(...humidityValues) : 0;
-    let humidityMax = humidityValues.length > 0 ? Math.max(...humidityValues) : 100;
-
-    // Add padding (10% of range, minimum 5%)
-    const humidityRange = humidityMax - humidityMin;
-    const humidityPadding = Math.max(humidityRange * 0.1, 5);
-    humidityMin = Math.max(0, Math.floor(humidityMin - humidityPadding));
-    humidityMax = Math.min(100, Math.ceil(humidityMax + humidityPadding));
-
     return {
-      temperature: { min: tempMin, max: tempMax },
-      humidity: { min: humidityMin, max: humidityMax }
+      temperature: { min: tempMin, max: tempMax }
     };
   }, [combinedData, thresholds]);
 
@@ -168,8 +146,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
     refAreaRight: '',
     top: 'dataMax+2',
     bottom: 'dataMin-2',
-    top2: 'dataMax+10',
-    bottom2: 'dataMin-10',
   });
 
   React.useEffect(() => {
@@ -211,13 +187,11 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
       return;
     }
 
-    // Find temperature and humidity keys
+    // Find temperature keys
     const tempKeys = Object.keys(data[0] || {}).filter(key => key.includes('_temp'));
-    const humidityKeys = Object.keys(data[0] || {}).filter(key => key.includes('_humidity'));
 
     // Calculate Y-axis domains based on filtered data
     let bottom = Infinity, top = -Infinity;
-    let bottom2 = Infinity, top2 = -Infinity;
 
     filteredData.forEach(point => {
       tempKeys.forEach(key => {
@@ -226,12 +200,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
           top = Math.max(top, point[key]);
         }
       });
-      humidityKeys.forEach(key => {
-        if (point[key] !== undefined && point[key] !== null) {
-          bottom2 = Math.min(bottom2, point[key]);
-          top2 = Math.max(top2, point[key]);
-        }
-      });
+      // humidity removed
     });
 
     setState(prevState => ({
@@ -243,8 +212,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
       right: endTime,
       bottom: bottom === Infinity ? 0 : Math.max(0, bottom - 2),
       top: top === -Infinity ? 20 : top + 2,
-      bottom2: bottom2 === Infinity ? 0 : Math.max(0, bottom2 - 10),
-      top2: top2 === -Infinity ? 100 : top2 + 10,
     }));
   };
 
@@ -259,8 +226,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
       right: 'dataMax',
       top: 'dataMax+2',
       bottom: 'dataMin-2',
-      top2: 'dataMax+10',
-      bottom2: 'dataMin-10',
     }));
   };
 
@@ -272,8 +237,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
     right,
     top,
     bottom,
-    top2,
-    bottom2,
   } = state;
 
   // Check if any loggers have time series data
@@ -294,7 +257,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
   // Generate colors for different loggers
   const colors = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c', '#8dd1e1', '#d084d0'];
   const tempKeys = Object.keys(data[0] || {}).filter(key => key.includes('_temp'));
-  const humidityKeys = Object.keys(data[0] || {}).filter(key => key.includes('_humidity'));
 
   return (
     <div className={`time-series-graph ${className}`} style={{ userSelect: 'none', width: '100%' }}>
@@ -302,30 +264,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
         <button type="button" className="zoom-out-btn" onClick={zoomOut}>
           Zoom Out
         </button>
-        <div className="data-toggles">
-          <div className="temperature-toggle">
-            <label>
-              <input
-                type="checkbox"
-                checked={temperatureVisible}
-                onChange={(e) => setTemperatureVisible(e.target.checked)}
-              />
-              Show Temperature
-            </label>
-          </div>
-          {humidityKeys.length > 0 && (
-            <div className="humidity-toggle">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={humidityVisible}
-                  onChange={(e) => setHumidityVisible(e.target.checked)}
-                />
-                Show Humidity
-              </label>
-            </div>
-          )}
-        </div>
       </div>
 
       <ResponsiveContainer width="100%" height={height}>
@@ -365,16 +303,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
               label={{ value: 'Temperature (°C)', angle: -90, position: 'insideLeft' }}
             />
           )}
-          {humidityVisible && humidityKeys.length > 0 && (
-            <YAxis 
-              orientation="right" 
-              allowDataOverflow 
-              domain={[yAxisRanges.humidity.min, yAxisRanges.humidity.max]} 
-              type="number" 
-              yAxisId="humidity"
-              label={{ value: 'Humidity (%)', angle: 90, position: 'insideRight' }}
-            />
-          )}
+          
           <Tooltip 
             allowEscapeViewBox={{ x: false, y: true }}
             offset={-80}
@@ -394,7 +323,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
               if (!props.active || !props.payload || !props.label) return null;
               
               // Group data by logger
-              const loggerData: { [key: string]: { temp?: number, humidity?: number } } = {};
+              const loggerData: { [key: string]: { temp?: number } } = {};
               
               props.payload.forEach((entry: any) => {
                 const loggerName = entry.dataKey?.split('_')[0];
@@ -406,8 +335,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                 
                 if (entry.dataKey?.includes('_temp')) {
                   loggerData[loggerName].temp = entry.value;
-                } else if (entry.dataKey?.includes('_humidity')) {
-                  loggerData[loggerName].humidity = entry.value;
                 }
               });
               
@@ -427,7 +354,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                   <div className="tooltip-content">
                     {Object.entries(loggerData).map(([loggerName, data]) => (
                       <div key={loggerName} className="tooltip-logger-line">
-                        {loggerName}: {data.temp !== undefined ? `${data.temp}°C` : 'N/A'}{data.humidity !== undefined ? `, ${data.humidity}% RH` : ''}
+                        {loggerName}: {data.temp !== undefined ? `${data.temp}°C` : 'N/A'}
                       </div>
                     ))}
                   </div>
@@ -441,7 +368,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
               if (!payload) return null;
               
               // Group by logger name
-              const loggerGroups: { [key: string]: { temp?: any, humidity?: any } } = {};
+              const loggerGroups: { [key: string]: { temp?: any } } = {};
               
               payload.forEach((entry: any) => {
                 const loggerName = entry.dataKey?.split('_')[0];
@@ -453,8 +380,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                 
                 if (entry.dataKey?.includes('_temp')) {
                   loggerGroups[loggerName].temp = entry;
-                } else if (entry.dataKey?.includes('_humidity')) {
-                  loggerGroups[loggerName].humidity = entry;
                 }
               });
               
@@ -476,26 +401,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
                           <span style={{ fontSize: '12px' }}>Temp</span>
                         </div>
                       )}
-                      {data.humidity && (
-                        <div style={{ display: 'flex', alignItems: 'center' }}>
-                          <svg 
-                            width="20" 
-                            height="5" 
-                            style={{ marginRight: '4px' }}
-                          >
-                            <line 
-                              x1="0" 
-                              y1="2.5" 
-                              x2="20" 
-                              y2="2.5" 
-                              stroke={data.humidity.color} 
-                              strokeWidth="4" 
-                              strokeDasharray="4 3"
-                            />
-                          </svg>
-                          <span style={{ fontSize: '12px' }}>Humidity</span>
-                        </div>
-                      )}
+                      
                     </div>
                   ))}
                 </div>
@@ -518,28 +424,7 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
             />
           ))}
 
-          {/* Humidity lines */}
-          {humidityVisible && humidityKeys.map((key, index) => {
-            // Find the matching temperature logger index to use the same color
-            const loggerName = key.split('_')[0];
-            const tempIndex = tempKeys.findIndex(tempKey => tempKey.split('_')[0] === loggerName);
-            const colorIndex = tempIndex >= 0 ? tempIndex : index;
-            
-            return (
-              <Line
-                key={key}
-                yAxisId="humidity"
-                type="monotone"
-                dataKey={key}
-                stroke={colors[colorIndex % colors.length]}
-                strokeWidth={2}
-                strokeDasharray="5 5"
-                dot={false}
-                name={`${loggerName} Humidity`}
-                connectNulls={false}
-              />
-            );
-          })}
+          
 
           {/* Threshold reference lines */}
           {thresholds.low !== null && (

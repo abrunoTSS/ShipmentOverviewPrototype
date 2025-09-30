@@ -69,10 +69,9 @@ export interface ExcursionMilestone {
 export interface LoggerTimeSeriesData {
   timestamp: string;
   temperature: number; // °C
-  humidity?: number; // % (only for Sentinel-100L/Sentinel-100L-100L loggers)
 }
 
-export type AlarmType = 'Humidity' | 'Light' | 'Pressure' | 'Shock' | 'Temperature' | 'Tilt';
+export type AlarmType = 'Temperature';
 
 export interface Alarm {
   alarmId: number;
