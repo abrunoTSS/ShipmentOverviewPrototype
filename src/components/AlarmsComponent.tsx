@@ -1,55 +1,29 @@
 import React, { useState } from 'react';
-import { ChevronDown, AlertTriangle, Thermometer, Droplets, Zap, Move, Gauge, Sun } from 'lucide-react';
-import type { ExcursionData } from '../utils/excursionMatcher';
+import { ChevronDown, AlertTriangle } from 'lucide-react';
+import type { Alarm } from '../types';
 
 interface AlarmsComponentProps {
-  alarms: ExcursionData[];
+  alarms: Alarm[];
 }
 
 export const AlarmsComponent: React.FC<AlarmsComponentProps> = ({ alarms }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!alarms || alarms.length === 0) {
+  console.log('AlarmsComponent received alarms:', alarms);
+
+  // Filter to only show single alarms
+  const singleAlarms = alarms.filter(alarm => alarm.isSingleAlarm);
+  
+  console.log('Filtered single alarms:', singleAlarms);
+
+  if (!singleAlarms || singleAlarms.length === 0) {
+    console.log('No single alarms to display');
     return null;
   }
-
-  const getSeverityClass = (alarmType: string) => {
-    switch (alarmType.toLowerCase()) {
-      case 'temperature': return 'excursion-severity-high';
-      case 'humidity': return 'excursion-severity-medium';
-      case 'shock': return 'excursion-severity-critical';
-      case 'tilt': return 'excursion-severity-high';
-      case 'pressure': return 'excursion-severity-medium';
-      case 'light': return 'excursion-severity-medium';
-      default: return 'excursion-severity-medium';
-    }
-  };
-
-  const getAlarmIcon = (alarmType: string) => {
-    switch (alarmType.toLowerCase()) {
-      case 'temperature': return <Thermometer size={16} />;
-      case 'humidity': return <Droplets size={16} />;
-      case 'shock': return <Zap size={16} />;
-      case 'tilt': return <Move size={16} />;
-      case 'pressure': return <Gauge size={16} />;
-      case 'light': return <Sun size={16} />;
-      default: return <AlertTriangle size={16} />;
-    }
-  };
 
   const formatTimestamp = (timestamp: string) => {
     return new Date(timestamp).toLocaleString();
   };
-
-  // Group alarms by alarm type
-  const groupedAlarms = alarms.reduce((groups, alarm) => {
-    const type = alarm.alarmType;
-    if (!groups[type]) {
-      groups[type] = [];
-    }
-    groups[type].push(alarm);
-    return groups;
-  }, {} as Record<string, ExcursionData[]>);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -60,7 +34,7 @@ export const AlarmsComponent: React.FC<AlarmsComponentProps> = ({ alarms }) => {
       <div className="excursions-header" onClick={toggleExpanded}>
         <div className="excursions-title">
           <AlertTriangle size={16} className="excursion-icon" />
-          <span>Alarms ({alarms.length})</span>
+          <span>Alarms ({singleAlarms.length})</span>
         </div>
         <div className={`excursions-arrow ${isExpanded ? 'expanded' : ''}`}>
           <ChevronDown size={16} />
@@ -69,40 +43,55 @@ export const AlarmsComponent: React.FC<AlarmsComponentProps> = ({ alarms }) => {
       
       {isExpanded && (
         <div className="excursions-content">
-          {Object.entries(groupedAlarms).map(([alarmType, typeAlarms]) => (
-            <div key={alarmType} className="excursion-type-group">
-              <div className="excursion-type-header">
-                {getAlarmIcon(alarmType)}
-                <h4>{alarmType} Alarms ({typeAlarms.length})</h4>
+          {singleAlarms.map((alarm, index) => (
+            <div key={`${alarm.loggerId}-${alarm.alarmId}-${index}`} className="excursion-item">
+              <div className="alarm-badges">
+                <div className="alarm-badge alarm-type-badge">
+                  <AlertTriangle size={14} />
+                  <span>SINGLE ALARM</span>
+                </div>
+                <div className={`alarm-badge severity-badge ${alarm.triggeredCondition?.condition === 'above' ? 'severity-high' : 'severity-low'}`}>
+                  <span>{alarm.triggeredCondition?.condition === 'above' ? 'HIGH' : 'LOW'}</span>
+                </div>
               </div>
-              {typeAlarms.map((alarm, index) => (
-                <div key={`${alarm.loggerId}-${index}`} className="excursion-item">
-                  <div className="excursion-header">
-                    <div className="excursion-logger">
-                      <strong>Unit S/N:</strong> {alarm.loggerId}
-                    </div>
-                  </div>
-                  <div className="excursion-details">
-                    <div className="excursion-detail-row">
-                      <div className="excursion-detail">
-                        <span><strong>Start Time:</strong> {formatTimestamp(alarm.excursion.startTime)}</span>
-                      </div>
-                    </div>
-                    <div className="excursion-detail-row">
-                      <div className="excursion-detail">
-                        <span><strong>Duration:</strong> {alarm.excursion.duration}</span>
-                      </div>
-                    </div>
-                    {alarm.excursion.temperatureProfile && (
-                      <div className="excursion-detail-row">
-                        <div className="excursion-detail">
-                          <span><strong>Profile:</strong> {alarm.excursion.temperatureProfile}</span>
-                        </div>
-                      </div>
-                    )}
+              
+              <div className="excursion-header">
+                <div className="excursion-logger">
+                  <strong>Unit S/N:</strong> {alarm.loggerId}
+                </div>
+              </div>
+
+              <div className="excursion-details">
+                <div className="excursion-detail-row">
+                  <div className="excursion-detail">
+                    <span><strong>Trigger Timestamp:</strong> {alarm.triggeredAt ? formatTimestamp(alarm.triggeredAt) : 'N/A'}</span>
                   </div>
                 </div>
-              ))}
+                
+                {alarm.triggeredCondition && (
+                  <div className="excursion-detail-row">
+                    <div className="excursion-detail">
+                      <span><strong>Alarm Trigger:</strong> {alarm.triggeredCondition.condition === 'above' ? 'High' : 'Low'} Threshold ({alarm.triggeredCondition.temperature}°C)</span>
+                    </div>
+                  </div>
+                )}
+                
+                {alarm.temperatureAtTrigger !== undefined && (
+                  <div className="excursion-detail-row">
+                    <div className="excursion-detail">
+                      <span><strong>Temperature at Trigger:</strong> {alarm.temperatureAtTrigger}°C</span>
+                    </div>
+                  </div>
+                )}
+                
+                {alarm.triggeredCondition?.durationMinutes !== undefined && (
+                  <div className="excursion-detail-row">
+                    <div className="excursion-detail">
+                      <span><strong>Duration Threshold:</strong> {alarm.triggeredCondition.durationMinutes} minutes</span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>

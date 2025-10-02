@@ -114,7 +114,7 @@
 /* Visibility cell styling */
 .visibility-cell {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
   padding: 4px;
 }
@@ -158,15 +158,15 @@
 
 /* Specific column widths (match current column order) */
 /* 1: Visibility, 2: UNIT S/N (SERIAL NUMBER), 3: Delivery Number, 4: Logger Type,
-   5: Mission Started, 6: Mission Ended, 7: Temp Profile, 8: Alarm Type,
+   5: Temp Profile, 6: Mission Started, 7: Mission Ended, 8: Alarm Type,
    9: Evaluation, 10: Expand */
 
 /* Visibility */
 .nested-table th:nth-child(1),
 .nested-table td:nth-child(1) {
-  width: 90px;
+  width: 80px;
   min-width: 80px;
-  max-width: 110px;
+  max-width: 80px;
 }
 
 /* Combined UNIT S/N (SERIAL NUMBER) */
@@ -193,21 +193,21 @@
   max-width: 160px;
 }
 
-/* Mission Started & Mission Ended */
+/* Temp Profile */
 .nested-table th:nth-child(5),
-.nested-table td:nth-child(5),
-.nested-table th:nth-child(6),
-.nested-table td:nth-child(6) {
-  width: 160px;
-  min-width: 150px;
+.nested-table td:nth-child(5) {
+  width: 90px;
+  min-width: 80px;
+  max-width: 120px;
 }
 
-/* Temp Profile */
+/* Mission Started & Mission Ended */
+.nested-table th:nth-child(6),
+.nested-table td:nth-child(6),
 .nested-table th:nth-child(7),
 .nested-table td:nth-child(7) {
-  width: 120px;
-  min-width: 110px;
-  max-width: 160px;
+  width: 160px;
+  min-width: 150px;
 }
 
 /* Alarm Type */

@@ -53,6 +53,15 @@
   margin-top: 12px;
 }
 
+/* Alarm milestone dot styling */
+.alarm-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #dc2626;
+  border: 2px solid #ffffff;
+}
+
 .shipment-report-link {
   display: block;
   background-color: #e9ecef;

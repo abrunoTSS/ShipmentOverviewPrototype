@@ -68,6 +68,10 @@ export function LoggerTable({
       id: 'visibility',
       header: () => (
         <div className="visibility-header">
+          <div className="visibility-label">
+            <div>Display</div>
+            <div>in Graph</div>
+          </div>
           <input
             type="checkbox"
             checked={allVisible}
@@ -77,10 +81,6 @@ export function LoggerTable({
             onChange={(e) => handleMasterCheckboxChange(e.target.checked)}
             className="master-checkbox"
           />
-          <div className="visibility-label">
-            <div>Display</div>
-            <div>in Graph</div>
-          </div>
         </div>
       ),
       cell: ({ row }) => (
@@ -155,8 +155,31 @@ export function LoggerTable({
       ),
       accessorKey: 'loggerType',
       cell: ({ getValue, row }) => {
-        const value = getValue() as string;
+        const value = getValue() as string
         const cellId = `${row.original.loggerId}-loggerType`;
+        return (
+          <div 
+            className="table-cell-content"
+            onMouseEnter={() => setHoveredCell(cellId)}
+            onMouseLeave={() => setHoveredCell(null)}
+            title={hoveredCell === cellId ? value : undefined}
+          >
+            {value}
+          </div>
+        );
+      },
+    },
+    {
+      id: 'tempProfile',
+      header: () => (
+        <div className="column-header temp-profile-header">
+          <div>Profile Type</div>
+        </div>
+      ),
+      accessorKey: 'tempProfile',
+      cell: ({ getValue, row }) => {
+        const value = getValue() as string;
+        const cellId = `${row.original.loggerId}-tempProfile`;
         return (
           <div 
             className="table-cell-content"
@@ -320,17 +343,8 @@ export function LoggerTable({
         }
         
         return (
-          <div 
-            className="table-cell-content alarm-icons-container"
-            onMouseEnter={() => setHoveredCell(cellId)}
-            onMouseLeave={() => setHoveredCell(null)}
-            title={hoveredCell === cellId ? alarmTypes.join(', ') : undefined}
-          >
-            {alarmTypes.map((alarmType, index) => (
-              <span key={index} className="alarm-icon-wrapper">
-                {getAlarmIcon(alarmType, 16)}
-              </span>
-            ))}
+          <div className="table-cell-content">
+            {alarmTypes.length > 0 ? alarmTypes.join(', ') : ''}
           </div>
         );
       },

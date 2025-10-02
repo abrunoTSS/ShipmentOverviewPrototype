@@ -11,6 +11,12 @@ export interface ExcursionData {
     duration: string;
     type: string;
     temperatureProfile?: string;
+    triggeredCondition?: {
+      condition: string;
+      temperature: number;
+      durationMinutes: number;
+    };
+    temperatureAtTrigger?: number;
   };
   // Flags that describe how this excursion relates to the current milestone
   isStartOfExcursion?: boolean;
@@ -24,14 +30,20 @@ export interface MilestoneWithExcursions extends Milestone {
 
 /**
  * Matches excursion events to shipment milestones based on timestamp overlap
+ * and integrates single alarms into existing milestones
  */
 export function matchExcursionsToMilestones(shipment: Shipment): MilestoneWithExcursions[] {
+  console.log('Processing shipment:', shipment.shipmentId);
+  console.log('Raw milestones:', shipment.milestones);
+  
   const milestonesWithExcursions: MilestoneWithExcursions[] = (shipment.milestones || []).map(milestone => ({
     ...milestone,
     excursions: []
   }));
+  
+  console.log('Milestones with excursions initialized:', milestonesWithExcursions);
 
-  // Build milestone windows for overlap checks
+  // Build milestone windows for overlap checks (use original milestones, not merged ones)
   const milestoneWindows = milestonesWithExcursions.map((m, idx) => {
     const startStr = (m as any).arrivalTime || (m as any).arrived || '';
     const endStr = (m as any).departedTime || (m as any).departed || '';
@@ -46,7 +58,7 @@ export function matchExcursionsToMilestones(shipment: Shipment): MilestoneWithEx
 
   const allExcursions: ExcursionData[] = [];
   
-  // Extract excursions from logger alarms
+  // Extract excursions from logger alarms AND create pseudo-excursions for single alarms
   shipment.loggerData.forEach(logger => {
     if (logger.alarms && Array.isArray(logger.alarms)) {
       logger.alarms.forEach(alarm => {
@@ -55,6 +67,23 @@ export function matchExcursionsToMilestones(shipment: Shipment): MilestoneWithEx
             loggerId: logger.loggerId,
             alarmType: alarm.alarmType,
             excursion: alarm.excursion
+          });
+        } else if (alarm.isSingleAlarm && alarm.triggeredAt) {
+          // Create a pseudo-excursion for single alarms to integrate them into milestones
+          allExcursions.push({
+            loggerId: logger.loggerId,
+            alarmType: 'Single',
+            excursion: {
+              id: alarm.alarmId,
+              highest: `${alarm.temperatureAtTrigger}°C`,
+              startTime: alarm.triggeredAt,
+              endTime: alarm.triggeredAt, // Same as start for single alarms
+              duration: "Single Alarm",
+              type: "Single Alarm",
+              temperatureProfile: `${alarm.triggeredCondition?.condition} ${alarm.triggeredCondition?.temperature}°C`,
+              triggeredCondition: alarm.triggeredCondition,
+              temperatureAtTrigger: alarm.temperatureAtTrigger
+            }
           });
         }
       });

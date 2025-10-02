@@ -46,13 +46,28 @@ input[type="checkbox"] {
   color: #718096;
 }
 
-/* Table container */
+/* Table container - Responsive */
 .table-container {
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   overflow-x: auto;
   border: 1px solid #e2e8f0;
+  width: 100%;
+}
+
+/* Responsive table wrapper */
+@media (max-width: 1400px) {
+  .table-container {
+    overflow-x: scroll;
+  }
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    border-radius: 8px;
+    margin: 0 -8px;
+  }
 }
 
 /* Nested table */
@@ -65,9 +80,6 @@ input[type="checkbox"] {
   background: #f1f8ff;
   table-layout: fixed;
 }
-
-
-
 
 .nested-table-container {
   width: 100% !important;
@@ -103,12 +115,12 @@ input[type="checkbox"] {
   white-space: nowrap;
 }
 
-/* Main table */
+/* Main table - Responsive Design */
 .main-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1400px;
-  table-layout: fixed;
+  table-layout: auto;
+  min-width: 800px; /* Reduced minimum width */
 }
 
 .main-table thead {
@@ -117,16 +129,14 @@ input[type="checkbox"] {
 }
 
 .main-table th {
-  padding: 16px 8px;
+  padding: 12px 8px;
   text-align: left;
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   vertical-align: top;
-  white-space: normal;
-  word-break: keep-all;
-  overflow-wrap: normal;
+  white-space: nowrap;
   line-height: 1.2;
 }
 
@@ -145,32 +155,126 @@ input[type="checkbox"] {
 }
 
 .main-table td {
-  padding: 16px 8px;
+  padding: 12px 8px;
   vertical-align: top;
   font-size: 0.75rem;
   font-weight: normal;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  white-space: normal;
-  word-wrap: normal;
-  overflow-wrap: normal;
-  word-break: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   line-height: 1.4;
-  min-height: 60px;
   text-align: left;
-  hyphens: auto;
 }
 
-/* Column width specifications */
-.main-table th:nth-child(1), .main-table td:nth-child(1) { width: 40px;  } /* Shipping Number */
-.main-table th:nth-child(2), .main-table td:nth-child(2) { width: 150px; } /* Origin */
-.main-table th:nth-child(3), .main-table td:nth-child(3) { width: 160px; } /* Destination */
-.main-table th:nth-child(4), .main-table td:nth-child(4) { width: 160px; } /* Status */
-.main-table th:nth-child(5), .main-table td:nth-child(5) { width: 120px; } /* FF */
-.main-table th:nth-child(6), .main-table td:nth-child(6) { width: 100px; } /* Mode of Transport */
-.main-table th:nth-child(7), .main-table td:nth-child(7) { width: 150px; } /* Packaging Type */
-.main-table th:nth-child(8), .main-table td:nth-child(8) { width: 150px; } /* Total Alarms */
-.main-table th:nth-child(9), .main-table td:nth-child(9) { width: 150px; } /* RCAS */
-.main-table th:nth-child(10), .main-table td:nth-child(10) { width: 150px; } /* Expand icon */
+/* Responsive column widths */
+.main-table th:nth-child(1), .main-table td:nth-child(1) { 
+  width: 50px; 
+  min-width: 50px;
+} /* Select checkbox */
+
+.main-table th:nth-child(2), .main-table td:nth-child(2) { 
+  width: 120px; 
+  min-width: 100px;
+} /* Shipping Number */
+
+.main-table th:nth-child(3), .main-table td:nth-child(3) { 
+  width: 120px; 
+  min-width: 100px;
+} /* Origin */
+
+.main-table th:nth-child(4), .main-table td:nth-child(4) { 
+  width: 120px; 
+  min-width: 100px;
+} /* Destination */
+
+.main-table th:nth-child(5), .main-table td:nth-child(5) { 
+  width: 100px; 
+  min-width: 80px;
+} /* Status */
+
+.main-table th:nth-child(6), .main-table td:nth-child(6) { 
+  width: 130px; 
+  min-width: 110px;
+} /* Freight Forwarder */
+
+.main-table th:nth-child(7), .main-table td:nth-child(7) { 
+  width: 110px; 
+  min-width: 90px;
+} /* Mode of Transport */
+
+.main-table th:nth-child(8), .main-table td:nth-child(8) { 
+  width: 140px; 
+  min-width: 120px;
+} /* Packaging Solution */
+
+.main-table th:nth-child(9), .main-table td:nth-child(9) { 
+  width: 130px; 
+  min-width: 110px;
+} /* Loggers Alarmed */
+
+.main-table th:nth-child(10), .main-table td:nth-child(10) { 
+  width: 100px; 
+  min-width: 80px;
+} /* Evaluation */
+
+.main-table th:nth-child(11), .main-table td:nth-child(11) { 
+  width: 50px; 
+  min-width: 50px;
+} /* Expand icon */
+
+/* Mobile responsiveness */
+@media (max-width: 1200px) {
+  .main-table {
+    min-width: 700px;
+  }
+  
+  .main-table th,
+  .main-table td {
+    padding: 8px 6px;
+    font-size: 0.7rem;
+  }
+  
+  /* Hide less critical columns on smaller screens */
+  .main-table th:nth-child(7), 
+  .main-table td:nth-child(7),
+  .main-table th:nth-child(8), 
+  .main-table td:nth-child(8) {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-table {
+    min-width: 600px;
+  }
+  
+  /* Hide more columns on very small screens */
+  .main-table th:nth-child(6), 
+  .main-table td:nth-child(6),
+  .main-table th:nth-child(10), 
+  .main-table td:nth-child(10) {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-table {
+    min-width: 500px;
+  }
+  
+  .main-table th,
+  .main-table td {
+    padding: 6px 4px;
+    font-size: 0.65rem;
+  }
+  
+  /* Show only essential columns on mobile */
+  .main-table th:nth-child(5), 
+  .main-table td:nth-child(5) {
+    display: none;
+  }
+}
 
 /* Ensure all table headers and cells are left-aligned */
 .table th,

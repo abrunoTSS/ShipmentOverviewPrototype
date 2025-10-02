@@ -71,6 +71,18 @@ export const ExcursionsComponent: React.FC<ExcursionsComponentProps> = ({ excurs
               </div>
               {typeExcursions.map((excursion, index) => (
                 <div key={`${excursion.loggerId}-${index}`} className="excursion-item">
+                  {excursion.spansMultipleMilestones && (
+                    <div className="alarm-badges">
+                      <div className="alarm-badge alarm-type-badge">
+                        <AlertTriangle size={14} />
+                        <span>CUMULATIVE ALARM</span>
+                      </div>
+                      <div className="alarm-badge severity-badge severity-high">
+                        <span>HIGH</span>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div className="excursion-header">
                     <div className="excursion-logger">
                       <strong>Unit S/N:</strong> {excursion.loggerId}
@@ -109,20 +121,20 @@ export const ExcursionsComponent: React.FC<ExcursionsComponentProps> = ({ excurs
                   <div className="excursion-detail-row">
                     <div className="excursion-detail" style={{ fontStyle: 'italic', color: '#6b7280' }}>
                       {excursion.isStartOfExcursion && !excursion.isEndOfExcursion && (
-                        <span>This excursion continues across multiple milestones.</span>
+                        <span>This excursion contributed to a cumulative alarm</span>
                       )}
                       {!excursion.isStartOfExcursion && excursion.isEndOfExcursion && (
-                        <span>This excursion concluded after spanning multiple milestones.</span>
+                        <span>This excursion contributed to a cumulative alarm</span>
                       )}
                       {!excursion.isStartOfExcursion && !excursion.isEndOfExcursion && (
-                        <span>This excursion continues across multiple milestones.</span>
+                        <span>This excursion contributed to a cumulative alarm</span>
                       )}
                     </div>
                   </div>
                 )}
-              </div>
-            </div>
-          ))}
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>

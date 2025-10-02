@@ -71,13 +71,18 @@ export interface LoggerTimeSeriesData {
   temperature: number; // °C
 }
 
-export type AlarmType = 'Temperature';
+export type AlarmType = 'Temperature' | 'Single';
 
 export interface Alarm {
   alarmId: number;
   alarmType: AlarmType;
   errorMessage?: string;
-  excursion: Excursion;
+  excursion?: Excursion; // Optional for backward compatibility
+  isSingleAlarm?: boolean; // Flag to distinguish single alarms
+  triggeredCondition?: AlarmCondition; // The specific condition that triggered this alarm
+  triggeredAt?: string; // Timestamp when the condition was met
+  temperatureAtTrigger?: number; // Temperature at the moment of trigger (°C)
+  loggerId?: string; // Logger ID for milestone integration
 }
 
 export interface AlarmCondition {

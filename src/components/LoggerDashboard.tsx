@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { X, Plane, Truck, Ship } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import { matchExcursionsToMilestones } from '../utils/excursionMatcher';
-import { ExcursionsComponent } from './ExcursionsComponent';
 import { AlarmsComponent } from './AlarmsComponent';
 import './loggerDashboard.css';
 import './ExcursionsComponent.css';
@@ -47,7 +46,6 @@ interface LoggerDashboardProps {
 }
 
 const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isOpen, onClose }) => {
-  const [activeTab, setActiveTab] = useState<number>(0);
 
   // Match excursions to milestones
   const milestonesWithExcursions = useMemo(() => {
@@ -56,8 +54,12 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     console.log('Shipment:', shipment.shipmentId);
     console.log('Milestones with excursions:', result);
     console.log('Logger data:', shipment.loggerData);
+    console.log('Current logger:', logger);
+    if (logger) {
+      console.log('Logger alarms:', logger.alarms);
+    }
     return result;
-  }, [shipment]);
+  }, [shipment, logger]);
 
 
   if (!isOpen || !shipment) {
@@ -138,7 +140,13 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                 {milestonesWithExcursions.map((milestone, index) => (
                   <div key={index} className="milestone-item">
                     <div className={`milestone-icon ${milestone.status.toLowerCase()}`}>
-                      {milestone.transportMode ? getTransportIcon(milestone.transportMode) : <div className="milestone-dot-fallback"></div>}
+                      {milestone.type === 'alarm' ? (
+                        <div className="milestone-dot-fallback alarm-dot"></div>
+                      ) : milestone.transportMode ? (
+                        getTransportIcon(milestone.transportMode)
+                      ) : (
+                        <div className="milestone-dot-fallback"></div>
+                      )}
                     </div>
                     <div className="milestone-content">
                       <div className="milestone-header">
@@ -242,17 +250,23 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                           </div>
                         )}
                         
-                        {/* Add Excursions Component for temperature excursions only */}
-                        {milestone.excursions && milestone.excursions.filter(exc => exc.alarmType.toLowerCase() === 'temperature').length > 0 && (
-                          <div className="milestone-excursions">
-                            <ExcursionsComponent excursions={milestone.excursions.filter(exc => exc.alarmType.toLowerCase() === 'temperature')} />
-                          </div>
-                        )}
-                        
-                        {/* Add Alarms Component for non-temperature alarms */}
-                        {milestone.excursions && milestone.excursions.filter(exc => exc.alarmType.toLowerCase() !== 'temperature').length > 0 && (
+                        {/* Display single alarms for this milestone */}
+                        {milestone.excursions && milestone.excursions.length > 0 && (
                           <div className="milestone-alarms">
-                            <AlarmsComponent alarms={milestone.excursions.filter(exc => exc.alarmType.toLowerCase() !== 'temperature')} />
+                            <AlarmsComponent alarms={milestone.excursions.filter(exc => exc.alarmType === 'Single').map(exc => ({
+                              alarmId: exc.excursion.id,
+                              alarmType: 'Single' as const,
+                              isSingleAlarm: true,
+                              triggeredCondition: exc.excursion.triggeredCondition ? {
+                                condition: exc.excursion.triggeredCondition.condition as 'above' | 'below',
+                                temperature: exc.excursion.triggeredCondition.temperature,
+                                durationMinutes: exc.excursion.triggeredCondition.durationMinutes
+                              } : undefined,
+                              triggeredAt: exc.excursion.startTime,
+                              temperatureAtTrigger: exc.excursion.temperatureAtTrigger,
+                              loggerId: exc.loggerId,
+                              errorMessage: `Single alarm: ${exc.excursion.type}`
+                            }))} />
                           </div>
                         )}
                         
@@ -268,90 +282,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
           {logger && Array.isArray(logger.alarms) && logger.alarms.length > 0 && (
             <div className="dashboard-section">
               <h3 className="section-title">Alarms</h3>
-              <div className="tabs">
-                {logger.alarms.map((alarm, index) => (
-                  <button 
-                    key={alarm.alarmId}
-                    className={`tab-button ${activeTab === index ? 'active' : ''}`}
-                    onClick={() => setActiveTab(index)}
-                  >
-                    {`Alarm ${index + 1}: ${alarm.alarmType}`}
-                  </button>
-                ))}
-              </div>
-
-              <div className="milestone-timeline">
-                {logger.alarms[activeTab]?.excursion && (
-                  <div className="excursion-details">
-                    <h4>Excursion Details</h4>
-                    <p><strong>Type:</strong> {logger.alarms[activeTab].excursion.type}</p>
-                    <p><strong>Highest:</strong> {logger.alarms[activeTab].excursion.highest}</p>
-                    <p><strong>Start Time:</strong> {logger.alarms[activeTab].excursion.startTime}</p>
-                    <p><strong>End Time:</strong> {logger.alarms[activeTab].excursion.endTime}</p>
-                    <p><strong>Duration:</strong> {logger.alarms[activeTab].excursion.duration}</p>
-                    {logger.alarms[activeTab].excursion.temperatureProfile && (
-                      <p><strong>Temperature Profile:</strong> {logger.alarms[activeTab].excursion.temperatureProfile}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-
-
-          {logger && logger.rootCauseAnalysisStatusDetails && (
-            <div className="dashboard-section">
-              <h3 className="section-title">Root Cause Analysis</h3>
-              <div className="rca-status">
-                <span className={`status-dot ${logger.rootCauseAnalysisStatusDetails.status.toLowerCase().replace(/\s+/g, '-')}`}></span>
-                <span>{logger.rootCauseAnalysisStatusDetails.status}</span>
-              </div>
-              
-              <div className="rca-details">
-                {/* RCA fields from the type definition */}
-                {logger.rootCauseAnalysisStatusDetails.UTCDateStarted && (
-                  <div className="info-item">
-                    <span className="info-label">Date Started</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.UTCDateStarted}</span>
-                  </div>
-                )}
-                {logger.rootCauseAnalysisStatusDetails.evaluatedBy && (
-                  <div className="info-item">
-                    <span className="info-label">Evaluated By</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.evaluatedBy}</span>
-                  </div>
-                )}
-                {logger.rootCauseAnalysisStatusDetails.type && (
-                  <div className="info-item">
-                    <span className="info-label">Type</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.type}</span>
-                  </div>
-                )}
-                {logger.rootCauseAnalysisStatusDetails.evaluationType && (
-                  <div className="info-item">
-                    <span className="info-label">Evaluation Type</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.evaluationType}</span>
-                  </div>
-                )}
-                {logger.rootCauseAnalysisStatusDetails.primaryRootCause && (
-                  <div className="info-item">
-                    <span className="info-label">Primary Root Cause</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.primaryRootCause}</span>
-                  </div>
-                )}
-                {logger.rootCauseAnalysisStatusDetails.secondaryRootCause && (
-                  <div className="info-item">
-                    <span className="info-label">Secondary Root Cause</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.secondaryRootCause}</span>
-                  </div>
-                )}
-                {logger.rootCauseAnalysisStatusDetails.reason && (
-                  <div className="info-item full-width">
-                    <span className="info-label">Reason</span>
-                    <span className="info-value">{logger.rootCauseAnalysisStatusDetails.reason}</span>
-                  </div>
-                )}
-              </div>
+              <AlarmsComponent alarms={logger.alarms} />
             </div>
           )}
         </div>
