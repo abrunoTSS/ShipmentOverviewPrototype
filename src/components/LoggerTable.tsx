@@ -43,7 +43,6 @@ const getAlarmIcon = (alarmType: string, size: number = 16) => {
 
 export function LoggerTable({ 
   loggers, 
-  onLoggerClick, 
   selectedLoggerId, 
   visibleLoggers = new Set(loggers.map(l => l.loggerId)), 
   onLoggerVisibilityChange,
@@ -324,7 +323,6 @@ export function LoggerTable({
       ),
       cell: ({ row }) => {
         const logger = row.original;
-        const cellId = `${logger.loggerId}-alarms`;
         
         // Only show alarm icons if there are actual alarms, not just alarm types
         let alarmTypes: string[] = [];

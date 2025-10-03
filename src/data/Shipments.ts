@@ -145,49 +145,11 @@ function generateTimeSeriesData(
   return data;
 }
 
-// Helper to generate time-series with sustained high temperature from a specific timestamp
-function generateTempDataWithSustainedHigh(
-  startDate: string,
-  endDate: string | null,
-  loggerType: string,
-  baseTemp: number = 6,
-  _baseHumidity: number = 45,
-  sustainStartISO: string,
-  sustainTemp: number = 25
-): LoggerTimeSeriesData[] {
-  const data: LoggerTimeSeriesData[] = [];
-  const start = new Date(startDate);
-  const end = endDate ? new Date(endDate) : new Date();
-  const sustainStart = new Date(sustainStartISO);
-
-  const intervalMs = 15 * 60 * 1000;
-  let current = new Date(start);
-
-  while (current <= end) {
-    let temperature = baseTemp + (Math.random() - 0.5) * 2;
-
-    if (current >= sustainStart) {
-      // Hold around sustainTemp with small jitter
-      temperature = sustainTemp + (Math.random() - 0.5) * 0.6;
-    }
-
-    const dataPoint: LoggerTimeSeriesData = {
-      timestamp: current.toISOString(),
-      temperature: Math.round(temperature * 10) / 10,
-    };
-
-    data.push(dataPoint);
-    current = new Date(current.getTime() + intervalMs);
-  }
-
-  return data;
-}
 
 // Helper function to generate temperature data with specific alarm spikes
 function generateTempDataWithAlarmSpikes(
   startDate: string,
   endDate: string | null,
-  loggerType: string,
   baseTemp: number = 6,
   _baseHumidity: number = 45,
   alarmSpikes: Array<{
@@ -259,7 +221,6 @@ function generateTempDataWithAlarmSpikes(
 function generateTempDataWithMissionEndIssue(
   startDate: string, 
   normalEndDate: string,
-  loggerType: string,
   baseTemp: number = 6
 ): LoggerTimeSeriesData[] {
   const data: LoggerTimeSeriesData[] = [];
@@ -348,16 +309,6 @@ export const shipments: Shipment[] = [
         vehicleNumber: "T1234",
       },
       {
-        type: "alarm",
-        location: "Hamburg, Germany",
-        status: "Completed",
-        milestoneName: "High Temperature Alarm - Logger LG-1001",
-        groundHandler: "Geodis",
-        arrived: "2025-09-22T12:30:00+02:00",
-        transportMode: "Road",
-        vehicleNumber: "T1234",
-      },
-      {
         type: "milestone",
         location: "In Transit",
         status: "Current",
@@ -374,7 +325,6 @@ export const shipments: Shipment[] = [
         milestoneName: "Arrival in Berlin",
         groundHandler: "Geodis",
         eta: "2025-09-23T08:00:00+02:00",
-        etd: "2025-09-23T10:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "T1234",
       }
@@ -501,7 +451,7 @@ export const shipments: Shipment[] = [
         deliveryId: "DLV-002",
         tempProfile: "Frozen",
         serialNumber: 1,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, "Sentinel-100L-100L", -18, 5, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, -18, 5, [
           {
             startTime: "2025-09-22 10:00",
             endTime: "2025-09-22 12:45",
@@ -546,7 +496,7 @@ export const shipments: Shipment[] = [
         ],
         evaluation: "Not Started",
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, "Sentinel-100L", -18, 5, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-09-22T08:00:00Z", null, -18, 5, [
           {
             startTime: "2025-09-22 14:00",
             endTime: "2025-09-22 16:45",
@@ -643,7 +593,7 @@ export const shipments: Shipment[] = [
         ],
         evaluation: "Not Started",
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "webLogger-II", 6, 45, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", 6, 45, [
           {
             startTime: "2025-07-15 09:00",
             endTime: "2025-07-15 10:15",
@@ -680,7 +630,7 @@ export const shipments: Shipment[] = [
         ],
         evaluation: "Not Started",
         rootCauseAnalysisStatusDetails: null,
-        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", "webLogger-II", 8, 50, [
+        timeSeriesData: generateTempDataWithAlarmSpikes("2025-07-10T08:00:00Z", "2025-07-20T08:00:00Z", 8, 50, [
           {
             startTime: "2025-07-15 09:00",
             endTime: "2025-07-15 10:15",
@@ -763,8 +713,6 @@ export const shipments: Shipment[] = [
         status: "Pending",
         milestoneName: "Arrival in Madrid",
         groundHandler: "DHL",
-        arrived: undefined,
-        departed: undefined,
         eta: "2025-09-23T10:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "T2456",
@@ -867,7 +815,6 @@ export const shipments: Shipment[] = [
         milestoneName: "Arrival in Paris",
         groundHandler: "DHL",
         arrived: "2025-09-18T18:00:00+02:00",
-        departed: "2025-09-20T02:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "DHL-T789",
       }
@@ -1090,7 +1037,6 @@ export const shipments: Shipment[] = [
         timeSeriesData: generateTempDataWithMissionEndIssue(
           "2025-09-18T06:00:00Z",
           "2025-09-20T02:00:00Z",
-          "Sentinel-100L",
           -20
         ),
         productDetails: {
@@ -1154,7 +1100,6 @@ export const shipments: Shipment[] = [
         milestoneName: "Arrival in Brussels",
         groundHandler: "Geodis",
         eta: "2025-09-25T08:00:00+02:00",
-        etd: "2025-09-25T10:00:00+02:00",
         transportMode: "Road",
         vehicleNumber: "FX-T456",
       }

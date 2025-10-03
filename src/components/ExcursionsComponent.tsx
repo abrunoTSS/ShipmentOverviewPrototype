@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronDown, AlertTriangle, Thermometer, Clock, Droplets, Zap } from 'lucide-react';
+import { ChevronDown, AlertTriangle, Thermometer, Droplets, Zap } from 'lucide-react';
 import type { ExcursionData } from '../utils/excursionMatcher';
 
 interface ExcursionsComponentProps {
@@ -13,14 +13,6 @@ export const ExcursionsComponent: React.FC<ExcursionsComponentProps> = ({ excurs
     return null;
   }
 
-  const getSeverityClass = (alarmType: string) => {
-    switch (alarmType.toLowerCase()) {
-      case 'temperature': return 'excursion-severity-high';
-      case 'humidity': return 'excursion-severity-medium';
-      case 'shock': return 'excursion-severity-critical';
-      default: return 'excursion-severity-medium';
-    }
-  };
 
   const getExcursionIcon = (alarmType: string) => {
     switch (alarmType.toLowerCase()) {

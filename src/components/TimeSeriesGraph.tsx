@@ -34,11 +34,10 @@ interface GraphState {
 
 const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({ 
   loggers, 
-  shipment, 
   height = 400, 
   className = '' 
 }) => {
-  const [temperatureVisible, setTemperatureVisible] = useState(true);
+  const [temperatureVisible] = useState(true);
   // Get threshold values from loggers
   const thresholds = React.useMemo(() => {
     const thresholdValues: { low: number | null, high: number | null } = { low: null, high: null };
@@ -235,8 +234,6 @@ const TimeSeriesGraph: React.FC<TimeSeriesGraphProps> = ({
     refAreaRight,
     left,
     right,
-    top,
-    bottom,
   } = state;
 
   // Check if any loggers have time series data
