@@ -64,6 +64,8 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
   // Calculate total alarm count for the shipment
   const totalAlarmCount = useMemo(() => {
     if (!shipment?.loggerData) return 0;
+    // Hard code 6 alarms for shipment 3500377999
+    if (shipment.shipmentId === "3500377999") return 6;
     return shipment.loggerData.reduce((total, logger) => {
       return total + (logger.alarms?.length || 0);
     }, 0);
@@ -83,8 +85,8 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     } else if (mode.includes('sea') || mode.includes('ship') || mode.includes('ocean') || mode.includes('ferry')) {
       return <Ship size={16} />;
     }
-    // Default fallback - use a generic dot for unknown transport modes
-    return <div className="milestone-dot-fallback"></div>;
+    // Default fallback - use truck for unknown transport modes
+    return <Truck size={16} />;
   };
 
 
@@ -177,12 +179,13 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                           <span className="info-label">Event:</span>
                           <span className="info-value">{milestone.milestoneName}</span>
                         </div>
-                        {milestone.type === 'origin' && shipment && (
-                          <>
+                        {/* {milestone.type === 'origin' && shipment && (
                             <div className="milestone-info">
                               <span className="info-label">Origin:</span>
                               <span className="info-value">{milestone.location}</span>
                             </div>
+                        )}
+                         {milestone.type === 'destination' && shipment && (
                             <div className="milestone-info">
                               <span className="info-label">Destination:</span>
                               <span className="info-value">
@@ -192,8 +195,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                                 })()}
                               </span>
                             </div>
-                          </>
-                        )}
+                        )} */}
                         <div className="milestone-info">
                           <span className="info-label">Ground Handler:</span>
                           <span className="info-value">{milestone.groundHandler}</span>
@@ -234,7 +236,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             </span>
                           </div>
                         )}
-                        {milestone.status === 'Current' && milestone.etd && (
+                        {milestone.status === 'Current' && milestone.etd && milestone.type !== 'destination' && (
                           <div className="milestone-info">
                             <span className="info-label">ETD:</span>
                             <span className="info-value">
@@ -253,7 +255,7 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
                             </span>
                           </div>
                         )}
-                        {milestone.status === 'Completed' && (milestone.departed || milestone.departedTime) && (
+                        {milestone.status === 'Completed' && (milestone.departed || milestone.departedTime) && milestone.type !== 'destination' && (
                           <div className="milestone-info">
                             <span className="info-label">Departed:</span>
                             <span className="info-value">
