@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { X, Plane, Truck, Ship } from 'lucide-react';
+import { X, Plane, Truck, Ship, AlertTriangle } from 'lucide-react';
 import type { Shipment, Logger } from '../types';
 import { matchExcursionsToMilestones } from '../utils/excursionMatcher';
 import { AlarmsComponent } from './AlarmsComponent';
@@ -61,6 +61,13 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
     return result;
   }, [shipment, logger]);
 
+  // Calculate total alarm count for the shipment
+  const totalAlarmCount = useMemo(() => {
+    if (!shipment?.loggerData) return 0;
+    return shipment.loggerData.reduce((total, logger) => {
+      return total + (logger.alarms?.length || 0);
+    }, 0);
+  }, [shipment]);
 
   if (!isOpen || !shipment) {
     return null;
@@ -126,7 +133,15 @@ const LoggerDashboard: React.FC<LoggerDashboardProps> = ({ shipment, logger, isO
 
           {/* Shipping Milestones Section */}
           <div className="dashboard-section">
-            <h3 className="section-title">Shipping Milestones</h3>
+            <h3 className="section-title">
+              Shipping Milestones
+              {totalAlarmCount > 0 && (
+                <span className="alarm-indicator">
+                  <AlertTriangle size={16} className="warning-icon" />
+                  <span className="alarm-count">Total Alarms: {totalAlarmCount}</span>
+                </span>
+              )}
+            </h3>
             
             {/* Error message for shipments with missing milestone data */}
             {(shipment.shipmentId === "SH014" || shipment.shipmentId === "SH015") && (
