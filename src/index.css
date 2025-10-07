@@ -947,6 +947,24 @@ input[type="checkbox"] {
   color: #e53e3e;
 }
 
+.alarm-icons-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.alarm-icon-wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.alarm-icon-wrapper:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
 .no-alarms {
   color: #38a169;
   font-weight: 500;

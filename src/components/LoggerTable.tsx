@@ -324,12 +324,14 @@ export function LoggerTable({
       cell: ({ row }) => {
         const logger = row.original;
         
-        // Only show alarm icons if there are actual alarms, not just alarm types
+        // Get alarm types from the logger's alarmTypes array or derive from triggered conditions
         let alarmTypes: string[] = [];
         
-        if (logger.alarms && logger.alarms.length > 0) {
-          // Get unique alarm types from actual alarms array
-          alarmTypes = [...new Set(logger.alarms.map(alarm => alarm.alarmType || 'Unknown'))];
+        if (logger.alarmTypes && logger.alarmTypes.length > 0) {
+          alarmTypes = logger.alarmTypes;
+        } else if (logger.alarms && logger.alarms.length > 0) {
+          // If alarms exist, assume they are temperature alarms
+          alarmTypes = ['Temperature'];
         }
         
         if (alarmTypes.length === 0) {
@@ -342,7 +344,13 @@ export function LoggerTable({
         
         return (
           <div className="table-cell-content">
-            {alarmTypes.length > 0 ? alarmTypes.join(', ') : ''}
+            <div className="alarm-icons-container">
+              {alarmTypes.map((alarmType, index) => (
+                <div key={index} className="alarm-icon-wrapper" title={alarmType}>
+                  {getAlarmIcon(alarmType, 16)}
+                </div>
+              ))}
+            </div>
           </div>
         );
       },
